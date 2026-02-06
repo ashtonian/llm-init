@@ -303,7 +303,6 @@ Every business requirement should trace to technical implementation:
 |---------------------|---------------|--------|
 | Users can reset password | framework/authentication.md §Password Reset | Implemented |
 | Dashboard loads <2s | framework/performance-guide.md §Latency Targets | In progress |
-| Data export to CSV | platform-specs/data-export.md | Not started |
 ```
 
 ### Spec creation workflow
@@ -311,18 +310,13 @@ Every business requirement should trace to technical implementation:
 ```
 Business Feature Spec (biz/)
     │
-    ├─→ Framework Spec (framework/) — if new patterns needed
-    │
-    ├─→ Package Spec (pkg-specs/) — if new packages needed
-    │
-    └─→ Platform Spec (platform-specs/) — always needed for features
+    └─→ Framework Spec (framework/) — if new patterns needed
 ```
 
 When a business feature spec is written:
 1. Identify which framework patterns apply
-2. Identify if new packages are needed
-3. Create platform spec for the specific implementation
-4. Link all three in the traceability matrix
+2. Create or update framework specs as needed
+3. Link in the traceability matrix
 
 ---
 

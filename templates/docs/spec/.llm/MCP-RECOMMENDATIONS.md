@@ -63,8 +63,11 @@ Based on the specs, LLMs working on {{PROJECT_NAME}} will:
 {
   "mcpServers": {
     "github": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/"
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
     }
   }
 }
@@ -159,8 +162,11 @@ Complete `.mcp.json` for {{PROJECT_NAME}} development:
       "args": ["-y", "@modelcontextprotocol/server-memory"]
     },
     "github": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/"
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
     },
     "postgres": {
       "command": "npx",
@@ -229,6 +235,6 @@ For a new LLM starting work on {{PROJECT_NAME}}:
 - Test MCP connections before starting complex tasks
 - **Memory MCP limitation**: The `@modelcontextprotocol/server-memory` stores data in-process. Data is **lost when the session ends**. For persistent cross-session memory, use `PROGRESS.md` instead. The Memory MCP is useful for within-session context only.
 - The `git` MCP server is omitted because Claude Code has built-in git capabilities
-- The `github` MCP uses HTTP/OAuth transport (authenticate via `/mcp` in Claude Code)
+- The `github` MCP uses a Personal Access Token (set `GITHUB_PERSONAL_ACCESS_TOKEN` env var)
 - **context7** provides up-to-date documentation for libraries — useful when working with frameworks where the agent's training data may be outdated
 - **playwright** enables browser-based testing and visual verification of frontend features

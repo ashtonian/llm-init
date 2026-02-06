@@ -17,10 +17,8 @@ docs/spec/
 │   ├── plans/                # Active plan.llm files
 │   ├── completed/            # Archived completed plans
 │   └── templates/            # Plan templates (idea, fullstack, feature, bugfix, review, self-review)
-├── framework/                # Generic patterns (LAYER 1 - read first)
-├── biz/                      # Business specs (features, research, decisions)
-├── pkg-specs/                # Reusable packages (LAYER 2)
-└── platform-specs/           # Project-specific features (LAYER 3)
+├── framework/                # Generic patterns (read first)
+└── biz/                      # Business specs (features, research, decisions)
 ```
 
 ## For Multi-Step Tasks
@@ -55,15 +53,14 @@ docs/spec/
 
 <!-- As you create these specs, move them to the "Available Now" table above -->
 
-| Topic | Suggested Spec | Layer |
-|-------|---------------|-------|
-| REST API conventions | `framework/api-design.md` | Framework |
-| Base model patterns | `framework/models.md` | Framework |
-| Repository patterns | `framework/data-access.md` | Framework |
-| Error handling | `framework/error-handling.md` | Framework |
-| Route structure | `framework/routes.md` | Framework |
-| Logging & metrics | `framework/observability.md` | Framework |
-| Testing patterns | `framework/testing-guide.md` | Framework |
+| Topic | Suggested Spec |
+|-------|---------------|
+| REST API conventions | `framework/api-design.md` |
+| Base model patterns | `framework/models.md` |
+| Repository patterns | `framework/data-access.md` |
+| Error handling | `framework/error-handling.md` |
+| Route structure | `framework/routes.md` |
+| Logging & metrics | `framework/observability.md` |
 
 ## Common Task Flows
 
@@ -100,8 +97,6 @@ docs/spec/
 |----------|---------|-------------|
 | **Framework** | Generic patterns | `framework/` |
 | **Business** | Feature specs, research | `biz/` |
-| **Platform-specs** | Project-specific | `platform-specs/` |
-| **Package specs** | Reusable packages | `pkg-specs/` |
 | **Coordination** | Plans, progress, templates | `.llm/` |
 
 ## Key Conventions

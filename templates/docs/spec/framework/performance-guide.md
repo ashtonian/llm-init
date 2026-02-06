@@ -47,8 +47,6 @@ Load this document when:
 1. For **performance patterns only**: This doc is sufficient
 2. For **Go code patterns**: Also load `./go-generation-guide.md`
 3. For **frontend performance**: Also load `./typescript-ui-guide.md`
-4. For **data access optimization**: Also load `./data-access.md`
-5. For **caching decisions**: Also load `../pkg-specs/caching.md`
 
 ---
 
@@ -538,5 +536,8 @@ func (s *UserService) Process(ctx context.Context) (int, error)
 
 - [Go Generation Guide](./go-generation-guide.md) - Go code patterns and idioms
 - [TypeScript UI Guide](./typescript-ui-guide.md) - Frontend performance standards
-- [Data Access](./data-access.md) - Database query optimization
-- [Observability](./observability.md) - Metrics and profiling integration
+
+<!-- Add these cross-references as you create the specs:
+- data-access.md - Database query optimization
+- observability.md - Metrics and profiling integration
+-->

@@ -240,9 +240,8 @@ This section tells the LLM which other documents to load for related tasks. Guid
 ### Context Loading
 
 1. For **API error responses**: This doc is sufficient
-2. For **parse errors**: Load `../pkg-specs/parse.md` for schema validation patterns
-3. For **database errors**: Load `./data-access.md` for repository error mapping
-4. For **observability**: Load `./observability.md` for logging/tracing integration
+2. For **database errors**: Load `./data-access.md` for repository error mapping
+3. For **observability**: Load `./observability.md` for logging/tracing integration
 ```
 
 ---
@@ -250,35 +249,6 @@ This section tells the LLM which other documents to load for related tasks. Guid
 ## Domain-Specific Extensions
 
 Some documents benefit from additional quick reference sections specific to their domain.
-
-### Package Specifications
-
-Package specs (in `pkg-specs/`) should include:
-
-```markdown
-### Interface Summary
-
-| Method | Purpose |
-|--------|---------|
-| `Get(ctx, key)` | Retrieve by key |
-| `Put(ctx, key, data)` | Store data |
-```
-
-### Platform Specifications
-
-Platform specs (in `platform-specs/`) should include:
-
-```markdown
-### Component Interactions
-
-[ASCII diagram or description of how this component interacts with others]
-
-### Configuration Quick Reference
-
-| Setting | Default | Purpose |
-|---------|---------|---------|
-| `max_retries` | 3 | Maximum retry attempts |
-```
 
 ### Error Handling Documents
 

@@ -11,7 +11,7 @@ This guide explains the system that `llm-init` sets up, how to use it day-to-day
 - [First Session with Claude Code](#first-session-with-claude-code)
 - [Permissions](#permissions)
 - [Writing Spec Files](#writing-spec-files)
-- [The Three-Layer Architecture](#the-three-layer-architecture)
+- [The Two-Layer Architecture](#the-two-layer-architecture)
 - [Plan Files and Multi-Agent Work](#plan-files-and-multi-agent-work)
 - [Review Loops and Iteration](#review-loops-and-iteration)
 - [Knowledge Accumulation](#knowledge-accumulation)
@@ -153,6 +153,7 @@ The settings file allows Claude to run these without prompting:
 | **Utilities** | `jq`, `yq`, `sed`, `awk`, `xargs`, `env`, `export`, `brew install/list/info` |
 | **Subagents** | `claude` CLI for spawning sub-sessions |
 | **All file tools** | Read, Edit, Write, Glob, Grep, WebFetch, WebSearch, Task |
+| **MCP server tools** | filesystem, memory, github, postgres, redis, sequential-thinking, context7, playwright |
 
 ### What's blocked
 
@@ -231,9 +232,8 @@ Spec files are markdown documents that tell Claude (and other LLMs) how your sys
 
 ```
 docs/spec/
-├── framework/          # Layer 1: Generic patterns (API design, auth, errors)
-├── pkg-specs/          # Layer 2: Reusable package specs (caching, notifications)
-└── platform-specs/     # Layer 3: Your project's specific features
+├── framework/          # Generic patterns (API design, auth, errors)
+└── biz/                # Business specs (features, research, decisions)
 ```
 
 ### Spec file format
@@ -277,7 +277,7 @@ Your actual content starts here...
 
 ### Creating a new spec
 
-1. Decide which layer it belongs to (framework, pkg-specs, or platform-specs)
+1. Decide which layer it belongs to (framework or biz)
 2. Create the file following the template above
 3. Update `docs/spec/LLM.md` to reference it in the navigation index
 4. Update `docs/spec/llms.txt` with a quick-reference entry
@@ -301,11 +301,11 @@ Specs should document **decisions, patterns, and constraints** — the things Cl
 
 ---
 
-## The Three-Layer Architecture
+## The Two-Layer Architecture
 
 The layered structure prevents Claude from having to read everything for every task.
 
-### Layer 1: Framework (`framework/`)
+### Framework (`framework/`)
 
 Generic SaaS patterns that apply to any project. These are read first and define the conventions everything else follows.
 
@@ -313,6 +313,7 @@ Generic SaaS patterns that apply to any project. These are read first and define
 - `go-generation-guide.md` — Mandatory Go coding patterns (800+ lines)
 - `typescript-ui-guide.md` — Mandatory TypeScript/UI patterns (component architecture, accessibility, performance)
 - `performance-guide.md` — Mandatory performance and code quality standards (memory allocation, profiling)
+- `testing-guide.md` — Testing patterns, fixtures, mocking strategies
 - `README.md` — Framework index and task-to-spec mapping
 
 **You should add specs for:**
@@ -323,37 +324,24 @@ Generic SaaS patterns that apply to any project. These are read first and define
 - Model conventions
 - Observability (logging, metrics, tracing)
 - Validation rules
-- Testing patterns
 
-### Layer 2: Package Specs (`pkg-specs/`)
+### Business Specs (`biz/`)
 
-Specs for reusable internal packages. Claude reads these when implementing features that use specific packages.
-
-**Examples:**
-- Caching (L1/L2 cache layers)
-- Notifications (email, push, webhooks)
-- Time-series storage
-- Blob storage
-- Rate limiting
-
-### Layer 3: Platform Specs (`platform-specs/`)
-
-Your project's unique features and domain logic. These are the most specific and change the most.
+Feature requirements, market research, competitive analysis, and business decisions. These provide the business context for technical work.
 
 **Examples:**
-- Domain models (your specific entities and relationships)
-- Routes (your actual API endpoints)
-- Business workflows
-- Integration specs (third-party APIs)
+- Feature specifications (PRDs, user stories)
+- Market and competitive analysis
+- Business decision records
+- Strategic planning documents
 
 ### How Claude uses the layers
 
 When Claude gets a task like "add a billing endpoint":
 
-1. Reads Layer 1: API design conventions, error handling, model patterns
-2. Reads Layer 2: Any relevant packages (caching, notifications)
-3. Reads Layer 3: Existing routes, domain models, billing-specific specs
-4. Implements following all conventions from all layers
+1. Reads framework specs: API design conventions, error handling, model patterns
+2. Reads business specs: Billing feature requirements, business rules
+3. Implements following all conventions from both layers
 
 ---
 
@@ -463,7 +451,7 @@ Claude is instructed to execute tasks concurrently whenever possible. Multiple a
 
 | Strategy | When to Use |
 |----------|-------------|
-| **By Layer** | One agent per spec layer (framework, pkg-specs, platform-specs) |
+| **By Layer** | One agent per spec layer (framework, biz) |
 | **By Feature** | Each agent implements a complete vertical slice |
 | **By Component** | Split: database, service, API handler, tests |
 | **By Phase** | Design -> implement -> test -> document |
@@ -555,15 +543,19 @@ MCP (Model Context Protocol) servers give Claude direct tool access to external 
 | **postgres** | Query the database, inspect schemas |
 | **redis** | Read/write cache entries |
 | **sequential-thinking** | Break down complex problems step-by-step |
+| **context7** | Look up current library/framework documentation |
+| **playwright** | Browser automation, E2E testing, visual verification |
 
 ### Authenticating GitHub
 
-The GitHub MCP server uses OAuth. On first use:
+The GitHub MCP server uses a Personal Access Token (PAT):
 
-1. Start Claude Code in the project
-2. Run `/mcp` inside Claude Code
-3. Select "Authenticate" for the `github` server
-4. Complete the browser OAuth flow
+1. Create a PAT at [github.com/settings/tokens](https://github.com/settings/tokens) with appropriate scopes (`repo`, `read:org`, etc.)
+2. Set the environment variable before starting Claude Code:
+   ```bash
+   export GITHUB_PERSONAL_ACCESS_TOKEN="ghp_your_token_here"
+   ```
+3. Optionally add it to your shell profile (`~/.bashrc`, `~/.zshrc`) or a `.env` file
 
 ### Adding/removing servers
 
@@ -571,7 +563,7 @@ Edit `.mcp.json`. See `docs/spec/.llm/MCP-RECOMMENDATIONS.md` for recommendation
 
 ### Servers that don't need infrastructure
 
-`filesystem`, `memory`, `sequential-thinking`, and `github` work without Docker. Only `postgres` and `redis` require the Docker infrastructure to be running.
+`filesystem`, `memory`, `sequential-thinking`, `github`, `context7`, and `playwright` work without Docker. Only `postgres` and `redis` require the Docker infrastructure to be running.
 
 ---
 
@@ -631,22 +623,13 @@ docs/spec/biz/research/competitive-analysis.md
 docs/spec/biz/decisions/{YYYY-MM-DD}-{decision}.md
 ```
 
-### Step 6: Add platform specs as you build
-
-As you implement features, document them:
-
-```bash
-mkdir -p docs/spec/platform-specs
-# Create specs as features are built
-```
-
-### Step 7: Adjust infrastructure
+### Step 6: Adjust infrastructure
 
 - Remove services you don't need from `docker-compose.yml`
 - Remove corresponding MCP servers from `.mcp.json`
 - Update connection strings in `INFRASTRUCTURE.md`
 
-### Step 8: Adjust code conventions
+### Step 7: Adjust code conventions
 
 Review and customize the included guides:
 - `framework/go-generation-guide.md` — Adjust cross-cutting concerns table, import paths, anti-patterns
@@ -682,7 +665,7 @@ Claude will consult the relevant specs, create a plan, and implement.
 If Claude isn't consulting a spec you care about, be explicit:
 
 ```
-Add caching to the user service, following the patterns in pkg-specs/caching.md
+Add caching to the user service, following the patterns in framework/performance-guide.md
 ```
 
 ### Reviewing what Claude did
@@ -726,7 +709,7 @@ docker compose -f docs/spec/.llm/docker-compose.yml ps
 docker compose -f docs/spec/.llm/docker-compose.yml restart
 ```
 
-For the GitHub MCP, run `/mcp` in Claude Code to authenticate.
+For the GitHub MCP, ensure `GITHUB_PERSONAL_ACCESS_TOKEN` is set in your environment.
 
 ### Docker services fail to start
 

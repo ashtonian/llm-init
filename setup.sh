@@ -131,6 +131,8 @@ copy_template "${SCRIPT_DIR}/templates/docs/spec/framework/README.md" "${PROJECT
 copy_template "${SCRIPT_DIR}/templates/docs/spec/framework/go-generation-guide.md" "${PROJECT_ROOT}/docs/spec/framework/go-generation-guide.md"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/framework/typescript-ui-guide.md" "${PROJECT_ROOT}/docs/spec/framework/typescript-ui-guide.md"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/framework/performance-guide.md" "${PROJECT_ROOT}/docs/spec/framework/performance-guide.md"
+copy_template "${SCRIPT_DIR}/templates/docs/spec/framework/testing-guide.md" "${PROJECT_ROOT}/docs/spec/framework/testing-guide.md"
+copy_template "${SCRIPT_DIR}/templates/docs/spec/framework/llms.txt" "${PROJECT_ROOT}/docs/spec/framework/llms.txt"
 
 # Copy business spec files
 echo ""

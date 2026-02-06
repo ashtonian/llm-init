@@ -6,7 +6,7 @@
 
 This is the LLM Orchestration Guide — it defines:
 - How to understand and classify your task
-- The required reading order for spec files (Layer 1 -> 2 -> 3)
+- The required reading order for spec files (framework -> biz)
 - The plan.llm coordination workflow
 - Conflict prevention rules for concurrent work
 - The review loop and iteration protocol
@@ -35,7 +35,7 @@ If the user gives you just an idea and wants a full project built:
 When asked to address TODOs or review specs:
 1. Follow the reading order in LLM.md
 2. Create a plan.llm tracking which files you'll review/modify
-3. Read specs layer-by-layer (framework -> pkg-specs -> platform-specs)
+3. Read framework specs, then business specs as needed
 4. Address TODOs in context, not in isolation
 
 ### Key References
@@ -108,6 +108,7 @@ You have pre-approved permissions for all standard development operations includ
 - Go toolchain, build tools, Docker, Git, GitHub CLI
 - Node/npm/pnpm/yarn, TypeScript tools, linters, test runners
 - File operations, web fetch, web search, subagent spawning
+- MCP server tools (filesystem, memory, github, postgres, redis, sequential-thinking, context7, playwright)
 - Python scripts, curl for localhost, process management
 
 See `.claude/settings.json` for the full list. If you need a command that isn't pre-approved, explain why and ask.

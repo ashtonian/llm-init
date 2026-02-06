@@ -64,34 +64,19 @@ docs/spec/
 │   ├── completed/            # Completed plan files (archive)
 │   ├── templates/            # Plan templates (feature, bugfix, review)
 │   └── scripts/              # Utility scripts
-├── framework/                # Generic patterns (LAYER 1 - read first)
+├── framework/                # Generic patterns (read first)
 │   ├── go-generation-guide.md
 │   ├── typescript-ui-guide.md
-│   └── performance-guide.md
-├── biz/                      # Business specs (features, research, decisions)
-├── pkg-specs/                # Reusable packages (LAYER 2)
-└── platform-specs/           # Project-specific features (LAYER 3)
+│   ├── performance-guide.md
+│   └── testing-guide.md
+└── biz/                      # Business specs (features, research, decisions)
 ```
 
 ### Spec Layers (Read Order)
 
 ```
 +-----------------------------------------------------------------+
-| LAYER 3: Platform Specs (platform-specs/)                        |
-|   Project-specific features and domain logic                     |
-|   READ LAST - depends on Layer 1 and 2                           |
-+-----------------------------------------------------------------+
-                              | uses
-                              v
-+-----------------------------------------------------------------+
-| LAYER 2: Package Specs (pkg-specs/)                              |
-|   Reusable packages and libraries                                |
-|   READ SECOND - implements Layer 1 patterns                      |
-+-----------------------------------------------------------------+
-                              | implements
-                              v
-+-----------------------------------------------------------------+
-| LAYER 1: Framework Specs (framework/)                            |
+| Framework Specs (framework/)                                     |
 |   Foundations: API design, auth, models, errors, data access     |
 |   READ FIRST - all other specs depend on these                   |
 +-----------------------------------------------------------------+
@@ -189,8 +174,6 @@ These specs define conventions used throughout. Read them once at session start.
 2. framework/routes.md            -> Route patterns
 3. framework/error-handling.md    -> Error responses
 4. framework/data-access.md       -> Database layer
-5. platform-specs/routes.md       -> Existing endpoints (reference)
-6. platform-specs/models.md       -> Domain models
 ```
 
 #### Building UI Features
@@ -199,7 +182,6 @@ These specs define conventions used throughout. Read them once at session start.
 1. framework/typescript-ui-guide.md -> Component patterns, accessibility
 2. framework/performance-guide.md   -> Performance budgets
 3. framework/api-design.md          -> API shapes to consume
-4. platform-specs/routes.md         -> Available endpoints
 ```
 
 -->
@@ -469,8 +451,6 @@ Create plan files at: `docs/spec/.llm/plans/{feature-name}.plan.llm`
 |--------|---------|-------------|
 | `framework/` | Generic patterns | `framework/README.md` |
 | `biz/` | Business specs | `biz/README.md` |
-| `pkg-specs/` | Reusable packages | `pkg-specs/README.md` |
-| `platform-specs/` | Project-specific | `platform-specs/README.md` |
 | `.llm/` | Agent coordination | `.llm/README.md` |
 
 ---
@@ -541,7 +521,7 @@ When requirements change:
 | Issue | Solution |
 |-------|----------|
 | Can't find the right spec | Start with `llms.txt` or this file's Navigation Index |
-| Specs seem contradictory | Framework specs are authoritative; platform-specs adapt them |
+| Specs seem contradictory | Framework specs are authoritative; business specs adapt them |
 | Feature needs new spec | Create it following `SPEC-WRITING-GUIDE.md` and `LLM-STYLE-GUIDE.md` |
 | Blocked by another agent | Check `.llm/plans/` for the blocking plan, coordinate or wait |
 | Requirements unclear | Document questions in your plan.llm, mark as blocked |

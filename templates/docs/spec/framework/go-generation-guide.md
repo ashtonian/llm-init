@@ -31,11 +31,8 @@ Load this document when:
 ### Context Loading
 
 1. For **Go generation rules**: This doc is sufficient
-2. For **API handler code**: Also load `./api-design.md`
-3. For **database code**: Also load `./data-access.md`
-4. For **error handling code**: Also load `./error-handling.md`
-5. For **test code**: Also load `./testing-guide.md`
-6. For **package code**: Also load `../pkg-specs/README.md`
+2. For **test code**: Also load `./testing-guide.md`
+3. For **performance**: Also load `./performance-guide.md`
 
 ---
 
@@ -72,7 +69,7 @@ func Process(data interface{}) error { ... }
 
 ### Structured logging with `log/slog`
 
-All logging uses `slog`. Never use `fmt.Println`, `log.Printf`, or third-party loggers directly. See [observability.md](./observability.md) for full conventions.
+All logging uses `slog`. Never use `fmt.Println`, `log.Printf`, or third-party loggers directly.
 
 ```go
 slog.InfoContext(ctx, "entity registered",
@@ -89,7 +86,7 @@ if err != nil {
 }
 ```
 
-For API boundaries, use structured error types. See [error-handling.md](./error-handling.md).
+For API boundaries, use structured error types.
 
 ### Multi-error handling
 
@@ -699,16 +696,19 @@ These framework specifications define mandatory patterns. All generated Go code 
 
 | Concern | Spec | Key Rules |
 |---------|------|-----------|
-| **Error handling** | [error-handling.md](./error-handling.md) | Structured errors with codes; classify transient vs permanent; never panic in library code |
-| **Observability** | [observability.md](./observability.md) | `slog` for logging; OpenTelemetry for traces; Prometheus for metrics; correlate via `trace_id` |
-| **API design** | [api-design.md](./api-design.md) | Intent-specific types (Create/Patch/Response/Row); JSON Patch for updates; cursor pagination |
-| **Models** | [models.md](./models.md) | UUIDv7 IDs; RFC 3339 timestamps; soft delete; tenant isolation on all entities |
-| **Data access** | [data-access.md](./data-access.md) | Repository pattern; context-based tenant filtering |
-| **Validation** | [validation.md](./validation.md) | Struct tags for validation; layer-appropriate validation |
 | **Testing** | [testing-guide.md](./testing-guide.md) | Table-driven tests; `require`/`assert`; integration-first; parallel by default |
-| **Auth** | [authentication.md](./authentication.md) | Bearer tokens; API keys; session management |
-| **Permissions** | [permission-policy-system.md](./permission-policy-system.md) | Three-layer authorization (route, service, repository) |
-| **Tenancy** | [tenant-model.md](./tenant-model.md) | All data is tenant-scoped; extract tenant from context |
+
+<!-- Add rows as you create these specs:
+| **Error handling** | error-handling.md | Structured errors with codes; classify transient vs permanent; never panic in library code |
+| **Observability** | observability.md | `slog` for logging; OpenTelemetry for traces; Prometheus for metrics; correlate via `trace_id` |
+| **API design** | api-design.md | Intent-specific types (Create/Patch/Response/Row); JSON Patch for updates; cursor pagination |
+| **Models** | models.md | UUIDv7 IDs; RFC 3339 timestamps; soft delete; tenant isolation on all entities |
+| **Data access** | data-access.md | Repository pattern; context-based tenant filtering |
+| **Validation** | validation.md | Struct tags for validation; layer-appropriate validation |
+| **Auth** | authentication.md | Bearer tokens; API keys; session management |
+| **Permissions** | permission-policy-system.md | Three-layer authorization (route, service, repository) |
+| **Tenancy** | tenant-model.md | All data is tenant-scoped; extract tenant from context |
+-->
 
 ### Applying Cross-Cutting Concerns
 
@@ -870,11 +870,15 @@ Does the type have multiple backend implementations?
 
 ## Related Documentation
 
-- [API Design](./api-design.md) - REST conventions, model patterns, pagination
-- [Error Handling](./error-handling.md) - Error codes, classification, retry behavior
-- [Models](./models.md) - Entity patterns, soft delete, versioning
-- [Data Access](./data-access.md) - Repository patterns, database integration
-- [Observability](./observability.md) - Logging, tracing, metrics
-- [Validation](./validation.md) - Input validation, custom validators
 - [Testing Guide](./testing-guide.md) - Test organization, patterns, coverage
-- [Package Design](../pkg-specs/README.md) - Registry pattern, package principles
+- [Performance Guide](./performance-guide.md) - Memory allocation, profiling, latency budgets
+- [TypeScript & UI Guide](./typescript-ui-guide.md) - Frontend patterns and conventions
+
+<!-- Add these cross-references as you create the specs:
+- api-design.md - REST conventions, model patterns, pagination
+- error-handling.md - Error codes, classification, retry behavior
+- models.md - Entity patterns, soft delete, versioning
+- data-access.md - Repository patterns, database integration
+- observability.md - Logging, tracing, metrics
+- validation.md - Input validation, custom validators
+-->

@@ -66,12 +66,14 @@ docker compose -f docs/spec/.llm/docker-compose.yml up -d
 |----------------------|------------------------|----------------------------------|---------------------------------|
 | filesystem           | No                     | `@modelcontextprotocol/server-filesystem` (stdio) | Local file access only          |
 | memory               | No                     | `@modelcontextprotocol/server-memory` (stdio)     | In-process knowledge graph      |
-| github               | No                     | HTTP to `api.githubcopilot.com`                    | Authenticate via `/mcp` in Claude Code |
+| github               | No                     | `@modelcontextprotocol/server-github` (stdio)      | Requires `GITHUB_PERSONAL_ACCESS_TOKEN` env var |
 | postgres             | PostgreSQL             | `@bytebase/dbhub` (stdio)                         | Queries via DSN connection string |
 | redis                | Redis                  | `@modelcontextprotocol/server-redis` (stdio)       | Key-value operations            |
 | sequential-thinking  | No                     | `@modelcontextprotocol/server-sequential-thinking` (stdio) | In-process reasoning            |
+| context7             | No                     | `@upstash/context7-mcp` (stdio)                   | Up-to-date library documentation |
+| playwright           | No                     | `@playwright/mcp` (stdio)                          | Browser automation & E2E testing |
 
-**Note**: The `git` MCP server was omitted because Claude Code has built-in git capabilities via Bash. The `github` MCP server uses HTTP/OAuth instead of a deprecated npm package.
+**Note**: The `git` MCP server was omitted because Claude Code has built-in git capabilities via Bash. The `github` MCP server uses a Personal Access Token for authentication.
 
 ## Data Persistence
 
@@ -146,11 +148,13 @@ Tuned for a local development workload:
 
 ## GitHub Authentication
 
-The GitHub MCP server uses HTTP transport with OAuth. To authenticate:
+The GitHub MCP server uses a Personal Access Token (PAT) for authentication:
 
-1. Start Claude Code in this project
-2. Run `/mcp` inside Claude Code
-3. Select "Authenticate" for the `github` server
-4. Follow the browser OAuth flow to authorize
+1. Create a PAT at [github.com/settings/tokens](https://github.com/settings/tokens) with appropriate scopes (repo, read:org, etc.)
+2. Set the environment variable before starting Claude Code:
+   ```bash
+   export GITHUB_PERSONAL_ACCESS_TOKEN="ghp_your_token_here"
+   ```
+3. Optionally add it to your shell profile (`~/.bashrc`, `~/.zshrc`) or a `.env` file
 
-No environment variables are needed for GitHub - authentication is handled via OAuth tokens stored securely by Claude Code.
+The token is referenced in `.mcp.json` as `${GITHUB_PERSONAL_ACCESS_TOKEN}` and expanded at runtime.

@@ -44,9 +44,7 @@ Load this document when:
 
 1. For **TypeScript/UI patterns**: This doc is sufficient
 2. For **Go backend integration**: Also load `./go-generation-guide.md`
-3. For **API conventions**: Also load `./api-design.md`
-4. For **performance deep-dive**: Also load `./performance-guide.md`
-5. For **error handling in UI**: Also load `./error-handling.md`
+3. For **performance deep-dive**: Also load `./performance-guide.md`
 
 ---
 
@@ -820,5 +818,9 @@ src/
 
 - [Go Generation Guide](./go-generation-guide.md) - Backend code patterns
 - [Performance Guide](./performance-guide.md) - System-wide performance standards
-- [API Design](./api-design.md) - REST conventions the frontend consumes
-- [Error Handling](./error-handling.md) - Error codes the frontend must handle
+- [Testing Guide](./testing-guide.md) - Test patterns and strategies
+
+<!-- Add these cross-references as you create the specs:
+- api-design.md - REST conventions the frontend consumes
+- error-handling.md - Error codes the frontend must handle
+-->
