@@ -9,5 +9,6 @@ Thumbs.db
 .idea/
 .vscode/
 
-# Claude Code personal settings
-.claude/
+# Claude Code personal settings (root only, not templates/.claude/)
+/.claude/
+!templates/.claude/
