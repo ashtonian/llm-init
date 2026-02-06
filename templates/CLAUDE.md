@@ -47,9 +47,36 @@ When asked to address TODOs or review specs:
 - **Go Code Guide**: `docs/spec/framework/go-generation-guide.md` (read before writing ANY Go code)
 - **TypeScript/UI Guide**: `docs/spec/framework/typescript-ui-guide.md` (read before writing ANY frontend code)
 - **Performance Guide**: `docs/spec/framework/performance-guide.md` (read before writing performance-sensitive code)
+- **Testing Guide**: `docs/spec/framework/testing-guide.md` (read before writing tests)
 - **Business Features Guide**: `docs/spec/biz/README.md` (read before writing business specs)
 - **Infrastructure**: `docs/spec/.llm/INFRASTRUCTURE.md` (Docker services, ports, health checks)
 - **MCP Servers**: `docs/spec/.llm/MCP-RECOMMENDATIONS.md` (available MCP servers and config)
+
+## Parallel Agent Execution
+
+For autonomous batch execution of multiple tasks in parallel, use the task queue harness:
+
+```bash
+# Create tasks from template
+cp docs/spec/.llm/templates/task.template.md docs/spec/.llm/tasks/backlog/01-my-task.md
+
+# Launch 3 parallel agents
+bash docs/spec/.llm/scripts/run-parallel.sh 3
+
+# Run a single task autonomously
+bash docs/spec/.llm/scripts/run-single-task.sh 01-my-task.md
+
+# Run a task interactively (with approval prompts)
+bash docs/spec/.llm/scripts/run-interactive.sh 01-my-task.md
+
+# Check task queue status
+bash docs/spec/.llm/scripts/status.sh
+
+# Reset all tasks to backlog
+bash docs/spec/.llm/scripts/reset.sh
+```
+
+See `docs/spec/.llm/README.md` for full documentation. Edit `docs/spec/.llm/AGENT_GUIDE.md` and `docs/spec/.llm/STRATEGY.md` before running agents.
 
 ## Execution Principles
 

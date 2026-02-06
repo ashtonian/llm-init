@@ -33,38 +33,57 @@ docker compose -f docs/spec/.llm/docker-compose.yml up -d
 your-project/
 ├── CLAUDE.md                              # Claude Code auto-reads this — entry point
 ├── .claude/settings.json                  # Pre-approved permissions for autonomous operation
-├── .mcp.json                              # 8 MCP servers (filesystem, memory, github, postgres, redis, reasoning, docs, browser)
+├── .mcp.json                              # 6 MCP servers (github, postgres, redis, sequential-thinking, context7, playwright)
 ├── .gitignore                             # Go, TypeScript, Docker, IDE, env, LLM workspace exclusions
 └── docs/spec/
     ├── LLM.md                             # Master orchestration guide for LLMs
     ├── LLM-STYLE-GUIDE.md                 # How to write LLM-friendly spec files
     ├── SPEC-WRITING-GUIDE.md              # How to write specification documents
+    ├── README.md                           # Human-readable documentation index
     ├── llms.txt                            # Quick navigation index
     ├── framework/                          # Layer 1: Foundation patterns
     │   ├── README.md                       # Framework spec index
     │   ├── go-generation-guide.md          # Go code conventions
     │   ├── typescript-ui-guide.md          # TypeScript/UI/UX patterns
-    │   └── performance-guide.md            # Performance & code quality standards
+    │   ├── performance-guide.md            # Performance & code quality standards
+    │   ├── testing-guide.md                # Testing patterns, fixtures, mocking
+    │   └── llms.txt                        # Framework navigation index
     ├── biz/                                # Business specs
     │   └── README.md                       # Business features, PRDs, market research guide
     └── .llm/
         ├── README.md                       # Coordination guide
         ├── PROGRESS.md                     # Knowledge accumulation & iteration log
+        ├── STRATEGY.md                     # Project decomposition for parallel agents
+        ├── AGENT_GUIDE.md                  # Agent context (inlined into every prompt)
         ├── INFRASTRUCTURE.md               # Docker services documentation
         ├── MCP-RECOMMENDATIONS.md          # MCP server recommendations
         ├── docker-compose.yml              # PostgreSQL 16, Redis 7, NATS 2
         ├── nats.conf                       # NATS JetStream config
         ├── plans/                          # Active work plans
         ├── completed/                      # Archived completed plans
-        ├── templates/                      # Plan templates (7 types)
+        ├── templates/                      # Plan + task templates
         │   ├── idea.plan.llm              #   Idea → working project (0→100)
         │   ├── fullstack.plan.llm         #   Full-stack feature (DB→API→UI→E2E)
         │   ├── feature.plan.llm           #   Backend feature
         │   ├── review.plan.llm            #   Review & iteration cycle
         │   ├── bugfix.plan.llm            #   Bug investigation & fix
         │   ├── self-review.plan.llm       #   System self-audit
-        │   └── plan.template.llm          #   Generic task
-        └── scripts/move_nav_to_top.py      # Reformats docs for LLM navigation
+        │   ├── plan.template.llm          #   Generic task
+        │   └── task.template.md           #   Task template for parallel agent queue
+        ├── scripts/                        # Utility + agent harness scripts
+        │   ├── move_nav_to_top.py         #   Reformats docs for LLM navigation
+        │   ├── run-parallel.sh            #   Launch N parallel autonomous agents
+        │   ├── run-agent.sh               #   Single autonomous agent loop
+        │   ├── run-single-task.sh         #   Run one task autonomously
+        │   ├── run-interactive.sh         #   Interactive session with task context
+        │   ├── status.sh                  #   Task queue dashboard
+        │   └── reset.sh                   #   Reset tasks to backlog
+        ├── tasks/                          # Parallel agent task queue
+        │   ├── backlog/                   #   Tasks ready to be claimed
+        │   ├── in_progress/               #   Currently being worked on
+        │   ├── completed/                 #   Successfully finished
+        │   └── blocked/                   #   Failed or blocked tasks
+        └── logs/                           # Agent execution logs
 ```
 
 ## How It Works
@@ -105,7 +124,7 @@ You prompt Claude ──> Claude reads CLAUDE.md (automatic)
 - **Knowledge accumulates across sessions.** Each session reads and writes to PROGRESS.md, building institutional knowledge.
 - **User approval at every major step.** Research → spec → plan → build, with human checkpoints at each transition.
 - **Review loops ensure quality.** Every change passes quality gates (build, test, lint) before completion.
-- **Concurrent execution is encouraged.** Independent tasks run in parallel via subagents and feature branches.
+- **Concurrent execution is encouraged.** Independent tasks run in parallel via subagents and feature branches. The parallel agent harness automates this with task queues, git worktrees, and atomic claiming.
 - **Self-improvement is built in.** The agent can review and improve specs, templates, and its own orchestration system.
 
 ## What's Included
@@ -120,9 +139,10 @@ You prompt Claude ──> Claude reads CLAUDE.md (automatic)
 | **Performance Guide** | Memory allocation strategies, profiling discipline, latency budgets, code quality standards |
 | **Business Features Guide** | Feature specs, user stories, market research templates, competitive analysis, decision records |
 | **PROGRESS.md** | 5-section knowledge base: patterns, architecture decisions, known issues, failed approaches, environment quirks |
+| **Parallel Agent Harness** | Task queue, git worktree isolation, atomic claiming, autonomous batch execution with N parallel agents |
 | **Plan Templates** | 7 templates: idea-to-project, full-stack feature, backend feature, review cycle, bugfix, self-review, generic |
 | **Docker Compose** | PostgreSQL 16, Redis 7, NATS 2 with health checks, resource limits, data persistence |
-| **MCP Config** | 8 pre-configured servers: filesystem, memory, GitHub, Postgres, Redis, sequential-thinking, Context7 (docs), Playwright (browser) |
+| **MCP Config** | 6 pre-configured servers: GitHub, Postgres, Redis, sequential-thinking, Context7 (library docs), Playwright (browser) |
 | **.gitignore** | Comprehensive template covering Go, TypeScript, Docker, IDE, env files, LLM workspace |
 
 ## Best For

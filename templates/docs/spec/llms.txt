@@ -14,9 +14,14 @@ docs/spec/
 ├── llms.txt                  # This file - quick navigation
 ├── .llm/                     # LLM coordination folder
 │   ├── PROGRESS.md           # Accumulated knowledge and iteration log (READ BEFORE STARTING)
+│   ├── STRATEGY.md           # Project decomposition for parallel agents
+│   ├── AGENT_GUIDE.md        # Agent context (inlined into every prompt)
 │   ├── plans/                # Active plan.llm files
 │   ├── completed/            # Archived completed plans
-│   └── templates/            # Plan templates (idea, fullstack, feature, bugfix, review, self-review)
+│   ├── templates/            # Plan + task templates
+│   ├── scripts/              # Utility + agent harness scripts
+│   ├── tasks/                # Parallel agent task queue (backlog, in_progress, completed, blocked)
+│   └── logs/                 # Agent execution logs
 ├── framework/                # Generic patterns (read first)
 └── biz/                      # Business specs (features, research, decisions)
 ```
@@ -39,6 +44,7 @@ docs/spec/
 | **Go code patterns** | `framework/go-generation-guide.md` (read first for any Go task) |
 | **TypeScript/UI patterns** | `framework/typescript-ui-guide.md` (read first for any frontend task) |
 | **Performance standards** | `framework/performance-guide.md` (read for performance-sensitive work) |
+| **Testing patterns** | `framework/testing-guide.md` (read when writing tests) |
 | **Writing new specs** | `SPEC-WRITING-GUIDE.md` (templates and depth expectations) |
 | **Formatting nav sections** | `LLM-STYLE-GUIDE.md` |
 | **LLM orchestration** | `LLM.md` (plan files, concurrent execution, review loops) |
@@ -48,6 +54,10 @@ docs/spec/
 | **Infrastructure** | `.llm/INFRASTRUCTURE.md` (Docker services, ports, health checks) |
 | **MCP servers** | `.llm/MCP-RECOMMENDATIONS.md` (available servers and setup) |
 | **System self-review** | `.llm/templates/self-review.plan.llm` (audit the LLM system itself) |
+| **Parallel agent harness** | `.llm/README.md` (task queue, autonomous agents, scripts) |
+| **Task decomposition** | `.llm/STRATEGY.md` (phases, dependencies, task sizing) |
+| **Agent context** | `.llm/AGENT_GUIDE.md` (project description, tech stack, quality gates) |
+| **Task template** | `.llm/templates/task.template.md` (task file format for queue) |
 
 ### Specs to Create (see SPEC-WRITING-GUIDE.md for templates)
 
@@ -71,6 +81,14 @@ docs/spec/
 4. Run quality gates (build, test, lint)
 5. Update PROGRESS.md with learnings
 6. Commit and move to next item
+
+### Running Parallel Autonomous Agents
+1. Edit `.llm/STRATEGY.md` — decompose project into phases and tasks
+2. Edit `.llm/AGENT_GUIDE.md` — add project context, tech stack, quality gates
+3. Create tasks: `cp .llm/templates/task.template.md .llm/tasks/backlog/01-task-name.md`
+4. Launch agents: `bash docs/spec/.llm/scripts/run-parallel.sh 3`
+5. Monitor: `bash docs/spec/.llm/scripts/status.sh`
+6. Reset if needed: `bash docs/spec/.llm/scripts/reset.sh`
 
 <!-- Uncomment and customize these as you create the referenced specs:
 

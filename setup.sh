@@ -36,6 +36,12 @@ mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/scripts"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/data/postgres"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/data/redis"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/data/nats"
+mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/tasks/backlog"
+mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/tasks/in_progress"
+mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/tasks/completed"
+mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/tasks/blocked"
+mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/tasks/.locks"
+mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/logs"
 mkdir -p "${PROJECT_ROOT}/docs/spec/framework"
 mkdir -p "${PROJECT_ROOT}/docs/spec/biz"
 mkdir -p "${PROJECT_ROOT}/.claude"
@@ -96,6 +102,7 @@ copy_template "${SCRIPT_DIR}/templates/docs/spec/LLM.md" "${PROJECT_ROOT}/docs/s
 copy_template "${SCRIPT_DIR}/templates/docs/spec/LLM-STYLE-GUIDE.md" "${PROJECT_ROOT}/docs/spec/LLM-STYLE-GUIDE.md"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/SPEC-WRITING-GUIDE.md" "${PROJECT_ROOT}/docs/spec/SPEC-WRITING-GUIDE.md"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/llms.txt" "${PROJECT_ROOT}/docs/spec/llms.txt"
+copy_template "${SCRIPT_DIR}/templates/docs/spec/README.md" "${PROJECT_ROOT}/docs/spec/README.md"
 
 # Copy .llm files
 echo ""
@@ -118,11 +125,34 @@ copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/bugfix.plan.llm"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/review.plan.llm" "${PROJECT_ROOT}/docs/spec/.llm/templates/review.plan.llm"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/self-review.plan.llm" "${PROJECT_ROOT}/docs/spec/.llm/templates/self-review.plan.llm"
 
-# Copy scripts
+# Copy task template
+echo ""
+echo "Copying task template..."
+copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/task.template.md" "${PROJECT_ROOT}/docs/spec/.llm/templates/task.template.md"
+
+# Copy parallel agent harness files
+echo ""
+echo "Copying parallel agent harness files..."
+copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/STRATEGY.md" "${PROJECT_ROOT}/docs/spec/.llm/STRATEGY.md"
+copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/AGENT_GUIDE.md" "${PROJECT_ROOT}/docs/spec/.llm/AGENT_GUIDE.md"
+
+# Copy scripts (no placeholders — use cp + chmod)
 echo ""
 echo "Copying utility scripts..."
 cp "${SCRIPT_DIR}/templates/docs/spec/.llm/scripts/move_nav_to_top.py" "${PROJECT_ROOT}/docs/spec/.llm/scripts/move_nav_to_top.py"
 echo "  CREATED: docs/spec/.llm/scripts/move_nav_to_top.py"
+
+echo ""
+echo "Copying parallel agent scripts..."
+for script in run-agent.sh run-parallel.sh run-single-task.sh run-interactive.sh status.sh reset.sh; do
+    if [ ! -f "${PROJECT_ROOT}/docs/spec/.llm/scripts/${script}" ]; then
+        cp "${SCRIPT_DIR}/templates/docs/spec/.llm/scripts/${script}" "${PROJECT_ROOT}/docs/spec/.llm/scripts/${script}"
+        chmod +x "${PROJECT_ROOT}/docs/spec/.llm/scripts/${script}"
+        echo "  CREATED: docs/spec/.llm/scripts/${script}"
+    else
+        echo "  SKIP (exists): docs/spec/.llm/scripts/${script}"
+    fi
+done
 
 # Copy framework files
 echo ""
@@ -142,6 +172,12 @@ copy_template "${SCRIPT_DIR}/templates/docs/spec/biz/README.md" "${PROJECT_ROOT}
 # Add .gitkeep files
 touch "${PROJECT_ROOT}/docs/spec/.llm/plans/.gitkeep"
 touch "${PROJECT_ROOT}/docs/spec/.llm/completed/.gitkeep"
+touch "${PROJECT_ROOT}/docs/spec/.llm/tasks/backlog/.gitkeep"
+touch "${PROJECT_ROOT}/docs/spec/.llm/tasks/in_progress/.gitkeep"
+touch "${PROJECT_ROOT}/docs/spec/.llm/tasks/completed/.gitkeep"
+touch "${PROJECT_ROOT}/docs/spec/.llm/tasks/blocked/.gitkeep"
+touch "${PROJECT_ROOT}/docs/spec/.llm/tasks/.locks/.gitkeep"
+touch "${PROJECT_ROOT}/docs/spec/.llm/logs/.gitkeep"
 
 echo ""
 echo "=========================================="
@@ -162,6 +198,14 @@ echo "  - TypeScript/UI guide:  docs/spec/framework/typescript-ui-guide.md"
 echo "  - Performance guide:    docs/spec/framework/performance-guide.md"
 echo "  - Business features:    docs/spec/biz/README.md"
 echo "  - Spec writing guide:   docs/spec/SPEC-WRITING-GUIDE.md"
+echo ""
+echo "Parallel agent execution:"
+echo "  - Edit STRATEGY.md:     docs/spec/.llm/STRATEGY.md"
+echo "  - Edit AGENT_GUIDE.md:  docs/spec/.llm/AGENT_GUIDE.md"
+echo "  - Create tasks:         docs/spec/.llm/tasks/backlog/"
+echo "  - Task template:        docs/spec/.llm/templates/task.template.md"
+echo "  - Launch agents:        bash docs/spec/.llm/scripts/run-parallel.sh 3"
+echo "  - Check status:         bash docs/spec/.llm/scripts/status.sh"
 echo ""
 echo "Claude Code is pre-configured to run autonomously within this project."
 echo "See .claude/settings.json for the permission rules."

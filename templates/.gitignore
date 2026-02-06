@@ -6,6 +6,20 @@ docs/spec/.llm/data/
 # LLM scratch workspace
 .llm-scratch/
 
+# === Parallel Agent Harness (runtime artifacts) ===
+
+# Git worktrees created by agents at runtime
+docs/spec/.llm/worktrees/
+
+# Agent execution logs
+docs/spec/.llm/logs/*.log
+
+# Runtime PID tracking
+docs/spec/.llm/.agent-pids
+
+# Atomic lock directories (mkdir-based)
+docs/spec/.llm/tasks/.locks/*/
+
 # === Claude Code ===
 
 # Personal overrides (not shared)

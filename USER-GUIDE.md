@@ -16,6 +16,7 @@ This guide explains the system that `llm-init` sets up, how to use it day-to-day
 - [Review Loops and Iteration](#review-loops-and-iteration)
 - [Knowledge Accumulation](#knowledge-accumulation)
 - [Concurrent Execution](#concurrent-execution)
+- [Parallel Agent Harness](#parallel-agent-harness)
 - [Self-Improvement](#self-improvement)
 - [Infrastructure](#infrastructure)
 - [MCP Servers](#mcp-servers)
@@ -361,13 +362,18 @@ Claude creates a plan file when starting any significant task (more than a quick
 
 ### Plan templates
 
-Three templates are provided:
+Templates are provided for common workflows:
 
 | Template | Use Case |
 |----------|----------|
-| `plan.template.llm` | Generic — any task |
-| `feature.plan.llm` | New feature with DB, service, API, and test layers |
+| `idea.plan.llm` | Start here for new projects — idea to working project (research → spec → plan → build) |
+| `fullstack.plan.llm` | Full-stack feature (DB → Service → API → Frontend → E2E) with parallel execution |
+| `feature.plan.llm` | Backend-focused feature implementation (6 phases) |
+| `review.plan.llm` | Review/iteration cycle with quality gates and escape hatch |
 | `bugfix.plan.llm` | Bug investigation, fix, and regression test |
+| `self-review.plan.llm` | System self-review — audit and improve the LLM orchestration system |
+| `plan.template.llm` | Generic — any task |
+| `task.template.md` | Task file for the parallel agent queue (not a plan file) |
 
 ### Multi-agent coordination
 
@@ -459,6 +465,94 @@ Claude is instructed to execute tasks concurrently whenever possible. Multiple a
 ### Conflict prevention
 
 Plan files declare which files are claimed, preventing two agents from modifying the same file simultaneously. Check active plans before starting work.
+
+---
+
+## Parallel Agent Harness
+
+For autonomous batch execution of well-defined tasks, the parallel agent harness automates task claiming, git worktree isolation, and merging — no human in the loop.
+
+### Two execution modes
+
+The system supports two coexisting modes:
+
+| Mode | Best For | Entry Point |
+|------|----------|-------------|
+| **Interactive (plan files)** | Complex features, user-guided sessions, design decisions | `docs/spec/.llm/plans/*.plan.llm` |
+| **Autonomous batch (task queue)** | Well-defined tasks, parallelizable work, fire-and-forget | `docs/spec/.llm/tasks/backlog/*.md` |
+
+Both modes share `PROGRESS.md` for cross-iteration knowledge.
+
+### Setup
+
+1. **Edit `docs/spec/.llm/STRATEGY.md`** — Decompose your project into phases and tasks
+2. **Edit `docs/spec/.llm/AGENT_GUIDE.md`** — Add project description, tech stack, quality gate commands
+3. **Create task files** from the template:
+   ```bash
+   cp docs/spec/.llm/templates/task.template.md docs/spec/.llm/tasks/backlog/01-my-task.md
+   # Edit the task with specifics...
+   ```
+4. **Launch agents**:
+   ```bash
+   bash docs/spec/.llm/scripts/run-parallel.sh 3
+   ```
+
+### Task file format
+
+Task files follow `templates/task.template.md`. The harness parses `## Dependencies:` to determine execution order — tasks with unmet dependencies are skipped until their dependencies are in `tasks/completed/`.
+
+### Task sizing
+
+- **Target 75-150 Claude turns per task.** Too small = startup overhead; too large = context exhaustion.
+- Each task should have its own verification commands.
+- Prefer many independent tasks (wide graph) over long dependency chains (deep graph).
+
+### Scripts reference
+
+| Script | Purpose |
+|--------|---------|
+| `run-parallel.sh [N]` | Launch N autonomous agents in parallel (staggered 5s apart) |
+| `run-agent.sh [name]` | Single autonomous agent loop |
+| `run-single-task.sh <file>` | Run one specific task autonomously (75 turns) |
+| `run-interactive.sh <file>` | Interactive Claude Code session with task pre-loaded as context |
+| `status.sh` | Task queue dashboard (counts, PIDs, per-task details) |
+| `reset.sh` | Move all tasks back to backlog, clear locks |
+
+### Monitoring and recovery
+
+```bash
+# Check progress
+bash docs/spec/.llm/scripts/status.sh
+
+# View agent logs
+tail -f docs/spec/.llm/logs/agent-*.log
+
+# Reset everything for a fresh run
+bash docs/spec/.llm/scripts/reset.sh
+```
+
+If an agent fails mid-task, the task stays in `in_progress/` with a lock. To recover: move the file back to `backlog/`, delete the lock directory under `tasks/.locks/`, and re-run.
+
+### Configuration
+
+Set environment variables before launching:
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `BRANCH_PREFIX` | `task/` | Git branch prefix |
+| `MAX_TURNS` | `150` | Max Claude Code turns per task |
+| `WAIT_INTERVAL` | `10` | Seconds between polling when idle |
+| `MAX_EMPTY_WAITS` | `60` | Idle cycles before shutdown (~10 min) |
+| `SKIP_API_KEY_UNSET` | _(unset)_ | Set to `1` to keep `ANTHROPIC_API_KEY` (for API-key auth) |
+| `SKIP_PERMISSIONS` | `1` | Set to `0` to use `.claude/settings.json` permissions instead of `--dangerously-skip-permissions` |
+
+### Permissions mode
+
+By default, autonomous agents use `--dangerously-skip-permissions` for unattended operation. To use your project's `.claude/settings.json` permissions instead:
+
+```bash
+SKIP_PERMISSIONS=0 bash docs/spec/.llm/scripts/run-parallel.sh 3
+```
 
 ---
 

@@ -20,6 +20,7 @@
 | **Business feature planning** | Read `biz/README.md` for business spec templates |
 | **Research / exploration** | Use the [Navigation Index](#navigation-index) |
 | **Review / iteration cycle** | See [Review Loop Protocol](#review-loop-protocol) |
+| **Running parallel autonomous agents** | See [Parallel Agent Harness](#parallel-agent-harness) — task queue, worktree isolation, batch execution |
 | **Improve the LLM system itself** | See [Self-Improvement Protocol](#self-improvement-protocol) + `.llm/templates/self-review.plan.llm` |
 
 ### 2. Read Previous Learnings
@@ -58,12 +59,20 @@ docs/spec/
 ├── SPEC-WRITING-GUIDE.md     # How to write specification documents
 ├── README.md                 # Human-readable index
 ├── llms.txt                  # Quick navigation index
-├── .llm/                     # LLM coordination (plans, locks, status)
+├── .llm/                     # LLM coordination (plans, tasks, status)
 │   ├── PROGRESS.md           # Accumulated knowledge and iteration log
+│   ├── STRATEGY.md           # Project decomposition for parallel agents
+│   ├── AGENT_GUIDE.md        # Agent context (inlined into every prompt)
 │   ├── plans/                # Active plan.llm files
 │   ├── completed/            # Completed plan files (archive)
-│   ├── templates/            # Plan templates (feature, bugfix, review)
-│   └── scripts/              # Utility scripts
+│   ├── templates/            # Plan + task templates
+│   ├── scripts/              # Utility + agent harness scripts
+│   ├── tasks/                # Parallel agent task queue
+│   │   ├── backlog/          # Tasks ready to be claimed
+│   │   ├── in_progress/      # Currently being worked on
+│   │   ├── completed/        # Successfully finished
+│   │   └── blocked/          # Failed or blocked
+│   └── logs/                 # Agent execution logs
 ├── framework/                # Generic patterns (read first)
 │   ├── go-generation-guide.md
 │   ├── typescript-ui-guide.md
@@ -256,6 +265,78 @@ When claiming a plan, use a descriptive agent ID:
 - [ ] path/to/file (CLAIMED by agent-abc123)
 ```
 
+---
+
+## Parallel Agent Harness
+
+For fire-and-forget batch execution, the parallel agent harness provides task queue management, git worktree isolation, and automatic merging.
+
+### When to Use
+
+| Mode | When | How |
+|------|------|-----|
+| **Interactive (plan files)** | Guided sessions, complex decisions, user approval needed | Create a `.plan.llm` file, work interactively |
+| **Autonomous batch (task queue)** | Well-defined tasks, parallelizable work, fire-and-forget | Create task files in `tasks/backlog/`, run `run-parallel.sh` |
+
+Both modes share `PROGRESS.md` for cross-iteration memory.
+
+### Setup Steps
+
+1. **Edit `STRATEGY.md`** — Decompose your project into phases and tasks
+2. **Edit `AGENT_GUIDE.md`** — Add project description, tech stack, quality gates
+3. **Create task files** — Copy `templates/task.template.md` to `tasks/backlog/NN-name.md`
+4. **Launch agents** — `bash docs/spec/.llm/scripts/run-parallel.sh 3`
+
+### Task Design Guidelines
+
+- **Size tasks for 75-150 Claude turns.** Too small = overhead; too large = context exhaustion.
+- **Explicit dependencies** — Use `## Dependencies: Tasks 01, 02` format. Tasks with unmet dependencies are skipped.
+- **Independent verification** — Each task should have its own `## Verification` commands.
+- **Wide not deep** — Prefer many independent tasks over long dependency chains to maximize parallelism.
+
+### Architecture
+
+```
+run-parallel.sh
+  └── spawns N instances of run-agent.sh (staggered by 5s)
+        └── each agent loops:
+              1. Scan tasks/backlog/ for next eligible task (dependencies met)
+              2. Claim atomically via mkdir lock
+              3. Move task to tasks/in_progress/
+              4. Create/sync git worktree
+              5. Build prompt: agent identity + AGENT_GUIDE.md + PROGRESS.md + task content
+              6. Spawn: claude --print --max-turns N --dangerously-skip-permissions
+              7. On TASK_COMPLETE: commit, merge --no-ff to master, update PROGRESS.md, move to tasks/completed/
+              8. On TASK_BLOCKED or failure: move to tasks/blocked/, release lock, continue
+              9. Repeat until no tasks remain or idle timeout
+```
+
+### Scripts Reference
+
+| Script | Purpose | Default Turns |
+|--------|---------|--------------|
+| `run-parallel.sh [N]` | Launch N autonomous agents | 150 |
+| `run-agent.sh [name]` | Single agent loop | 150 |
+| `run-single-task.sh <file>` | One-shot single task | 75 |
+| `run-interactive.sh <file>` | Interactive session with task context | — |
+| `status.sh` | Task queue dashboard | — |
+| `reset.sh` | Move all tasks back to backlog | — |
+
+### Configuration
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `BRANCH_PREFIX` | `task/` | Git branch prefix for task branches |
+| `MAX_TURNS` | `150` | Maximum Claude Code turns per task |
+| `WAIT_INTERVAL` | `10` | Seconds between polling when no tasks available |
+| `MAX_EMPTY_WAITS` | `60` | Idle cycles before agent shuts down (~10 min) |
+| `SKIP_API_KEY_UNSET` | _(unset)_ | Set to `1` to keep `ANTHROPIC_API_KEY` (for API-key auth) |
+| `SKIP_PERMISSIONS` | `1` | Set to `0` to use `.claude/settings.json` permissions instead of `--dangerously-skip-permissions` |
+
+### Cross-Iteration Memory
+
+Completed tasks append a summary to `PROGRESS.md`. Future agents read this at the start of every task, creating a continuous knowledge chain across all iterations and agents.
+
 ### Stale Plan Detection
 
 Plans are considered stale if `last_active` hasn't been updated in 30 minutes. Before claiming a stale plan:
@@ -437,6 +518,8 @@ Create plan files at: `docs/spec/.llm/plans/{feature-name}.plan.llm`
 | Improve the LLM orchestration system | `.llm/templates/self-review.plan.llm` |
 | Check infrastructure status | `.llm/INFRASTRUCTURE.md` |
 | Configure MCP servers | `.llm/MCP-RECOMMENDATIONS.md` |
+| Run parallel autonomous agents | `.llm/README.md` (harness section) -> `.llm/STRATEGY.md` -> `.llm/AGENT_GUIDE.md` |
+| Decompose a project into tasks | `.llm/STRATEGY.md` -> `.llm/templates/task.template.md` |
 
 <!-- Add rows as you create framework specs. Suggested entries:
 | Add an API endpoint | `framework/api-design.md` -> `framework/routes.md` |
