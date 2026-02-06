@@ -17,40 +17,7 @@ Based on the specs, LLMs working on {{PROJECT_NAME}} will:
 
 ## Recommended MCP Servers
 
-### Tier 1: Essential (Install First)
-
-| MCP Server | Purpose | Why Needed |
-|------------|---------|------------|
-| **filesystem** | Read/write files | Core file operations for code and docs |
-| **memory** | Persistent context | Remember decisions across sessions |
-
-#### filesystem
-```json
-{
-  "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]
-    }
-  }
-}
-```
-
-#### memory
-```json
-{
-  "mcpServers": {
-    "memory": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"]
-    }
-  }
-}
-```
-
----
-
-### Tier 2: Development Workflow
+### Tier 1: Development Workflow
 
 | MCP Server | Purpose | Why Needed |
 |------------|---------|------------|
@@ -99,7 +66,7 @@ Based on the specs, LLMs working on {{PROJECT_NAME}} will:
 
 ---
 
-### Tier 2.5: Enhanced Development
+### Tier 1.5: Enhanced Development
 
 | MCP Server | Purpose | Why Needed |
 |------------|---------|------------|
@@ -132,7 +99,7 @@ Based on the specs, LLMs working on {{PROJECT_NAME}} will:
 
 ---
 
-### Tier 3: Platform-Specific
+### Tier 2: Platform-Specific
 
 Based on your technology stack, consider adding:
 
@@ -153,14 +120,6 @@ Complete `.mcp.json` for {{PROJECT_NAME}} development:
 ```json
 {
   "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]
-    },
-    "memory": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"]
-    },
     "github": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
@@ -198,24 +157,23 @@ Complete `.mcp.json` for {{PROJECT_NAME}} development:
 
 ### Building a New Feature
 
-**Required MCPs**: filesystem, memory, sequential-thinking
+**Required MCPs**: sequential-thinking
 **Optional**: github (for PR creation), postgres (for schema work)
 
 **Workflow**:
 1. Use sequential-thinking to decompose the feature
-2. Use memory to store decisions and context
-3. Use filesystem to read specs and write code
-4. Use github to create PR
+2. Use Claude Code's built-in Read/Write/Edit tools for specs and code
+3. Use github to create PR
 
 ### Debugging Database Issues
 
-**Required MCPs**: filesystem, postgres, memory
+**Required MCPs**: postgres
 **Optional**: redis
 
 **Workflow**:
-1. Use filesystem to read relevant specs
+1. Use Claude Code's built-in Read tool for relevant specs
 2. Use postgres to query data
-3. Use memory to track investigation state
+3. Use Claude Code's auto-memory or PROGRESS.md to track investigation state
 
 ---
 
@@ -223,9 +181,9 @@ Complete `.mcp.json` for {{PROJECT_NAME}} development:
 
 For a new LLM starting work on {{PROJECT_NAME}}:
 
-1. **Day 1**: filesystem, memory
-2. **Week 1**: github, sequential-thinking
-3. **As needed**: postgres, redis, custom MCPs
+1. **Day 1**: github, sequential-thinking, context7
+2. **Week 1**: postgres, redis (when infrastructure is set up)
+3. **As needed**: playwright, custom MCPs
 
 ---
 
@@ -233,8 +191,8 @@ For a new LLM starting work on {{PROJECT_NAME}}:
 
 - Environment variables should be set in your shell or .env file
 - Test MCP connections before starting complex tasks
-- **Memory MCP limitation**: The `@modelcontextprotocol/server-memory` stores data in-process. Data is **lost when the session ends**. For persistent cross-session memory, use `PROGRESS.md` instead. The Memory MCP is useful for within-session context only.
 - The `git` MCP server is omitted because Claude Code has built-in git capabilities
+- The `filesystem` and `memory` MCP servers are omitted because Claude Code has built-in equivalents (Read/Write/Edit/Glob/Grep for files, auto-memory for persistence)
 - The `github` MCP uses a Personal Access Token (set `GITHUB_PERSONAL_ACCESS_TOKEN` env var)
 - **context7** provides up-to-date documentation for libraries — useful when working with frameworks where the agent's training data may be outdated
 - **playwright** enables browser-based testing and visual verification of frontend features

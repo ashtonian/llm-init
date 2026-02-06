@@ -108,7 +108,7 @@ You have pre-approved permissions for all standard development operations includ
 - Go toolchain, build tools, Docker, Git, GitHub CLI
 - Node/npm/pnpm/yarn, TypeScript tools, linters, test runners
 - File operations, web fetch, web search, subagent spawning
-- MCP server tools (filesystem, memory, github, postgres, redis, sequential-thinking, context7, playwright)
+- MCP server tools (github, postgres, redis, sequential-thinking, context7, playwright)
 - Python scripts, curl for localhost, process management
 
 See `.claude/settings.json` for the full list. If you need a command that isn't pre-approved, explain why and ask.

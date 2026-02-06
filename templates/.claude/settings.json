@@ -1,7 +1,7 @@
 {
   "enabledMcpjsonServers": [
-    "filesystem", "memory", "github", "postgres",
-    "redis", "sequential-thinking", "context7", "playwright"
+    "github", "postgres", "redis",
+    "sequential-thinking", "context7", "playwright"
   ],
   "permissions": {
     "allow": [
@@ -118,29 +118,6 @@
       "WebFetch",
       "WebSearch",
       "Task",
-      "mcp__filesystem__list_directory",
-      "mcp__filesystem__directory_tree",
-      "mcp__filesystem__read_text_file",
-      "mcp__filesystem__read_file",
-      "mcp__filesystem__read_multiple_files",
-      "mcp__filesystem__read_media_file",
-      "mcp__filesystem__write_file",
-      "mcp__filesystem__edit_file",
-      "mcp__filesystem__create_directory",
-      "mcp__filesystem__list_directory_with_sizes",
-      "mcp__filesystem__search_files",
-      "mcp__filesystem__get_file_info",
-      "mcp__filesystem__move_file",
-      "mcp__filesystem__list_allowed_directories",
-      "mcp__memory__create_entities",
-      "mcp__memory__create_relations",
-      "mcp__memory__add_observations",
-      "mcp__memory__delete_entities",
-      "mcp__memory__delete_observations",
-      "mcp__memory__delete_relations",
-      "mcp__memory__read_graph",
-      "mcp__memory__search_nodes",
-      "mcp__memory__open_nodes",
       "mcp__github__*",
       "mcp__postgres__execute_sql",
       "mcp__postgres__search_objects",

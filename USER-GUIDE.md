@@ -153,7 +153,7 @@ The settings file allows Claude to run these without prompting:
 | **Utilities** | `jq`, `yq`, `sed`, `awk`, `xargs`, `env`, `export`, `brew install/list/info` |
 | **Subagents** | `claude` CLI for spawning sub-sessions |
 | **All file tools** | Read, Edit, Write, Glob, Grep, WebFetch, WebSearch, Task |
-| **MCP server tools** | filesystem, memory, github, postgres, redis, sequential-thinking, context7, playwright |
+| **MCP server tools** | github, postgres, redis, sequential-thinking, context7, playwright |
 
 ### What's blocked
 
@@ -537,8 +537,6 @@ MCP (Model Context Protocol) servers give Claude direct tool access to external 
 
 | Server | What Claude Can Do |
 |--------|--------------------|
-| **filesystem** | Read and write project files |
-| **memory** | Persist knowledge across sessions (decisions, context) |
 | **github** | Create issues, PRs, read reviews |
 | **postgres** | Query the database, inspect schemas |
 | **redis** | Read/write cache entries |
@@ -563,7 +561,7 @@ Edit `.mcp.json`. See `docs/spec/.llm/MCP-RECOMMENDATIONS.md` for recommendation
 
 ### Servers that don't need infrastructure
 
-`filesystem`, `memory`, `sequential-thinking`, `github`, `context7`, and `playwright` work without Docker. Only `postgres` and `redis` require the Docker infrastructure to be running.
+`github`, `sequential-thinking`, `context7`, and `playwright` work without Docker. Only `postgres` and `redis` require the Docker infrastructure to be running.
 
 ---
 

@@ -64,8 +64,6 @@ docker compose -f docs/spec/.llm/docker-compose.yml up -d
 
 | MCP Server           | Requires Infrastructure | Package / Transport              | Notes                           |
 |----------------------|------------------------|----------------------------------|---------------------------------|
-| filesystem           | No                     | `@modelcontextprotocol/server-filesystem` (stdio) | Local file access only          |
-| memory               | No                     | `@modelcontextprotocol/server-memory` (stdio)     | In-process knowledge graph      |
 | github               | No                     | `@modelcontextprotocol/server-github` (stdio)      | Requires `GITHUB_PERSONAL_ACCESS_TOKEN` env var |
 | postgres             | PostgreSQL             | `@bytebase/dbhub` (stdio)                         | Queries via DSN connection string |
 | redis                | Redis                  | `@modelcontextprotocol/server-redis` (stdio)       | Key-value operations            |
@@ -73,7 +71,7 @@ docker compose -f docs/spec/.llm/docker-compose.yml up -d
 | context7             | No                     | `@upstash/context7-mcp` (stdio)                   | Up-to-date library documentation |
 | playwright           | No                     | `@playwright/mcp` (stdio)                          | Browser automation & E2E testing |
 
-**Note**: The `git` MCP server was omitted because Claude Code has built-in git capabilities via Bash. The `github` MCP server uses a Personal Access Token for authentication.
+**Note**: The `git`, `filesystem`, and `memory` MCP servers are omitted because Claude Code has built-in equivalents. The `github` MCP server uses a Personal Access Token for authentication.
 
 ## Data Persistence
 
