@@ -1,0 +1,116 @@
+# {{PROJECT_NAME}} Platform Documentation - LLM Navigation Index
+
+> **START HERE**: For comprehensive LLM orchestration (plan files, concurrent execution, execution order, review loops), see [LLM.md](./LLM.md)
+
+This file provides a quick navigation guide for LLMs working with the {{PROJECT_NAME}} platform documentation.
+
+## Documentation Structure
+
+```
+docs/spec/
+├── LLM.md                    # Master LLM orchestration guide (START HERE for complex tasks)
+├── SPEC-WRITING-GUIDE.md     # How to write specification documents
+├── README.md                 # Human-readable index
+├── llms.txt                  # This file - quick navigation
+├── .llm/                     # LLM coordination folder
+│   ├── PROGRESS.md           # Accumulated knowledge and iteration log (READ BEFORE STARTING)
+│   ├── plans/                # Active plan.llm files
+│   ├── completed/            # Archived completed plans
+│   └── templates/            # Plan templates (idea, fullstack, feature, bugfix, review, self-review)
+├── framework/                # Generic patterns (LAYER 1 - read first)
+├── biz/                      # Business specs (features, research, decisions)
+├── pkg-specs/                # Reusable packages (LAYER 2)
+└── platform-specs/           # Project-specific features (LAYER 3)
+```
+
+## For Multi-Step Tasks
+
+1. Read `LLM.md` first
+2. Read `.llm/PROGRESS.md` for prior learnings
+3. Create a plan file: `.llm/plans/{feature-name}.plan.llm`
+4. Follow the execution order specified in `LLM.md`
+5. Update your plan as you progress
+6. Update `PROGRESS.md` with learnings when done
+
+## Quick Document Selection
+
+### Available Now (included in template)
+
+| Topic | Load |
+|-------|------|
+| **Go code patterns** | `framework/go-generation-guide.md` (read first for any Go task) |
+| **TypeScript/UI patterns** | `framework/typescript-ui-guide.md` (read first for any frontend task) |
+| **Performance standards** | `framework/performance-guide.md` (read for performance-sensitive work) |
+| **Writing new specs** | `SPEC-WRITING-GUIDE.md` (templates and depth expectations) |
+| **Formatting nav sections** | `LLM-STYLE-GUIDE.md` |
+| **LLM orchestration** | `LLM.md` (plan files, concurrent execution, review loops) |
+| **Framework overview** | `framework/README.md` |
+| **Business feature specs** | `biz/README.md` (feature specs, market research, decisions) |
+| **Progress & learnings** | `.llm/PROGRESS.md` (accumulated knowledge, iteration log) |
+| **Infrastructure** | `.llm/INFRASTRUCTURE.md` (Docker services, ports, health checks) |
+| **MCP servers** | `.llm/MCP-RECOMMENDATIONS.md` (available servers and setup) |
+| **System self-review** | `.llm/templates/self-review.plan.llm` (audit the LLM system itself) |
+
+### Specs to Create (see SPEC-WRITING-GUIDE.md for templates)
+
+<!-- As you create these specs, move them to the "Available Now" table above -->
+
+| Topic | Suggested Spec | Layer |
+|-------|---------------|-------|
+| REST API conventions | `framework/api-design.md` | Framework |
+| Base model patterns | `framework/models.md` | Framework |
+| Repository patterns | `framework/data-access.md` | Framework |
+| Error handling | `framework/error-handling.md` | Framework |
+| Route structure | `framework/routes.md` | Framework |
+| Logging & metrics | `framework/observability.md` | Framework |
+| Testing patterns | `framework/testing-guide.md` | Framework |
+
+## Common Task Flows
+
+### Review / Iteration Cycle
+1. Read `.llm/PROGRESS.md` for codebase patterns
+2. Pick highest-priority incomplete item from plan
+3. Implement the change
+4. Run quality gates (build, test, lint)
+5. Update PROGRESS.md with learnings
+6. Commit and move to next item
+
+<!-- Uncomment and customize these as you create the referenced specs:
+
+### Adding a new API endpoint
+1. Load `framework/api-design.md` for REST conventions
+2. Load `framework/models.md` for base model patterns
+3. Load `framework/data-access.md` for repository patterns
+4. Load `framework/routes.md` for route matrix
+
+### Adding a new entity/model
+1. Load `framework/models.md` for base patterns (ID, timestamps, soft delete)
+2. Load `framework/api-design.md` for intent-specific types
+3. Load `framework/data-access.md` for repository implementation
+
+### Building a UI feature
+1. Load `framework/typescript-ui-guide.md` for component patterns
+2. Load `framework/performance-guide.md` for performance budgets
+3. Load `framework/api-design.md` for API shapes
+-->
+
+## Document Categories
+
+| Category | Purpose | Entry Point |
+|----------|---------|-------------|
+| **Framework** | Generic patterns | `framework/` |
+| **Business** | Feature specs, research | `biz/` |
+| **Platform-specs** | Project-specific | `platform-specs/` |
+| **Package specs** | Reusable packages | `pkg-specs/` |
+| **Coordination** | Plans, progress, templates | `.llm/` |
+
+## Key Conventions
+
+| Aspect | Convention | Example |
+|--------|------------|---------|
+| IDs | UUIDv7 (time-ordered) | `018f6b1a-0b3c-7d4e-8f9a-1b2c3d4e5f6a` |
+| Timestamps | RFC 3339, UTC | `2024-01-15T10:30:00Z` |
+| Updates | JSON Patch (RFC 6902) | `[{"op": "replace", "path": "/name", "value": "new"}]` |
+| Pagination | Cursor-based | `?cursor=abc&limit=50` |
+| Errors | E-codes | `{"code": "E3001", "message": "..."}` |
+| API Versioning | URL path | `/api/v1/...` |

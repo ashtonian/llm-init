@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@bytebase/dbhub", "--transport", "stdio", "--dsn", "postgresql://{{PROJECT_NAME}}:{{PROJECT_NAME}}@localhost:5432/{{PROJECT_NAME}}?sslmode=disable"]
+    },
+    "redis": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-redis", "redis://localhost:6379"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    }
+  }
+}

@@ -1,0 +1,75 @@
+# === LLM Infrastructure ===
+
+# Docker persistent data volumes
+docs/spec/.llm/data/
+
+# LLM scratch workspace
+.llm-scratch/
+
+# === Claude Code ===
+
+# Personal overrides (not shared)
+.claude/settings.local.json
+.claude/CLAUDE.local.md
+
+# === OS ===
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === IDE / Editor ===
+
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# === Go ===
+
+# Binary output
+/bin/
+/dist/
+
+# Test coverage
+coverage.out
+coverage.html
+*.coverprofile
+
+# Vendor (uncomment if not vendoring)
+# vendor/
+
+# === Node / TypeScript ===
+
+node_modules/
+.next/
+.nuxt/
+.output/
+dist/
+build/
+*.tsbuildinfo
+
+# === Environment ===
+
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# === Logs ===
+
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Testing ===
+
+/coverage/
+.nyc_output/
+playwright-report/
+test-results/

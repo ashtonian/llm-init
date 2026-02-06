@@ -1,0 +1,106 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: {{PROJECT_NAME}}-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: {{PROJECT_NAME}}
+      POSTGRES_PASSWORD: {{PROJECT_NAME}}
+      POSTGRES_DB: {{PROJECT_NAME}}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
+        reservations:
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U {{PROJECT_NAME}} -d {{PROJECT_NAME}}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    command:
+      - "postgres"
+      - "-c"
+      - "shared_buffers=256MB"
+      - "-c"
+      - "work_mem=16MB"
+      - "-c"
+      - "maintenance_work_mem=128MB"
+      - "-c"
+      - "effective_cache_size=512MB"
+      - "-c"
+      - "max_connections=100"
+      - "-c"
+      - "wal_buffers=16MB"
+      - "-c"
+      - "random_page_cost=1.1"
+
+  redis:
+    image: redis:7-alpine
+    container_name: {{PROJECT_NAME}}-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    command:
+      - "redis-server"
+      - "--appendonly"
+      - "yes"
+      - "--maxmemory"
+      - "256mb"
+      - "--maxmemory-policy"
+      - "allkeys-lru"
+      - "--save"
+      - "60"
+      - "1000"
+      - "--save"
+      - "300"
+      - "10"
+
+  nats:
+    image: nats:2-alpine
+    container_name: {{PROJECT_NAME}}-nats
+    restart: unless-stopped
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    volumes:
+      - ./data/nats:/data
+      - ./nats.conf:/etc/nats/nats.conf:ro
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          memory: 256M
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:8222/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    command:
+      - "nats-server"
+      - "--config"
+      - "/etc/nats/nats.conf"

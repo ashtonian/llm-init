@@ -1,0 +1,133 @@
+# Plan: Review & Iteration Cycle
+
+## Metadata
+- **Created**: {ISO timestamp}
+- **Agent ID**: {your-agent-id}
+- **Status**: planning | in_progress | blocked | completed
+- **Iteration**: {iteration number, starts at 1}
+- **Max Iterations**: {cap — default 10, escalate to human if exceeded}
+- **Priority**: {P0 | P1 | P2}
+- **Depends On**: {other plan files if any}
+
+## Objective
+{One sentence describing the review/iteration goal}
+
+## Review Scope
+
+### Items to Review
+- [ ] {Item/story/feature to review}
+- [ ] {Item/story/feature to review}
+
+### Quality Gates
+All items must pass these checks before being marked complete:
+- [ ] Code compiles / builds without errors
+- [ ] All tests pass (including race detector for Go)
+- [ ] Lint / format checks pass
+- [ ] No regressions in existing functionality
+- [ ] Performance benchmarks within budget (if applicable)
+- [ ] Documentation updated (if applicable)
+
+### Quality Gate Commands
+```bash
+# Go projects
+go build ./...
+go test -race ./...
+golangci-lint run ./...
+
+# TypeScript projects
+npm run build
+npm run test
+npm run lint
+
+# Customize for your project:
+# {add project-specific quality gate commands here}
+```
+
+## Pre-Iteration Checklist
+
+Before starting each iteration:
+- [ ] Read `PROGRESS.md` for codebase patterns and prior learnings
+- [ ] Check `plans/` for in-progress or conflicting work
+- [ ] Read relevant specs per the task type (see LLM.md execution order)
+- [ ] Identify the highest-priority incomplete item
+
+## Implementation Steps
+
+Follow the 7-step review loop from LLM.md for each item:
+
+### Step 1: READ
+- [ ] Load PROGRESS.md and relevant specs for context
+- [ ] Review current state of the highest-priority incomplete item
+
+### Step 2: ASSESS
+- [ ] Identify gaps between current state and acceptance criteria
+- [ ] Plan the minimal changes needed
+- [ ] Estimate scope — if too large, break into sub-items
+
+### Step 3: IMPLEMENT
+- [ ] Make the focused change (one item per iteration)
+- [ ] Follow all spec conventions (go-generation-guide, typescript-ui-guide, etc.)
+
+### Step 4: VERIFY
+- [ ] Run all quality gate commands (see above)
+- [ ] If gates fail: fix and re-verify (up to 3 attempts per gate)
+- [ ] If gates still fail after 3 attempts: mark item as blocked, document in Blockers section, move to next item
+
+### Step 5: RECORD
+- [ ] Update PROGRESS.md with learnings from this iteration
+- [ ] Add new codebase patterns if discovered
+- [ ] Log the iteration in the Iteration Log section
+
+### Step 6: COMMIT
+- [ ] If quality gates pass, commit the change
+- [ ] Use descriptive commit messages referencing the plan file
+
+### Step 7: NEXT
+- [ ] Return to Step 1 for the next item, or complete the plan
+- [ ] If iteration count >= Max Iterations, stop and escalate to human
+
+## Files to Modify
+- [ ] path/to/file (CLAIMED by {agent-id})
+
+## Files Created
+- [ ] path/to/new/file
+
+## Decisions Made
+- {Decision 1}: {rationale}
+
+## Blockers
+- {None | description of blocker}
+
+## Escape Hatch
+
+If you hit any of these conditions, **stop and escalate to the human**:
+- Iteration count exceeds Max Iterations
+- Same quality gate failure 3+ times with no progress
+- Circular dependency between items
+- Fundamental architecture question that needs human decision
+- Scope has grown significantly beyond original objective
+
+## Progress Log
+
+### Iteration {N} — {timestamp}
+- **Item worked on**: {which item}
+- **What was done**: {summary}
+- **Quality gates**: {pass/fail — which ones}
+- **Learnings captured**: {yes/no — what was added to PROGRESS.md}
+- **Status**: {item completed / in progress / blocked}
+
+## Completion
+
+### Items Completed This Iteration
+- [ ] {Item 1}: {status}
+
+### Learnings Captured
+- [ ] Updated PROGRESS.md with new patterns
+- [ ] Updated PROGRESS.md with iteration log entry
+
+### Next Iteration Suggestions
+- {What the next iteration should focus on}
+- {Any deferred work or discovered issues}
+
+### Completion Timestamp
+{ISO timestamp when all items pass quality gates}
