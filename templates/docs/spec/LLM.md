@@ -10,17 +10,17 @@
 
 | Task Type | Action |
 |-----------|--------|
-| **Starting from an idea (0→100)** | See [Idea to Project Pipeline](#idea-to-project-pipeline) — the full workflow |
+| **Multi-step feature or build work** | **Default: Parallel mode.** Decompose → task files → launch agents. See [Parallel Agent Harness](#parallel-agent-harness) |
+| **Starting from an idea (0→100)** | See [Idea to Project Pipeline](#idea-to-project-pipeline) — Interactive for Research/Spec/Plan, then Parallel for Build |
 | **Writing any Go code** | Read `framework/go-generation-guide.md` first (mandatory) |
 | **Writing any frontend/UI code** | Read `framework/typescript-ui-guide.md` first (mandatory) |
 | **Performance-sensitive work** | Read `framework/performance-guide.md` first (mandatory) |
-| **Building a new feature** | See [Execution Order](#execution-order) then create a plan.llm file |
-| **Bug fix / small change** | Read relevant spec file directly |
+| **Complex decisions / guided session** | Use Interactive mode — create a plan.llm file, work step-by-step with user |
+| **Bug fix / small change** | Quick mode — read relevant spec, make the fix, no plan needed |
 | **Creating a new spec** | Read `SPEC-WRITING-GUIDE.md` for templates and depth expectations |
 | **Business feature planning** | Read `biz/README.md` for business spec templates |
 | **Research / exploration** | Use the [Navigation Index](#navigation-index) |
 | **Review / iteration cycle** | See [Review Loop Protocol](#review-loop-protocol) |
-| **Running parallel autonomous agents** | See [Parallel Agent Harness](#parallel-agent-harness) — task queue, worktree isolation, batch execution |
 | **Improve the LLM system itself** | See [Self-Improvement Protocol](#self-improvement-protocol) + `.llm/templates/self-review.plan.llm` |
 
 ### 2. Read Previous Learnings
@@ -131,6 +131,10 @@ When the user gives you just an idea and wants to go from 0 to a working project
 │    >>> USER CHECKPOINT: Review at each milestone         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+### Mode Transitions
+
+Phases 1-3 (Research, Spec, Plan) = **Interactive** mode. Phase 4 (Scaffold) = **Quick** mode. Phase 5 (Build) = switch to **Parallel** mode — decompose the build plan into task files and launch agents.
 
 ### Using the Idea Template
 
@@ -275,8 +279,11 @@ For fire-and-forget batch execution, the parallel agent harness provides task qu
 
 | Mode | When | How |
 |------|------|-----|
-| **Interactive (plan files)** | Guided sessions, complex decisions, user approval needed | Create a `.plan.llm` file, work interactively |
-| **Autonomous batch (task queue)** | Well-defined tasks, parallelizable work, fire-and-forget | Create task files in `tasks/backlog/`, run `run-parallel.sh` |
+| **Parallel** (default) | Multi-step features, build work, 2+ independent subtasks | Decompose → task files in `tasks/backlog/` → `run-parallel.sh` |
+| **Interactive** | Complex decisions, ambiguous requirements, user-guided sessions | Create a `.plan.llm` file, work step-by-step with user |
+| **Quick** | Bug fixes, one-liners, trivial edits | Just do it — no plans or tasks needed |
+
+**Auto-escalate to Interactive when**: requirements are ambiguous, can't decompose into 2+ subtasks, irreversible external actions needed, user expresses uncertainty, or project has empty `AGENT_GUIDE.md`.
 
 Both modes share `PROGRESS.md` for cross-iteration memory.
 
@@ -307,8 +314,9 @@ run-parallel.sh
               5. Build prompt: agent identity + AGENT_GUIDE.md + PROGRESS.md + task content
               6. Spawn: claude --print --max-turns N --dangerously-skip-permissions
               7. On TASK_COMPLETE: commit, merge --no-ff to master, update PROGRESS.md, move to tasks/completed/
-              8. On TASK_BLOCKED or failure: move to tasks/blocked/, release lock, continue
-              9. Repeat until no tasks remain or idle timeout
+              8. On TASK_SHELVED: write handoff state to task, commit WIP, return to tasks/backlog/
+              9. On TASK_BLOCKED or failure: move to tasks/blocked/, release lock, continue
+              10. Repeat until no tasks remain or idle timeout
 ```
 
 ### Scripts Reference
@@ -506,6 +514,7 @@ Create plan files at: `docs/spec/.llm/plans/{feature-name}.plan.llm`
 
 | I want to... | Read these specs |
 |--------------|------------------|
+| Build a feature (default: parallel) | `.llm/templates/task.template.md` -> `.llm/STRATEGY.md` -> `.llm/README.md` (harness section) |
 | Start from just an idea | `.llm/templates/idea.plan.llm` -> [Idea to Project Pipeline](#idea-to-project-pipeline) |
 | Build a full-stack feature | `.llm/templates/fullstack.plan.llm` |
 | Write any Go code | `framework/go-generation-guide.md` (always read first) |

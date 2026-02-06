@@ -198,6 +198,20 @@ Then output a brief summary (2-5 sentences) of what you accomplished for the pro
 If you are blocked and cannot proceed, output EXACTLY this:
 
 TASK_BLOCKED: <reason why you are blocked>
+
+If you are running low on turns, or need to pause and let another agent continue, output EXACTLY:
+
+TASK_SHELVED
+
+Then output a structured handoff state:
+- **Completed Steps**: Which steps from the task are done
+- **Current Step**: What you were working on
+- **Files Modified**: List of files you changed
+- **Key Decisions**: Any design decisions or approaches chosen
+- **Known Issues**: Any problems the next agent should know about
+- **Next Actions**: What the next agent should do first
+
+The next agent will receive this handoff state and continue from where you left off.
 PROMPT
 }
 
@@ -273,6 +287,40 @@ execute_task() {
             mv "${TASKS_DIR}/in_progress/$(basename "$task_file")" "${TASKS_DIR}/blocked/"
             release_task "$task_name"
         fi
+
+    elif grep -q "TASK_SHELVED" "$log_file"; then
+        log "Task $task_name shelved by agent"
+        # Extract shelved state from log (everything between TASK_SHELVED and end)
+        local shelved_state
+        shelved_state=$(sed -n '/TASK_SHELVED/,$ p' "$log_file" | tail -n +2 | head -50)
+
+        # Update the task file with handoff state
+        local task_in_progress="${TASKS_DIR}/in_progress/$(basename "$task_file")"
+        # Remove existing handoff state content (everything after ## Handoff State)
+        if grep -q "^## Handoff State" "$task_in_progress"; then
+            sed -i.bak '/^## Handoff State/,$ { /^## Handoff State/!{ /^## /!d; }; }' "$task_in_progress"
+            rm -f "$task_in_progress.bak"
+        fi
+        cat >> "$task_in_progress" <<EOF
+
+## Handoff State
+**Shelved by**: ${AGENT_NAME}
+**Shelved at**: $(date -Iseconds 2>/dev/null || date '+%Y-%m-%dT%H:%M:%S')
+**Branch**: ${branch_name}
+
+${shelved_state}
+EOF
+
+        # Commit WIP on the branch
+        cd "$WORKTREE_DIR"
+        git add -A
+        git commit -m "wip: shelved ${task_name} [${AGENT_NAME}]" --allow-empty 2>/dev/null || true
+        cd "$PROJECT_ROOT"
+
+        # Move back to backlog (not blocked) so it gets picked up again
+        mv "$task_in_progress" "${TASKS_DIR}/backlog/"
+        release_task "$task_name"
+        log "Task $task_name shelved and returned to backlog"
 
     elif grep -q "TASK_BLOCKED" "$log_file"; then
         local reason

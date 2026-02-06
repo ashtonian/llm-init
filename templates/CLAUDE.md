@@ -1,16 +1,86 @@
 # Claude Code Instructions for {{PROJECT_NAME}}
 
-## Mandatory Workflow
+## Execution Modes
 
-**Before starting ANY task, you MUST read and follow `docs/spec/LLM.md`.**
+| Mode | When | How |
+|------|------|-----|
+| **Parallel** (default) | Multi-step features, build work, any task with 2+ independent subtasks | Decompose → task files → launch agents |
+| **Interactive** | Complex decisions, ambiguous requirements, user wants to pair, initial project setup | Plan file workflow, step-by-step with user |
+| **Quick** | Trivial fixes, one-liners, small edits | Just do it — no plans or tasks needed |
+| **Idea Pipeline** | Starting from scratch, 0→100 | Interactive for Research/Spec/Plan, then Parallel for Build |
 
-This is the LLM Orchestration Guide — it defines:
-- How to understand and classify your task
-- The required reading order for spec files (framework -> biz)
-- The plan.llm coordination workflow
-- Conflict prevention rules for concurrent work
-- The review loop and iteration protocol
-- Knowledge accumulation via PROGRESS.md
+### Mode Keywords
+
+| To activate... | User says... |
+|----------------|-------------|
+| **Parallel** (default) | Any multi-step request, or: "go parallel", "fan out", "batch it", "go wild" |
+| **Interactive** | "interactive", "walk me through", "step by step", "let's think about", "guide me", "let's pair" |
+| **Quick** | "just do it", "quick fix", "small change", "one-liner", "trivial" |
+| **Idea Pipeline** | "I have an idea", "start from scratch", "build me a...", "0 to 100" |
+| **Shelve** | "shelve", "save state", "checkpoint", "pause this", "save progress" |
+
+### Auto-Escalation to Interactive
+
+Switch from Parallel to Interactive automatically when:
+- Requirements are ambiguous and can't be clarified from specs
+- Cannot decompose into 2+ independent subtasks
+- Irreversible external actions needed (deployments, migrations)
+- User expresses uncertainty ("I'm not sure", "what do you think")
+- Brand-new project with empty `AGENT_GUIDE.md` (use Interactive for initial setup)
+
+---
+
+## Parallel Workflow (Default)
+
+**Before starting ANY task, read `docs/spec/LLM.md` and `docs/spec/.llm/PROGRESS.md`.**
+
+### 7-Step Lifecycle
+
+1. **Read context** — `PROGRESS.md` (codebase patterns), relevant specs, `STRATEGY.md`
+2. **Decompose** into 2-8 independent subtasks (75-150 turns each, wide not deep, explicit deps)
+3. **Create task files** in `docs/spec/.llm/tasks/backlog/` from the template
+4. **Prepare agent context** — edit `AGENT_GUIDE.md` (project description, tech stack, quality gates) and `STRATEGY.md` (decomposition)
+5. **Present decomposition to user** — show task list, dependencies, estimated scope. Wait for approval
+6. **Launch agents** — `bash docs/spec/.llm/scripts/run-parallel.sh N`
+7. **Monitor** — `bash docs/spec/.llm/scripts/status.sh`
+
+### Decomposition Rules
+
+- **Size**: 75-150 Claude turns per task. Too small = overhead; too large = context exhaustion
+- **Shape**: Wide not deep — prefer many independent tasks over long dependency chains
+- **Dependencies**: Use `## Dependencies: Tasks 01, 02` format. Minimize chains
+- **Verification**: Each task must have its own `## Verification` commands
+- **Completeness**: Every subtask must be self-contained enough that an agent with no prior context can execute it
+
+### Quick Reference
+
+```bash
+# Create tasks from template
+cp docs/spec/.llm/templates/task.template.md docs/spec/.llm/tasks/backlog/01-my-task.md
+
+# Launch N parallel agents
+bash docs/spec/.llm/scripts/run-parallel.sh 3
+
+# Run a single task autonomously
+bash docs/spec/.llm/scripts/run-single-task.sh 01-my-task.md
+
+# Run a task interactively (with approval prompts)
+bash docs/spec/.llm/scripts/run-interactive.sh 01-my-task.md
+
+# Check task queue status
+bash docs/spec/.llm/scripts/status.sh
+
+# Reset all tasks to backlog
+bash docs/spec/.llm/scripts/reset.sh
+```
+
+See `docs/spec/.llm/README.md` for full harness documentation. Edit `docs/spec/.llm/AGENT_GUIDE.md` and `docs/spec/.llm/STRATEGY.md` before running agents.
+
+---
+
+## Interactive Workflow
+
+Use Interactive mode when auto-escalation triggers or the user explicitly requests it.
 
 ### Task Start Checklist
 
@@ -30,6 +100,8 @@ If the user gives you just an idea and wants a full project built:
 3. **Present findings to the user at each checkpoint** — do not skip approval gates
 4. Research → Spec → Plan → Scaffold → Build (with user approval at each transition)
 
+**Mode Transitions**: Phases 1-3 (Research, Spec, Plan) = Interactive. Phase 4 (Scaffold) = Quick. Phase 5 (Build) = switch to Parallel.
+
 ### For TODO/Spec Review Tasks
 
 When asked to address TODOs or review specs:
@@ -38,12 +110,60 @@ When asked to address TODOs or review specs:
 3. Read framework specs, then business specs as needed
 4. Address TODOs in context, not in isolation
 
-### Key References
+---
+
+## Quick Mode
+
+For trivial changes — no plans, no task files, no decomposition needed.
+
+Just make the change, run quality gates, and commit.
+
+---
+
+## Agent State Shelving
+
+Agents can checkpoint their progress so work survives restarts. Use shelving when:
+- An agent is running low on context/turns
+- You need to stop and resume later
+- Work should transfer to a different agent
+
+### How It Works
+
+1. Agent outputs `TASK_SHELVED` followed by a structured handoff state
+2. The harness writes the handoff into the task file's `## Handoff State` section
+3. WIP is committed on the task branch
+4. Task returns to `backlog/` — the next agent picks it up with full context
+
+### User Commands
+
+| To... | Say... |
+|-------|--------|
+| Shelve current work | "shelve", "save state", "checkpoint", "pause this" |
+| Resume shelved work | "resume", "pick up where we left off", "continue" |
+| Check what's shelved | Run `bash docs/spec/.llm/scripts/status.sh` |
+
+### Handoff State Format
+
+When shelving, the agent records:
+- **Completed Steps** — what's done
+- **Current Step** — what was in progress
+- **Files Modified** — changed files list
+- **Key Decisions** — design choices made
+- **Known Issues** — problems for the next agent
+- **Next Actions** — where to pick up
+
+---
+
+## Key References
 
 - **LLM Orchestration Guide**: `docs/spec/LLM.md`
 - **LLM Style Guide**: `docs/spec/LLM-STYLE-GUIDE.md`
 - **Progress & Learnings**: `docs/spec/.llm/PROGRESS.md`
 - **Plan Templates**: `docs/spec/.llm/templates/`
+- **Task Template**: `docs/spec/.llm/templates/task.template.md`
+- **Harness Documentation**: `docs/spec/.llm/README.md`
+- **Agent Guide**: `docs/spec/.llm/AGENT_GUIDE.md`
+- **Strategy (Decomposition)**: `docs/spec/.llm/STRATEGY.md`
 - **Go Code Guide**: `docs/spec/framework/go-generation-guide.md` (read before writing ANY Go code)
 - **TypeScript/UI Guide**: `docs/spec/framework/typescript-ui-guide.md` (read before writing ANY frontend code)
 - **Performance Guide**: `docs/spec/framework/performance-guide.md` (read before writing performance-sensitive code)
@@ -51,32 +171,6 @@ When asked to address TODOs or review specs:
 - **Business Features Guide**: `docs/spec/biz/README.md` (read before writing business specs)
 - **Infrastructure**: `docs/spec/.llm/INFRASTRUCTURE.md` (Docker services, ports, health checks)
 - **MCP Servers**: `docs/spec/.llm/MCP-RECOMMENDATIONS.md` (available MCP servers and config)
-
-## Parallel Agent Execution
-
-For autonomous batch execution of multiple tasks in parallel, use the task queue harness:
-
-```bash
-# Create tasks from template
-cp docs/spec/.llm/templates/task.template.md docs/spec/.llm/tasks/backlog/01-my-task.md
-
-# Launch 3 parallel agents
-bash docs/spec/.llm/scripts/run-parallel.sh 3
-
-# Run a single task autonomously
-bash docs/spec/.llm/scripts/run-single-task.sh 01-my-task.md
-
-# Run a task interactively (with approval prompts)
-bash docs/spec/.llm/scripts/run-interactive.sh 01-my-task.md
-
-# Check task queue status
-bash docs/spec/.llm/scripts/status.sh
-
-# Reset all tasks to backlog
-bash docs/spec/.llm/scripts/reset.sh
-```
-
-See `docs/spec/.llm/README.md` for full documentation. Edit `docs/spec/.llm/AGENT_GUIDE.md` and `docs/spec/.llm/STRATEGY.md` before running agents.
 
 ## Execution Principles
 

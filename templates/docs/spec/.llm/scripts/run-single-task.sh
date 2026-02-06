@@ -140,6 +140,19 @@ Then output a brief summary (2-5 sentences) of what you accomplished.
 
 If blocked, output EXACTLY:
 TASK_BLOCKED: <reason>
+
+If you are running low on turns, or need to pause and let another agent continue, output EXACTLY:
+TASK_SHELVED
+
+Then output a structured handoff state:
+- **Completed Steps**: Which steps from the task are done
+- **Current Step**: What you were working on
+- **Files Modified**: List of files you changed
+- **Key Decisions**: Any design decisions or approaches chosen
+- **Known Issues**: Any problems the next agent should know about
+- **Next Actions**: What the next agent should do first
+
+The next agent will receive this handoff state and continue from where you left off.
 PROMPT_END
 )"
 
@@ -184,6 +197,39 @@ EOF
         mv "${TASKS_DIR}/in_progress/${TASK_FILENAME}" "${TASKS_DIR}/blocked/"
         rm -rf "${LOCK_DIR}/${TASK_NAME}.lock"
     fi
+
+elif grep -q "TASK_SHELVED" "$LOG_FILE"; then
+    log "Task shelved by agent"
+    # Extract shelved state from log (everything between TASK_SHELVED and end)
+    SHELVED_STATE=$(sed -n '/TASK_SHELVED/,$ p' "$LOG_FILE" | tail -n +2 | head -50)
+
+    # Update the task file with handoff state
+    TASK_IN_PROGRESS="${TASKS_DIR}/in_progress/${TASK_FILENAME}"
+    # Remove existing handoff state content (everything after ## Handoff State)
+    if grep -q "^## Handoff State" "$TASK_IN_PROGRESS"; then
+        sed -i.bak '/^## Handoff State/,$ { /^## Handoff State/!{ /^## /!d; }; }' "$TASK_IN_PROGRESS"
+        rm -f "$TASK_IN_PROGRESS.bak"
+    fi
+    cat >> "$TASK_IN_PROGRESS" <<EOF
+
+## Handoff State
+**Shelved by**: ${AGENT_NAME}
+**Shelved at**: $(date -Iseconds 2>/dev/null || date '+%Y-%m-%dT%H:%M:%S')
+**Branch**: ${BRANCH_NAME}
+
+${SHELVED_STATE}
+EOF
+
+    # Commit WIP on the branch
+    cd "$WORKTREE_DIR"
+    git add -A
+    git commit -m "wip: shelved ${TASK_NAME} [${AGENT_NAME}]" --allow-empty 2>/dev/null || true
+    cd "$PROJECT_ROOT"
+
+    # Move back to backlog (not blocked) so it gets picked up again
+    mv "$TASK_IN_PROGRESS" "${TASKS_DIR}/backlog/"
+    rm -rf "${LOCK_DIR}/${TASK_NAME}.lock"
+    log "Task shelved and returned to backlog"
 
 elif grep -q "TASK_BLOCKED" "$LOG_FILE"; then
     REASON=$(grep "TASK_BLOCKED" "$LOG_FILE" | head -1 | sed 's/.*TASK_BLOCKED: //')

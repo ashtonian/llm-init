@@ -30,9 +30,9 @@ docs/spec/
 
 1. Read `LLM.md` first
 2. Read `.llm/PROGRESS.md` for prior learnings
-3. Create a plan file: `.llm/plans/{feature-name}.plan.llm`
+3. Decompose into task files (default) or create a plan file (interactive)
 4. Follow the execution order specified in `LLM.md`
-5. Update your plan as you progress
+5. Launch agents (`run-parallel.sh`) or work interactively
 6. Update `PROGRESS.md` with learnings when done
 
 ## Quick Document Selection
@@ -74,21 +74,22 @@ docs/spec/
 
 ## Common Task Flows
 
-### Review / Iteration Cycle
+### Building Features (Default: Parallel)
+1. Read `.llm/PROGRESS.md` for codebase patterns and `.llm/STRATEGY.md`
+2. Decompose into 2-8 independent subtasks (75-150 turns each)
+3. Edit `.llm/AGENT_GUIDE.md` — add project context, tech stack, quality gates
+4. Create tasks: `cp .llm/templates/task.template.md .llm/tasks/backlog/01-task-name.md`
+5. Present decomposition to user, get approval
+6. Launch agents: `bash docs/spec/.llm/scripts/run-parallel.sh 3`
+7. Monitor: `bash docs/spec/.llm/scripts/status.sh`
+
+### Interactive Review / Iteration
 1. Read `.llm/PROGRESS.md` for codebase patterns
 2. Pick highest-priority incomplete item from plan
 3. Implement the change
 4. Run quality gates (build, test, lint)
 5. Update PROGRESS.md with learnings
 6. Commit and move to next item
-
-### Running Parallel Autonomous Agents
-1. Edit `.llm/STRATEGY.md` — decompose project into phases and tasks
-2. Edit `.llm/AGENT_GUIDE.md` — add project context, tech stack, quality gates
-3. Create tasks: `cp .llm/templates/task.template.md .llm/tasks/backlog/01-task-name.md`
-4. Launch agents: `bash docs/spec/.llm/scripts/run-parallel.sh 3`
-5. Monitor: `bash docs/spec/.llm/scripts/status.sh`
-6. Reset if needed: `bash docs/spec/.llm/scripts/reset.sh`
 
 <!-- Uncomment and customize these as you create the referenced specs:
 

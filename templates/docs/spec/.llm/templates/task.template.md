@@ -37,3 +37,7 @@ One-paragraph description of what this task accomplishes.
 - [ ] Criterion three
 - [ ] Project builds cleanly
 - [ ] All tests pass
+
+## Handoff State
+<!-- This section is populated by agents when shelving. Do NOT fill in manually. -->
+<!-- When an agent shelves this task, it writes its progress here so the next agent can continue. -->
