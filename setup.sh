@@ -18,6 +18,14 @@ if [ $# -lt 1 ]; then
 fi
 
 PROJECT_NAME="$1"
+
+# Validate project name (safe for database names, container names, sed substitutions)
+if [[ ! "$PROJECT_NAME" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    echo "ERROR: project-name must contain only letters, numbers, hyphens, and underscores"
+    echo "  Got: '$PROJECT_NAME'"
+    exit 1
+fi
+
 PROJECT_MODULE="${2:-github.com/yourorg/${PROJECT_NAME}}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(pwd)"
@@ -139,8 +147,13 @@ copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/AGENT_GUIDE.md" "${PROJECT
 # Copy scripts (no placeholders — use cp + chmod)
 echo ""
 echo "Copying utility scripts..."
-cp "${SCRIPT_DIR}/templates/docs/spec/.llm/scripts/move_nav_to_top.py" "${PROJECT_ROOT}/docs/spec/.llm/scripts/move_nav_to_top.py"
-echo "  CREATED: docs/spec/.llm/scripts/move_nav_to_top.py"
+if [ ! -f "${PROJECT_ROOT}/docs/spec/.llm/scripts/move_nav_to_top.py" ]; then
+    cp "${SCRIPT_DIR}/templates/docs/spec/.llm/scripts/move_nav_to_top.py" "${PROJECT_ROOT}/docs/spec/.llm/scripts/move_nav_to_top.py"
+    chmod +x "${PROJECT_ROOT}/docs/spec/.llm/scripts/move_nav_to_top.py"
+    echo "  CREATED: docs/spec/.llm/scripts/move_nav_to_top.py"
+else
+    echo "  SKIP (exists): docs/spec/.llm/scripts/move_nav_to_top.py"
+fi
 
 echo ""
 echo "Copying parallel agent scripts..."

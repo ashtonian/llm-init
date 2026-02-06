@@ -68,7 +68,7 @@ _No quirks recorded yet._
 
 ## Iteration Log
 
-<!-- Append new entries at the top (newest first). Each entry documents what was done and what was learned. -->
+<!-- Append new entries at the bottom. Each entry documents what was done and what was learned. -->
 
 <!-- TEMPLATE — copy this block for each new iteration:
 

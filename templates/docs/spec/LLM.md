@@ -60,9 +60,14 @@ docs/spec/
 ├── README.md                 # Human-readable index
 ├── llms.txt                  # Quick navigation index
 ├── .llm/                     # LLM coordination (plans, tasks, status)
+│   ├── README.md             # Coordination guide
 │   ├── PROGRESS.md           # Accumulated knowledge and iteration log
 │   ├── STRATEGY.md           # Project decomposition for parallel agents
 │   ├── AGENT_GUIDE.md        # Agent context (inlined into every prompt)
+│   ├── INFRASTRUCTURE.md     # Docker services documentation
+│   ├── MCP-RECOMMENDATIONS.md # MCP server recommendations
+│   ├── docker-compose.yml    # PostgreSQL 16, Redis 7, NATS 2
+│   ├── nats.conf             # NATS JetStream config
 │   ├── plans/                # Active plan.llm files
 │   ├── completed/            # Completed plan files (archive)
 │   ├── templates/            # Plan + task templates
@@ -74,10 +79,12 @@ docs/spec/
 │   │   └── blocked/          # Failed or blocked
 │   └── logs/                 # Agent execution logs
 ├── framework/                # Generic patterns (read first)
+│   ├── README.md             # Framework spec index
 │   ├── go-generation-guide.md
 │   ├── typescript-ui-guide.md
 │   ├── performance-guide.md
-│   └── testing-guide.md
+│   ├── testing-guide.md
+│   └── llms.txt              # Framework navigation index
 └── biz/                      # Business specs (features, research, decisions)
 ```
 
@@ -520,6 +527,7 @@ Create plan files at: `docs/spec/.llm/plans/{feature-name}.plan.llm`
 | Write any Go code | `framework/go-generation-guide.md` (always read first) |
 | Write any frontend/UI code | `framework/typescript-ui-guide.md` (always read first) |
 | Write performance-sensitive code | `framework/performance-guide.md` |
+| Write tests | `framework/testing-guide.md` |
 | Create a new spec | `SPEC-WRITING-GUIDE.md` |
 | Write a business feature spec | `biz/README.md` |
 | Understand spec patterns | `framework/README.md` -> `SPEC-WRITING-GUIDE.md` |

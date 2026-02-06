@@ -37,11 +37,11 @@ This guide explains the system that `llm-init` sets up, how to use it day-to-day
 
 ## Installation
 
-### 1. Copy `llm-init` into your project
+### 1. Clone `llm-init` into your project
 
 ```bash
-cp -r llm-init/ /path/to/your-project/
 cd /path/to/your-project
+git clone https://github.com/ashtonian/llm-init.git
 ```
 
 ### 2. Run the setup script

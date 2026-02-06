@@ -11,9 +11,6 @@ docs/spec/.llm/data/
 # Git worktrees created by agents at runtime
 docs/spec/.llm/worktrees/
 
-# Agent execution logs
-docs/spec/.llm/logs/*.log
-
 # Runtime PID tracking
 docs/spec/.llm/.agent-pids
 
