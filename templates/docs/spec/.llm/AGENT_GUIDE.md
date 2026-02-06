@@ -26,6 +26,7 @@
 - **CLAUDE.md** — Claude Code instructions and permissions (auto-loaded)
 - **docs/spec/LLM.md** — Orchestration guide, execution order, review loops
 - **docs/spec/.llm/PROGRESS.md** — Cross-iteration memory, codebase patterns
+- **docs/spec/.llm/SKILLS.md** — Full capabilities catalog (commands, MCP, scripts, models)
 - **docs/spec/framework/** — Code convention guides (Go, TypeScript, performance)
 - **docs/spec/biz/** — Business specs and feature requirements
 

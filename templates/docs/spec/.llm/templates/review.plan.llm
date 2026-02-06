@@ -29,18 +29,8 @@ All items must pass these checks before being marked complete:
 
 ### Quality Gate Commands
 ```bash
-# Go projects
-go build ./...
-go test -race ./...
-golangci-lint run ./...
-
-# TypeScript projects
-npm run build
-npm run test
-npm run lint
-
-# Customize for your project:
-# {add project-specific quality gate commands here}
+# Run quality gates defined in docs/spec/.llm/AGENT_GUIDE.md
+# Customize the AGENT_GUIDE.md Quality Gates section for your project.
 ```
 
 ## Pre-Iteration Checklist

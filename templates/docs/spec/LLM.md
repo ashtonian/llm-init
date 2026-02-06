@@ -29,14 +29,7 @@ Before starting work, **always read `docs/spec/.llm/PROGRESS.md`** — specifica
 
 ### 3. Create or Claim a Plan File
 
-Before starting work on any significant task:
-
-```bash
-# Create: docs/spec/.llm/plans/{feature-name}.plan.llm
-# Or claim an existing plan by adding your agent ID
-```
-
-See [Plan File Format](#plan-file-format) for template.
+Before starting work on any significant task, copy the appropriate template from `docs/spec/.llm/templates/` to `docs/spec/.llm/plans/{feature-name}.plan.llm` and fill in the metadata.
 
 ### 4. Follow Execution Order
 
@@ -233,69 +226,19 @@ Multiple LLMs can work simultaneously. **Prefer concurrent execution whenever po
 | **By Component** | Single large feature | Split: database, service, API handler, tests |
 | **By Phase** | Sequential pipeline | Design -> implement -> test -> document |
 
-### Parallel Execution Patterns
+### Branching & Identity
 
-```
-# Independent tasks — run simultaneously
-Agent A: Implement user service
-Agent B: Implement device service
-Agent C: Write integration test framework
-
-# Pipeline tasks — run sequentially
-Phase 1: Database migrations (Agent A)
-Phase 2: Service layer (Agent A + B, split by entity)
-Phase 3: API handlers (Agent A + B, split by entity)
-Phase 4: Tests (Agent C)
-```
-
-### Branching Strategy
-
-Each plan should work on its own feature branch to avoid merge conflicts:
-
-```bash
-# Create a branch for your plan
-git checkout -b feature/{plan-name}
-
-# When done, create a PR or merge
-git checkout main && git merge feature/{plan-name}
-```
-
-This allows multiple agents to work simultaneously without stepping on each other's files.
-
-### Agent Identity
-
-When claiming a plan, use a descriptive agent ID:
-- Format: `{task-type}-{short-hash}` (e.g., `feature-a1b2c3`, `review-x4y5z6`)
-- The ID must be unique across all active plans
-- Add it to the plan's Metadata section
-
-### Conflict Prevention
-
-```
-# In your plan.llm file, declare files you'll modify:
-## Files to Modify
-- [ ] path/to/file (CLAIMED by agent-abc123)
-```
+- Each plan works on its own feature branch: `feature/{plan-name}`
+- Agent ID format: `{task-type}-{short-hash}` (e.g., `feature-a1b2c3`)
+- Declare files you'll modify in the plan: `- [ ] path/to/file (CLAIMED by agent-abc123)`
 
 ---
 
 ## Parallel Agent Harness
 
-For fire-and-forget batch execution, the parallel agent harness provides task queue management, git worktree isolation, and automatic merging.
+For autonomous batch execution, the parallel agent harness provides task queue management, git worktree isolation, and automatic merging. See `docs/spec/.llm/README.md` for the full harness reference (architecture, scripts, configuration, shelving).
 
-### When to Use
-
-| Mode | When | How |
-|------|------|-----|
-| **Parallel** (default) | Multi-step features, build work, 2+ independent subtasks | Decompose → task files in `tasks/backlog/` → `run-parallel.sh` |
-| **Interactive** | Complex decisions, ambiguous requirements, user-guided sessions | Create a `.plan.llm` file, work step-by-step with user |
-| **Quick** | Bug fixes, one-liners, trivial edits | Just do it — no plans or tasks needed |
-
-**Auto-escalate to Interactive when**: requirements are ambiguous, can't decompose into 2+ subtasks, irreversible external actions needed, user expresses uncertainty, or project has empty `AGENT_GUIDE.md`.
-
-Both modes share `PROGRESS.md` for cross-iteration memory.
-
-### Setup Steps
+### Setup
 
 1. **Edit `STRATEGY.md`** — Decompose your project into phases and tasks
 2. **Edit `AGENT_GUIDE.md`** — Add project description, tech stack, quality gates
@@ -309,56 +252,9 @@ Both modes share `PROGRESS.md` for cross-iteration memory.
 - **Independent verification** — Each task should have its own `## Verification` commands.
 - **Wide not deep** — Prefer many independent tasks over long dependency chains to maximize parallelism.
 
-### Architecture
-
-```
-run-parallel.sh
-  └── spawns N instances of run-agent.sh (staggered by 5s)
-        └── each agent loops:
-              1. Scan tasks/backlog/ for next eligible task (dependencies met)
-              2. Claim atomically via mkdir lock
-              3. Move task to tasks/in_progress/
-              4. Create/sync git worktree
-              5. Build prompt: agent identity + AGENT_GUIDE.md + PROGRESS.md + task content
-              6. Spawn: claude --print --max-turns N --dangerously-skip-permissions
-              7. On TASK_COMPLETE: commit, merge --no-ff to master, update PROGRESS.md, move to tasks/completed/
-              8. On TASK_SHELVED: write handoff state to task, commit WIP, return to tasks/backlog/
-              9. On TASK_BLOCKED or failure: move to tasks/blocked/, release lock, continue
-              10. Repeat until no tasks remain or idle timeout
-```
-
-### Scripts Reference
-
-| Script | Purpose | Default Turns |
-|--------|---------|--------------|
-| `run-parallel.sh [N]` | Launch N autonomous agents | 150 |
-| `run-agent.sh [name]` | Single agent loop | 150 |
-| `run-single-task.sh <file>` | One-shot single task | 75 |
-| `run-interactive.sh <file>` | Interactive session with task context | — |
-| `status.sh` | Task queue dashboard | — |
-| `reset.sh` | Move all tasks back to backlog | — |
-
-### Configuration
-
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `BRANCH_PREFIX` | `task/` | Git branch prefix for task branches |
-| `MAX_TURNS` | `150` | Maximum Claude Code turns per task |
-| `WAIT_INTERVAL` | `10` | Seconds between polling when no tasks available |
-| `MAX_EMPTY_WAITS` | `60` | Idle cycles before agent shuts down (~10 min) |
-| `SKIP_API_KEY_UNSET` | _(unset)_ | Set to `1` to keep `ANTHROPIC_API_KEY` (for API-key auth) |
-| `SKIP_PERMISSIONS` | `1` | Set to `0` to use `.claude/settings.json` permissions instead of `--dangerously-skip-permissions` |
-
 ### Cross-Iteration Memory
 
 Completed tasks append a summary to `PROGRESS.md`. Future agents read this at the start of every task, creating a continuous knowledge chain across all iterations and agents.
-
-### Stale Plan Detection
-
-Plans are considered stale if `last_active` hasn't been updated in 30 minutes. Before claiming a stale plan:
-1. Check if the agent's branch has uncommitted work
-2. If yes, preserve the branch and create a new plan
-3. If no, you may reclaim the plan
 
 ### PROGRESS.md Write Protocol
 
@@ -467,55 +363,6 @@ The agent is encouraged to improve the LLM orchestration system itself.
 
 ---
 
-## Plan File Format
-
-Create plan files at: `docs/spec/.llm/plans/{feature-name}.plan.llm`
-
-```markdown
-# Plan: {Feature Name}
-
-## Metadata
-- **Created**: {ISO timestamp}
-- **Agent ID**: {your-agent-id}
-- **Last Active**: {ISO timestamp — update each iteration}
-- **Status**: planning | in_progress | blocked | completed
-- **Branch**: feature/{plan-name}
-- **Depends On**: {other plan files if any}
-
-## Objective
-{One sentence describing what this plan accomplishes}
-
-## Specs Read
-- [ ] framework/go-generation-guide.md
-- [ ] {other specs as needed}
-
-## Implementation Steps
-- [ ] Step 1: {description}
-- [ ] Step 2: {description}
-- [ ] Step 3: {description}
-
-## Files to Modify
-- [ ] path/to/file (CLAIMED)
-
-## Files Created
-- [ ] path/to/new/file
-
-## Decisions Made
-- {Decision 1}: {rationale}
-
-## Blockers
-- {None | description of blocker}
-
-## Progress Log
-### {timestamp}
-- {What was done}
-- {Current status}
-
-## Learnings
-- {Patterns discovered during implementation}
-- {Captured in PROGRESS.md: yes/no}
-```
-
 ---
 
 ## Navigation Index
@@ -561,62 +408,7 @@ Create plan files at: `docs/spec/.llm/plans/{feature-name}.plan.llm`
 
 ## Document Structure Convention
 
-All spec files follow this structure:
-
-```markdown
-# {Title}
-
-> **LLM Navigation**: {One-line summary for quick scanning}
-
-## LLM Quick Reference
-{Moved to TOP - task mapping, key sections, context loading}
-
----
-
-## {Main Content Sections}
-...
-
-## Related Documentation
-{Cross-references to other specs}
-```
-
-**Important**: LLM Navigation sections are at the TOP of each file, immediately after the title.
-
----
-
-## Key Conventions Reference
-
-| Aspect | Convention | Example |
-|--------|------------|---------|
-| IDs | UUIDv7 (time-ordered) | `018f6b1a-0b3c-7d4e-8f9a-1b2c3d4e5f6a` |
-| Timestamps | RFC 3339, UTC | `2024-01-15T10:30:00Z` |
-| Updates | JSON Patch (RFC 6902) | `[{"op": "replace", "path": "/name", "value": "new"}]` |
-| Pagination | Cursor-based, bidirectional | `?cursor=abc&limit=50` |
-| Errors | Structured with E-codes | `{"code": "E3001", "message": "..."}` |
-
----
-
-## Updating Specs
-
-When requirements change:
-
-1. **Update the spec file** with new requirements
-2. **Add a changelog entry** at the bottom of the spec
-3. **Update related specs** that reference the changed content
-4. **Update your plan.llm** to document the decision
-5. **Update PROGRESS.md** if the change represents a new codebase pattern
-
-### Changelog Format
-
-```markdown
-## Changelog
-
-### {date} - {summary}
-- Added: {new content}
-- Changed: {modifications}
-- Removed: {deprecated content}
-- Reason: {why this change was made}
-```
+All spec files put LLM Navigation sections at the **top**, immediately after the title. See `LLM-STYLE-GUIDE.md` for the full format.
 
 ---
 

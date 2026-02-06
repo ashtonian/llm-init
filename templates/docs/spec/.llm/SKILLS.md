@@ -114,6 +114,34 @@ Quality gates are defined per-project in `docs/spec/.llm/AGENT_GUIDE.md`. Common
 
 ---
 
+## Model Selection
+
+| Model | Best For | Turn Budget |
+|-------|----------|-------------|
+| **Opus** | Complex planning, architecture, ambiguous tasks | 75-100 turns |
+| **Sonnet** | Standard implementation, code generation | 100-150 turns |
+| **Haiku** | Mechanical tasks, formatting, renaming, simple fixes | 50-75 turns |
+
+Pass `--model` to `claude` in `run-agent.sh` or set in your task file header. Example: `## Model: haiku`
+
+---
+
+## Hooks (Advanced)
+
+Claude Code supports hooks — shell commands that run before/after tool calls. Configure in `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "PostToolUse:Write": "npx eslint --fix $FILE_PATH"
+  }
+}
+```
+
+Useful for auto-formatting, auto-linting, or custom validation after file writes. See Claude Code docs for the full hook configuration reference.
+
+---
+
 ## Workflow Decision Tree
 
 ```

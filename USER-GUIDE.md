@@ -545,14 +545,14 @@ Set environment variables before launching:
 | `WAIT_INTERVAL` | `10` | Seconds between polling when idle |
 | `MAX_EMPTY_WAITS` | `60` | Idle cycles before shutdown (~10 min) |
 | `SKIP_API_KEY_UNSET` | _(unset)_ | Set to `1` to keep `ANTHROPIC_API_KEY` (for API-key auth) |
-| `SKIP_PERMISSIONS` | `1` | Set to `0` to use `.claude/settings.json` permissions instead of `--dangerously-skip-permissions` |
+| `SKIP_PERMISSIONS` | `0` | Set to `1` to use `--dangerously-skip-permissions` instead of `.claude/settings.json` permissions |
 
 ### Permissions mode
 
-By default, autonomous agents use `--dangerously-skip-permissions` for unattended operation. To use your project's `.claude/settings.json` permissions instead:
+By default, autonomous agents use your project's `.claude/settings.json` permissions. To use `--dangerously-skip-permissions` for fully unattended operation instead:
 
 ```bash
-SKIP_PERMISSIONS=0 bash docs/spec/.llm/scripts/run-parallel.sh 3
+SKIP_PERMISSIONS=1 bash docs/spec/.llm/scripts/run-parallel.sh 3
 ```
 
 ---

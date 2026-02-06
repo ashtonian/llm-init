@@ -131,56 +131,7 @@ python3 .llm/scripts/move_nav_to_top.py path/to/file.md
 
 ## Parallel Agent Harness
 
-The parallel agent harness provides autonomous batch execution of tasks using a file-based queue.
-
-### Three Execution Modes
-
-| Mode | Best For | Entry Point |
-|------|----------|-------------|
-| **Parallel** (default) | Multi-step features, build work, 2+ independent subtasks | `tasks/backlog/*.md` → `run-parallel.sh` |
-| **Interactive** | Complex decisions, ambiguous requirements, user-guided sessions | `plans/*.plan.llm` |
-| **Quick** | Bug fixes, one-liners, trivial edits | Just do it — no plans or tasks |
-
-Parallel is the default. Auto-escalate to Interactive when requirements are ambiguous, can't decompose into 2+ subtasks, irreversible external actions are needed, or the project has an empty `AGENT_GUIDE.md`.
-
-All modes share `PROGRESS.md` for cross-iteration knowledge accumulation.
-
-### Quick Start (Default Parallel Workflow)
-
-```bash
-# 1. Read context
-#    docs/spec/.llm/PROGRESS.md     — codebase patterns from previous iterations
-#    docs/spec/.llm/STRATEGY.md     — project decomposition
-
-# 2. Decompose your work into 2-8 independent subtasks (75-150 turns each)
-
-# 3. Edit project context (customize for your project)
-#    docs/spec/.llm/STRATEGY.md     — project decomposition
-#    docs/spec/.llm/AGENT_GUIDE.md  — agent context (tech stack, quality gates)
-
-# 4. Create task files from the template
-cp docs/spec/.llm/templates/task.template.md docs/spec/.llm/tasks/backlog/01-my-task.md
-# Edit the task file with specifics...
-
-# 5. Present decomposition to user, get approval
-
-# 6. Launch parallel agents
-bash docs/spec/.llm/scripts/run-parallel.sh 3
-
-# 7. Monitor progress
-bash docs/spec/.llm/scripts/status.sh
-```
-
-### When to Use Interactive Instead
-
-Switch to Interactive (plan file) workflow when:
-- Requirements are ambiguous and can't be clarified from specs
-- Cannot decompose into 2+ independent subtasks
-- Irreversible external actions needed (deployments, migrations)
-- User expresses uncertainty or wants to pair
-- Brand-new project with empty `AGENT_GUIDE.md`
-
-To start Interactive: `cp docs/spec/.llm/templates/feature.plan.llm docs/spec/.llm/plans/{feature-name}.plan.llm`
+The parallel agent harness provides autonomous batch execution of tasks using a file-based queue. Execution modes and auto-escalation rules are defined in `CLAUDE.md`.
 
 ### Scripts
 
@@ -218,7 +169,7 @@ The harness parses `## Dependencies:` to determine execution order. Tasks with u
 
 Each agent runs in an isolated git worktree. Tasks are claimed atomically via `mkdir` locks. On completion, changes are merged to master with `--no-ff`. The agent appends a summary to `PROGRESS.md` so future agents inherit context.
 
-Agents use `--dangerously-skip-permissions` by default for autonomous operation. Set `SKIP_PERMISSIONS=0` to use `.claude/settings.json` permissions instead. Set `SKIP_API_KEY_UNSET=1` to keep your `ANTHROPIC_API_KEY` for API-key-based auth. For interactive mode, use `run-interactive.sh` which always respects project permissions.
+Agents use `.claude/settings.json` permissions by default. Set `SKIP_PERMISSIONS=1` to use `--dangerously-skip-permissions` for fully unattended operation. Set `SKIP_API_KEY_UNSET=1` to keep your `ANTHROPIC_API_KEY` for API-key-based auth. For interactive mode, use `run-interactive.sh` which always respects project permissions.
 
 ### Resilience
 

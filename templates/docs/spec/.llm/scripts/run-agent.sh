@@ -15,7 +15,7 @@ set -euo pipefail
 #   WAIT_INTERVAL        Seconds between polling when no tasks available (default: 10)
 #   MAX_EMPTY_WAITS      Max empty polling cycles before shutdown (default: 60)
 #   SKIP_API_KEY_UNSET   Set to 1 to keep ANTHROPIC_API_KEY (for API-key auth) (default: unset)
-#   SKIP_PERMISSIONS     Set to 0 to use .claude/settings.json instead of --dangerously-skip-permissions (default: 1)
+#   SKIP_PERMISSIONS     Set to 1 to use --dangerously-skip-permissions (default: 0, uses .claude/settings.json)
 
 AGENT_NAME="${1:-agent-$(date +%s | tail -c 5)}"
 
@@ -37,7 +37,7 @@ MAX_TURNS="${MAX_TURNS:-150}"
 WAIT_INTERVAL="${WAIT_INTERVAL:-10}"
 MAX_EMPTY_WAITS="${MAX_EMPTY_WAITS:-60}"
 SKIP_API_KEY_UNSET="${SKIP_API_KEY_UNSET:-}"
-SKIP_PERMISSIONS="${SKIP_PERMISSIONS:-1}"
+SKIP_PERMISSIONS="${SKIP_PERMISSIONS:-0}"
 
 # Ensure directories exist
 mkdir -p "${TASKS_DIR}/backlog" "${TASKS_DIR}/in_progress" "${TASKS_DIR}/completed" "${TASKS_DIR}/blocked" "${LOCK_DIR}" "${LOG_DIR}"
@@ -60,7 +60,7 @@ check_dependencies() {
     fi
 
     local dep_nums
-    dep_nums=$(echo "$deps" | grep -oE '[0-9]+' || true)
+    dep_nums=$(echo "$deps" | sed 's/[Tt]asks\?//g' | grep -oE '[0-9]+' || true)
     for num in $dep_nums; do
         local padded
         padded=$(printf "%02d" "$num")
@@ -179,10 +179,7 @@ ${task_content}
 4. Read relevant framework guides (docs/spec/framework/) before writing code.
 5. Implement all steps in the task.
 6. Run the verification commands listed in the task.
-7. If no verification commands are listed, use these heuristic quality gates:
-   - For Go: go build ./... && go test -race ./... && go vet ./...
-   - For TypeScript: npm run build && npm run test && npm run lint
-   - For mixed: run both sets
+7. If no verification commands are listed, run the quality gates from docs/spec/.llm/AGENT_GUIDE.md.
 8. Verify ALL acceptance criteria checkboxes are satisfied.
 9. Commit your changes with a descriptive message. Do NOT push.
 10. If you cannot complete the task, signal TASK_BLOCKED with a clear reason.
@@ -257,6 +254,12 @@ execute_task() {
     local prompt
     prompt="$(build_prompt "$task_file")"
 
+    # Check for existing session ID from a previous shelved run
+    local resume_id=""
+    if grep -q "^**Session ID**:" "$task_file" 2>/dev/null; then
+        resume_id=$(grep "^**Session ID**:" "$task_file" | head -1 | sed 's/.*: //')
+    fi
+
     # Run Claude Code
     log "Spawning Claude Code (max turns: $MAX_TURNS)..."
     local exit_code=0
@@ -264,8 +267,16 @@ execute_task() {
     if [[ "$SKIP_PERMISSIONS" == "1" ]]; then
         claude_args+=(--dangerously-skip-permissions)
     fi
+    if [[ -n "$resume_id" ]]; then
+        claude_args+=(--resume "$resume_id")
+        log "Resuming session: $resume_id"
+    fi
     echo "$prompt" | claude "${claude_args[@]}" \
         > "$log_file" 2>&1 || exit_code=$?
+
+    # Extract session ID from log for potential future --resume
+    local session_id=""
+    session_id=$(grep -oE 'session_id=[a-f0-9-]+' "$log_file" | head -1 | sed 's/session_id=//' || true)
 
     cd "$PROJECT_ROOT"
 
@@ -307,6 +318,7 @@ execute_task() {
 **Shelved by**: ${AGENT_NAME}
 **Shelved at**: $(date -Iseconds 2>/dev/null || date '+%Y-%m-%dT%H:%M:%S')
 **Branch**: ${branch_name}
+**Session ID**: ${session_id:-unknown}
 
 ${shelved_state}
 EOF
