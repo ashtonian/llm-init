@@ -32,7 +32,16 @@ docker compose -f docs/spec/.llm/docker-compose.yml up -d
 ```
 your-project/
 ├── CLAUDE.md                              # Claude Code auto-reads this — entry point
-├── .claude/settings.json                  # Pre-approved permissions for autonomous operation
+├── .claude/
+│   ├── settings.json                      # Pre-approved permissions for autonomous operation
+│   └── commands/                          # Custom slash commands for Claude Code
+│       ├── decompose.md                   #   /decompose — Break request into parallel tasks
+│       ├── new-task.md                    #   /new-task — Create a single task file
+│       ├── status.md                      #   /status — Task queue dashboard
+│       ├── launch.md                      #   /launch — Pre-flight checks + launch agents
+│       ├── plan.md                        #   /plan — Select and create a plan template
+│       ├── review.md                      #   /review — Run quality gates
+│       └── shelve.md                      #   /shelve — Checkpoint with structured handoff
 ├── .mcp.json                              # 6 MCP servers (github, postgres, redis, sequential-thinking, context7, playwright)
 ├── .gitignore                             # Go, TypeScript, Docker, IDE, env, LLM workspace exclusions
 └── docs/spec/
@@ -57,6 +66,7 @@ your-project/
         ├── AGENT_GUIDE.md                  # Agent context (inlined into every prompt)
         ├── INFRASTRUCTURE.md               # Docker services documentation
         ├── MCP-RECOMMENDATIONS.md          # MCP server recommendations
+        ├── SKILLS.md                       # Agent skills and capabilities catalog
         ├── docker-compose.yml              # PostgreSQL 16, Redis 7, NATS 2
         ├── nats.conf                       # NATS JetStream config
         ├── plans/                          # Active work plans
@@ -139,6 +149,8 @@ You prompt Claude ──> Claude reads CLAUDE.md (automatic)
 | **Performance Guide** | Memory allocation strategies, profiling discipline, latency budgets, code quality standards |
 | **Business Features Guide** | Feature specs, user stories, market research templates, competitive analysis, decision records |
 | **PROGRESS.md** | 5-section knowledge base: patterns, architecture decisions, known issues, failed approaches, environment quirks |
+| **Custom Commands** | 7 slash commands (`/decompose`, `/new-task`, `/status`, `/launch`, `/plan`, `/review`, `/shelve`) |
+| **Skills Reference** | SKILLS.md: consolidated catalog of commands, MCP servers, scripts, templates, workflows |
 | **Parallel Agent Harness** | Task queue, git worktree isolation, atomic claiming, autonomous batch execution with N parallel agents |
 | **Plan Templates** | 7 templates: idea-to-project, full-stack feature, backend feature, review cycle, bugfix, self-review, generic |
 | **Docker Compose** | PostgreSQL 16, Redis 7, NATS 2 with health checks, resource limits, data persistence |

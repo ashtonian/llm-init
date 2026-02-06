@@ -52,7 +52,7 @@ mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/tasks/.locks"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/logs"
 mkdir -p "${PROJECT_ROOT}/docs/spec/framework"
 mkdir -p "${PROJECT_ROOT}/docs/spec/biz"
-mkdir -p "${PROJECT_ROOT}/.claude"
+mkdir -p "${PROJECT_ROOT}/.claude/commands"
 
 # Function to copy and replace placeholders
 copy_template() {
@@ -87,6 +87,18 @@ else
     echo "  SKIP (exists): .claude/settings.json"
 fi
 
+# Copy custom slash commands
+echo ""
+echo "Copying custom slash commands..."
+for cmd in decompose.md new-task.md status.md launch.md plan.md review.md shelve.md; do
+    if [ ! -f "${PROJECT_ROOT}/.claude/commands/${cmd}" ]; then
+        cp "${SCRIPT_DIR}/templates/.claude/commands/${cmd}" "${PROJECT_ROOT}/.claude/commands/${cmd}"
+        echo "  CREATED: .claude/commands/${cmd}"
+    else
+        echo "  SKIP (exists): .claude/commands/${cmd}"
+    fi
+done
+
 # Set up .gitignore
 echo ""
 echo "Setting up .gitignore..."
@@ -119,6 +131,7 @@ copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/README.md" "${PROJECT_ROOT
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/PROGRESS.md" "${PROJECT_ROOT}/docs/spec/.llm/PROGRESS.md"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/MCP-RECOMMENDATIONS.md" "${PROJECT_ROOT}/docs/spec/.llm/MCP-RECOMMENDATIONS.md"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/INFRASTRUCTURE.md" "${PROJECT_ROOT}/docs/spec/.llm/INFRASTRUCTURE.md"
+copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/SKILLS.md" "${PROJECT_ROOT}/docs/spec/.llm/SKILLS.md"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/docker-compose.yml" "${PROJECT_ROOT}/docs/spec/.llm/docker-compose.yml"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/nats.conf" "${PROJECT_ROOT}/docs/spec/.llm/nats.conf"
 
@@ -211,6 +224,16 @@ echo "  - TypeScript/UI guide:  docs/spec/framework/typescript-ui-guide.md"
 echo "  - Performance guide:    docs/spec/framework/performance-guide.md"
 echo "  - Business features:    docs/spec/biz/README.md"
 echo "  - Spec writing guide:   docs/spec/SPEC-WRITING-GUIDE.md"
+echo ""
+echo "Custom commands (type in Claude Code):"
+echo "  - /decompose <desc>   Break a request into parallel tasks"
+echo "  - /new-task <desc>    Create a single task file"
+echo "  - /status             Task queue dashboard"
+echo "  - /launch [N]         Pre-flight checks + launch agents"
+echo "  - /plan <desc>        Select and create a plan template"
+echo "  - /review             Run quality gates"
+echo "  - /shelve             Checkpoint current work"
+echo "  - Full reference:     docs/spec/.llm/SKILLS.md"
 echo ""
 echo "Parallel agent execution:"
 echo "  - Edit STRATEGY.md:     docs/spec/.llm/STRATEGY.md"

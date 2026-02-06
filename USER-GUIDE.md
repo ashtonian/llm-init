@@ -17,6 +17,7 @@ This guide explains the system that `llm-init` sets up, how to use it day-to-day
 - [Knowledge Accumulation](#knowledge-accumulation)
 - [Concurrent Execution](#concurrent-execution)
 - [Parallel Agent Harness](#parallel-agent-harness)
+- [Custom Commands](#custom-commands)
 - [Self-Improvement](#self-improvement)
 - [Infrastructure](#infrastructure)
 - [MCP Servers](#mcp-servers)
@@ -553,6 +554,65 @@ By default, autonomous agents use `--dangerously-skip-permissions` for unattende
 ```bash
 SKIP_PERMISSIONS=0 bash docs/spec/.llm/scripts/run-parallel.sh 3
 ```
+
+---
+
+## Custom Commands
+
+Claude Code supports project-level custom commands as slash commands. llm-init includes 7 pre-built commands.
+
+### Available Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/decompose <description>` | Break a feature into parallel tasks |
+| `/new-task <description>` | Create a single task file |
+| `/status` | Task queue dashboard with analysis |
+| `/launch [N]` | Pre-flight checks + launch N agents |
+| `/plan <description>` | Select and create a plan template |
+| `/review` | Run quality gates on current work |
+| `/shelve` | Checkpoint with structured handoff |
+
+### Example Workflows
+
+**Starting a new feature (parallel):**
+
+```
+/decompose Build user management with CRUD, roles, and invite flow
+# Review the decomposition, approve
+/launch 3
+/status
+```
+
+**Working interactively:**
+
+```
+/plan Redesign the authentication system
+# Fill in the plan, get approval, implement
+/review
+```
+
+**Pausing and resuming:**
+
+```
+/shelve
+# Later, in a new session:
+/status
+```
+
+### Creating Your Own Commands
+
+Add `.md` files to `.claude/commands/`:
+
+```bash
+# Create a custom command
+echo "Your prompt instructions here" > .claude/commands/my-command.md
+# Now type /my-command in Claude Code
+```
+
+Commands are markdown files containing prompt instructions. When invoked, Claude Code expands the file content as the prompt. User input after the command name is available as `$ARGUMENTS`.
+
+See `docs/spec/.llm/SKILLS.md` for the full capabilities reference.
 
 ---
 

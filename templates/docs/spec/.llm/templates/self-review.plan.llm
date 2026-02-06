@@ -35,6 +35,9 @@ Verify all internal links and file references are valid:
 - [ ] All file paths in `.llm/README.md` point to files that exist
 - [ ] All plan templates reference only specs that exist (or clearly mark optional ones)
 - [ ] `setup.sh` copies every file that exists in `templates/`
+- [ ] All custom commands in `.claude/commands/` reference files that exist
+- [ ] `SKILLS.md` lists all custom commands, MCP servers, scripts, and plan templates
+- [ ] `SKILLS.md` is referenced from CLAUDE.md, LLM.md, llms.txt, and README.md
 
 ### 2. Workflow Consistency
 

@@ -10,6 +10,7 @@ This folder coordinates work between multiple LLM agents working on the {{PROJEC
 ├── PROGRESS.md         # Accumulated knowledge and iteration log (READ FIRST)
 ├── STRATEGY.md         # Project decomposition into phases and tasks
 ├── AGENT_GUIDE.md      # Project context inlined into every agent prompt
+├── SKILLS.md           # Agent skills and capabilities catalog
 ├── plans/              # Active plan.llm files (work in progress)
 ├── completed/          # Archived completed plans
 ├── templates/          # Plan + task templates
@@ -242,3 +243,4 @@ This is useful when agents run out of turns, hit context limits, or when the use
 - [LLM Orchestration Guide](../LLM.md) - Master entry point for LLMs
 - [LLM Style Guide](../LLM-STYLE-GUIDE.md) - Standard format for LLM navigation sections
 - [Progress & Learnings](./PROGRESS.md) - Accumulated knowledge from all iterations
+- [Skills Reference](./SKILLS.md) - Agent capabilities, custom commands, MCP servers, workflows

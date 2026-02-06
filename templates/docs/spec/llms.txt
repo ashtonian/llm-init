@@ -16,6 +16,7 @@ docs/spec/
 │   ├── PROGRESS.md           # Accumulated knowledge and iteration log (READ BEFORE STARTING)
 │   ├── STRATEGY.md           # Project decomposition for parallel agents
 │   ├── AGENT_GUIDE.md        # Agent context (inlined into every prompt)
+│   ├── SKILLS.md             # Agent skills and capabilities catalog
 │   ├── plans/                # Active plan.llm files
 │   ├── completed/            # Archived completed plans
 │   ├── templates/            # Plan + task templates
@@ -57,6 +58,8 @@ docs/spec/
 | **Parallel agent harness** | `.llm/README.md` (task queue, autonomous agents, scripts) |
 | **Task decomposition** | `.llm/STRATEGY.md` (phases, dependencies, task sizing) |
 | **Agent context** | `.llm/AGENT_GUIDE.md` (project description, tech stack, quality gates) |
+| **Custom commands** | `.claude/commands/` (type `/command-name` in Claude Code) |
+| **Skills catalog** | `.llm/SKILLS.md` (commands, MCP servers, scripts, workflow decision tree) |
 | **Task template** | `.llm/templates/task.template.md` (task file format for queue) |
 
 ### Specs to Create (see SPEC-WRITING-GUIDE.md for templates)

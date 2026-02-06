@@ -154,6 +154,24 @@ When shelving, the agent records:
 
 ---
 
+## Custom Commands
+
+Type these in Claude Code for quick access to common workflows.
+
+| Command | What It Does |
+|---------|-------------|
+| `/decompose` | Break a request into parallel tasks (75-150 turns each) |
+| `/new-task` | Create a single task file in the backlog |
+| `/status` | Task queue dashboard with analysis |
+| `/launch` | Pre-flight checks + launch parallel agents |
+| `/plan` | Select and create the right plan template |
+| `/review` | Run quality gates and review current work |
+| `/shelve` | Checkpoint work with structured handoff |
+
+See `docs/spec/.llm/SKILLS.md` for the full capabilities catalog.
+
+---
+
 ## Key References
 
 - **LLM Orchestration Guide**: `docs/spec/LLM.md`
@@ -171,6 +189,8 @@ When shelving, the agent records:
 - **Business Features Guide**: `docs/spec/biz/README.md` (read before writing business specs)
 - **Infrastructure**: `docs/spec/.llm/INFRASTRUCTURE.md` (Docker services, ports, health checks)
 - **MCP Servers**: `docs/spec/.llm/MCP-RECOMMENDATIONS.md` (available MCP servers and config)
+- **Custom Commands**: `.claude/commands/` (type `/command-name` in Claude Code)
+- **Skills Reference**: `docs/spec/.llm/SKILLS.md` (capabilities catalog)
 
 ## Execution Principles
 

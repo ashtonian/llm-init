@@ -8,6 +8,7 @@
 - **[llms.txt](./llms.txt)** — Quick navigation index for LLMs
 - **[Spec Writing Guide](./SPEC-WRITING-GUIDE.md)** — How to write new spec documents
 - **[LLM Style Guide](./LLM-STYLE-GUIDE.md)** — Formatting standards for LLM-friendly docs
+- **[Skills Reference](./.llm/SKILLS.md)** — Capabilities catalog (commands, MCP servers, scripts)
 
 ## Framework Specs (`framework/`)
 
@@ -40,3 +41,4 @@ Plans, tasks, progress tracking, and agent orchestration.
 | [Agent Guide](./.llm/AGENT_GUIDE.md) | Context inlined into every agent prompt |
 | [Infrastructure](./.llm/INFRASTRUCTURE.md) | Docker services, ports, health checks |
 | [MCP Recommendations](./.llm/MCP-RECOMMENDATIONS.md) | Available MCP servers and setup |
+| [Skills Reference](./.llm/SKILLS.md) | Agent capabilities, custom commands, MCP servers, workflows |

@@ -66,6 +66,7 @@ docs/spec/
 │   ├── AGENT_GUIDE.md        # Agent context (inlined into every prompt)
 │   ├── INFRASTRUCTURE.md     # Docker services documentation
 │   ├── MCP-RECOMMENDATIONS.md # MCP server recommendations
+│   ├── SKILLS.md             # Agent skills and capabilities catalog
 │   ├── docker-compose.yml    # PostgreSQL 16, Redis 7, NATS 2
 │   ├── nats.conf             # NATS JetStream config
 │   ├── plans/                # Active plan.llm files
@@ -442,6 +443,8 @@ The agent is encouraged to improve the LLM orchestration system itself.
 | **LLM.md** (this file) | Add execution orders, navigation entries, improve workflows |
 | **llms.txt** | Add new document references, update task flows |
 | **CLAUDE.md** | Add project-specific instructions as they're discovered |
+| **Custom Commands** | Add or improve custom commands in `.claude/commands/` |
+| **SKILLS.md** | Update capabilities catalog when adding features |
 | **Settings** | Suggest permission additions for new tools |
 
 ### How to Improve
@@ -537,6 +540,7 @@ Create plan files at: `docs/spec/.llm/plans/{feature-name}.plan.llm`
 | Configure MCP servers | `.llm/MCP-RECOMMENDATIONS.md` |
 | Run parallel autonomous agents | `.llm/README.md` (harness section) -> `.llm/STRATEGY.md` -> `.llm/AGENT_GUIDE.md` |
 | Decompose a project into tasks | `.llm/STRATEGY.md` -> `.llm/templates/task.template.md` |
+| Use a custom command | `.claude/commands/` -> `docs/spec/.llm/SKILLS.md` |
 
 <!-- Add rows as you create framework specs. Suggested entries:
 | Add an API endpoint | `framework/api-design.md` -> `framework/routes.md` |
@@ -639,3 +643,4 @@ When requirements change:
 - [Business Specs](./biz/README.md) - Business feature documentation guide
 - [Infrastructure](./.llm/INFRASTRUCTURE.md) - Docker services, ports, health checks
 - [MCP Recommendations](./.llm/MCP-RECOMMENDATIONS.md) - Available MCP servers and setup
+- [Skills Reference](./.llm/SKILLS.md) - Agent capabilities, commands, MCP servers, workflow decision tree
