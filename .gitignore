@@ -1,45 +1,3 @@
-# OS
-.DS_Store
-Thumbs.db
-
-# Editors
-*.swp
-*.swo
-*~
-.idea/
-.vscode/
-
-# Claude Code personal settings (root only, not templates/)
-/.claude/
-/.mcp.json
-!templates/.claude/
-!templates/.mcp.json
-
-# === LLM Infrastructure ===
-
-# Docker persistent data volumes
-docs/spec/.llm/data/
-
-# LLM scratch workspace
-.llm-scratch/
-
-# === Parallel Agent Harness (runtime artifacts) ===
-
-# Git worktrees created by agents at runtime
-docs/spec/.llm/worktrees/
-
-# Runtime PID tracking
-docs/spec/.llm/.agent-pids
-
-# Atomic lock directories (mkdir-based)
-docs/spec/.llm/tasks/.locks/*/
-
-# === Claude Code ===
-
-# Personal overrides (not shared)
-.claude/settings.local.json
-.claude/CLAUDE.local.md
-
 # === OS ===
 
 .DS_Store
@@ -57,47 +15,32 @@ desktop.ini
 .classpath
 .settings/
 
-# === Go ===
+# === Claude Code (repo-level, not templates/) ===
 
-# Binary output
-/bin/
-/dist/
+/.claude/
+/.mcp.json
+!templates/.claude/
+!templates/.mcp.json
 
-# Test coverage
-coverage.out
-coverage.html
-*.coverprofile
+# === Test output (from running setup.sh locally) ===
 
-# Vendor (uncomment if not vendoring)
-# vendor/
+/docs/
+/cmd/
+/internal/
+/.codex/
+/.agents/
+/CLAUDE.md
+/AGENTS.md
+/Makefile
+/Dockerfile
+/.goreleaser.yml
+/.golangci.yml
+/.github/
+/renovate.json
+/go.mod
+/go.sum
 
-# === Node / TypeScript ===
+# === Work artifacts ===
 
-node_modules/
-.next/
-.nuxt/
-.output/
-dist/
-build/
-*.tsbuildinfo
-
-# === Environment ===
-
-.env
-.env.local
-.env.*.local
-!.env.example
-
-# === Logs ===
-
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# === Testing ===
-
-/coverage/
-.nyc_output/
-playwright-report/
-test-results/
+*-PLAN.md
+.llm-scratch/

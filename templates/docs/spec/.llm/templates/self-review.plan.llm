@@ -1,7 +1,7 @@
-# Plan: LLM System Self-Review
+# Plan: System Self-Review
 
-> Use this template to review and improve the LLM orchestration system itself —
-> the specs, templates, coordination docs, and tooling that guide agent behavior.
+> Use this template to review and improve the Claude Code orchestration system itself —
+> the rules, skills, agents, templates, and tooling that guide agent behavior.
 > This is how the system gets better over time.
 
 ## Metadata
@@ -18,7 +18,7 @@
 
 ## Objective
 
-Review the LLM orchestration system for coherence, accuracy, completeness, and effectiveness. Fix issues and improve the system so future agents work more efficiently.
+Review the Claude Code orchestration system for coherence, accuracy, completeness, and effectiveness. Fix issues and improve the system so future agents work more efficiently.
 
 ---
 
@@ -28,62 +28,73 @@ Review the LLM orchestration system for coherence, accuracy, completeness, and e
 
 Verify all internal links and file references are valid:
 
-- [ ] All file paths in `LLM.md` point to files that exist
 - [ ] All file paths in `CLAUDE.md` point to files that exist
-- [ ] All file paths in `llms.txt` point to files that exist
-- [ ] All file paths in `framework/README.md` point to files that exist
-- [ ] All file paths in `.llm/README.md` point to files that exist
-- [ ] All plan templates reference only specs that exist (or clearly mark optional ones)
+- [ ] All file paths in `.claude/rules/*.md` reference only files that exist
+- [ ] All skills in `.claude/skills/*/` have a valid `SKILL.md`
+- [ ] All agents in `.claude/agents/*/` have a valid agent definition
+- [ ] All plan templates reference only rules/specs that exist (or clearly mark optional ones)
 - [ ] `setup.sh` copies every file that exists in `templates/`
-- [ ] All custom commands in `.claude/commands/` reference files that exist
-- [ ] `SKILLS.md` lists all custom commands, MCP servers, scripts, and plan templates
-- [ ] `SKILLS.md` is referenced from CLAUDE.md, LLM.md, llms.txt, and README.md
+- [ ] `.mcp.json` MCP server configurations are valid and functional
+- [ ] `CLAUDE.md` skills table lists all skills that exist in `.claude/skills/`
 
-### 2. Workflow Consistency
+### 2. Rules Consistency
+
+Verify rules are coherent and non-contradictory:
+
+- [ ] `.claude/rules/agent-guide.md` quality gate commands are valid for the project
+- [ ] `.claude/rules/spec-first.md` protocol is consistent with plan templates
+- [ ] Pattern rules (go-patterns, typescript-patterns, etc.) don't contradict each other
+- [ ] Cross-cutting rules (security, performance, observability) are compatible
+- [ ] Quality gate definitions are consistent across rules and plan templates
+- [ ] Terminology is consistent ("quality gates" not "quality checks", "rules" not "specs" for `.claude/rules/`)
+
+### 3. Workflow Consistency
 
 Verify the same process is described the same way everywhere:
 
-- [ ] Review loop steps (READ→ASSESS→IMPLEMENT→VERIFY→RECORD→COMMIT→NEXT) match across LLM.md, review.plan.llm, and CLAUDE.md
-- [ ] Quality gate definitions are consistent (same commands, same criteria)
-- [ ] Terminology is consistent ("quality gates" not "quality checks", "plan file" not "plan.llm file" inconsistently)
+- [ ] Review loop steps (READ->ASSESS->IMPLEMENT->VERIFY->RECORD->COMMIT->NEXT) match across review.plan.llm and CLAUDE.md
 - [ ] User feedback checkpoints are present in all plan templates that need them
+- [ ] Execution modes (Parallel, Interactive, Quick, Idea Pipeline) are consistent across CLAUDE.md and skills
 
-### 3. Placeholder Consistency
+### 4. Placeholder Consistency
 
 - [ ] All templates use `{{PROJECT_NAME}}` and `{{PROJECT_MODULE}}` format
 - [ ] No hardcoded project names, paths, or credentials
 - [ ] `setup.sh` `copy_template` function handles all placeholder replacement
 
-### 4. Documentation Completeness
+### 5. Skills & Agents Completeness
 
-- [ ] README.md directory tree matches actual template structure
-- [ ] All new files added since last review are reflected in README.md, llms.txt, and setup.sh
-- [ ] Navigation indexes in LLM.md and llms.txt include all documents
-- [ ] Every document has "Related Documentation" or equivalent backlinks
+- [ ] Each skill in `.claude/skills/` has a self-contained `SKILL.md` with instructions
+- [ ] Each agent in `.claude/agents/` has clear scope and responsibilities
+- [ ] CLAUDE.md skills table matches the actual skills available on disk
+- [ ] Skills don't duplicate functionality (no overlapping skills)
+- [ ] Agent definitions reference valid rules and skills
 
-### 5. Context Efficiency
+### 6. Context Efficiency
 
-- [ ] CLAUDE.md is concise (<80 lines) — it loads every session
-- [ ] LLM.md is manageable (<500 lines) — it's read every task
-- [ ] No significant content duplication between files
+- [ ] CLAUDE.md is concise (<80 lines) -- it loads every session
+- [ ] Rules in `.claude/rules/` are auto-loaded by path, so each is focused and non-redundant
+- [ ] No significant content duplication between rules files
 - [ ] Templates don't include unnecessary boilerplate
+- [ ] Plan templates are appropriately sized for their purpose
 
-### 6. Permission & Security Review
+### 7. Permission & Security Review
 
 - [ ] `.claude/settings.json` allow list covers all needed operations
 - [ ] `.claude/settings.json` deny list blocks all dangerous patterns
 - [ ] No credentials or secrets in any template file
-- [ ] MCP server configuration is secure
+- [ ] MCP server configuration in `.mcp.json` is secure
 
-### 7. Effectiveness Assessment
+### 8. Effectiveness Assessment
 
 Based on PROGRESS.md learnings:
 
-- [ ] Are agents successfully following the review loop?
-- [ ] Are agents finding the right specs for their tasks?
+- [ ] Are agents successfully following the execution modes?
+- [ ] Are agents finding the right rules for their tasks?
 - [ ] Are there repeated failures or confusion patterns?
 - [ ] Is PROGRESS.md accumulating useful knowledge?
 - [ ] Are plan templates being used effectively?
+- [ ] Are skills and agents properly scoped (not too broad, not too narrow)?
 
 ---
 
@@ -94,14 +105,14 @@ Based on PROGRESS.md learnings:
 - [ ] Document all issues found in the Issues section below
 
 ### Phase 2: Fix
-- [ ] Fix cross-reference issues
+- [ ] Fix cross-reference issues in rules, skills, and plan templates
 - [ ] Fix workflow inconsistencies
-- [ ] Update navigation indexes
+- [ ] Update CLAUDE.md skills table if out of sync
 - [ ] Fix any other issues found
 
 ### Phase 3: Improve
-- [ ] Add missing backlinks or navigation
-- [ ] Simplify any overly complex sections
+- [ ] Simplify any overly complex rules or templates
+- [ ] Consolidate duplicated content across rules
 - [ ] Update templates based on effectiveness assessment
 - [ ] Record improvements in PROGRESS.md
 
@@ -141,6 +152,6 @@ Based on PROGRESS.md learnings:
 
 - [ ] All checklist items reviewed
 - [ ] All high/medium issues fixed
-- [ ] Navigation indexes updated
+- [ ] CLAUDE.md skills table verified
 - [ ] PROGRESS.md updated with learnings
-- [ ] README.md structure verified
+- [ ] Rules and skills structure verified

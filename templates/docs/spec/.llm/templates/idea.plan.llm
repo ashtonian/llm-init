@@ -89,7 +89,7 @@
 ### 2.4 Create Framework Specs (if needed)
 
 - [ ] Create any missing framework specs needed for this project
-  - Use `docs/spec/SPEC-WRITING-GUIDE.md` as template guide
+  - Use `.claude/rules/spec-first.md` as template guide
   - Common: api-design.md, error-handling.md, data-access.md, models.md
 
 ### USER CHECKPOINT 2
@@ -128,7 +128,7 @@ For each milestone, create plan files:
 
 - [ ] Order features by dependency (what must be built first?)
 - [ ] Identify which features can be built in parallel
-- [ ] Update `docs/spec/LLM.md` with project-specific execution orders
+- [ ] Update `CLAUDE.md` with project-specific execution orders
 
 ### USER CHECKPOINT 3
 

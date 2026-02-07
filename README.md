@@ -2,7 +2,7 @@
 
 Bootstrap your project for LLM-driven development with [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
 
-One command sets up spec-driven documentation, iterative review loops, plan-based coordination, knowledge accumulation, MCP servers, local infrastructure, and code conventions — so Claude follows your patterns from the first prompt and improves with every iteration.
+One command sets up spec-driven documentation, agent teams, plan-based coordination, knowledge accumulation, MCP servers, local infrastructure, and code conventions -- so Claude follows your patterns from the first prompt and improves with every iteration.
 
 Comes with opinionated guides for **Go** and **TypeScript/React**, but the system is designed to be extended to any stack.
 
@@ -26,7 +26,7 @@ bash llm-init/setup.sh --go my-app github.com/myorg/my-app
 # Clean up
 rm -rf llm-init/
 
-# Start infrastructure (optional — only needed for database/cache work)
+# Start infrastructure (optional -- only needed for database/cache work)
 docker compose -f docs/spec/.llm/docker-compose.yml up -d
 ```
 
@@ -34,27 +34,71 @@ docker compose -f docs/spec/.llm/docker-compose.yml up -d
 
 ```
 your-project/
-├── CLAUDE.md                              # Claude Code auto-reads this — entry point
+├── CLAUDE.md                              # Claude Code auto-reads this -- entry point
 ├── .claude/
 │   ├── settings.json                      # Pre-approved permissions for autonomous operation
-│   └── commands/                          # Custom slash commands for Claude Code
-│       ├── decompose.md                   #   /decompose — Break request into parallel tasks
-│       ├── new-task.md                    #   /new-task — Create a single task file
-│       ├── status.md                      #   /status — Task queue dashboard
-│       ├── launch.md                      #   /launch — Pre-flight checks + launch agents
-│       ├── plan.md                        #   /plan — Select and create a plan template
-│       ├── review.md                      #   /review — Run quality gates
-│       ├── shelve.md                      #   /shelve — Checkpoint with structured handoff
-│       ├── requirements.md                #   /requirements — Iterative requirement gathering
-│       ├── architecture-review.md         #   /architecture-review — Assess decisions & tradeoffs
-│       ├── adr.md                         #   /adr — Create Architecture Decision Record
-│       ├── security-review.md             #   /security-review — Security assessment
-│       ├── release.md                     #   /release — Release preparation & changelog
-│       └── prd.md                         #   /prd — Interactive PRD → sized task files
+│   ├── skills/                            # Skills (slash commands) for Claude Code
+│   │   ├── decompose/SKILL.md            #   /decompose -- Break request into parallel tasks
+│   │   ├── new-task/SKILL.md             #   /new-task -- Create a single task file
+│   │   ├── status/SKILL.md              #   /status -- Task queue dashboard
+│   │   ├── launch/SKILL.md             #   /launch -- Pre-flight checks + launch team lead
+│   │   ├── plan/SKILL.md               #   /plan -- Select and create a plan template
+│   │   ├── review/SKILL.md             #   /review -- Run quality gates
+│   │   ├── shelve/SKILL.md             #   /shelve -- Checkpoint with structured handoff
+│   │   ├── requirements/SKILL.md       #   /requirements -- Iterative requirement gathering
+│   │   ├── architecture-review/SKILL.md #  /architecture-review -- Assess decisions
+│   │   ├── adr/SKILL.md                #   /adr -- Create Architecture Decision Record
+│   │   ├── security-review/SKILL.md    #   /security-review -- Security assessment
+│   │   ├── prd/SKILL.md                #   /prd -- Interactive PRD -> sized task files
+│   │   ├── release/SKILL.md            #   /release -- Release preparation & changelog
+│   │   ├── api-design/SKILL.md         #   /api-design -- Design API contracts
+│   │   ├── data-model/SKILL.md         #   /data-model -- Design database schemas
+│   │   ├── performance-audit/SKILL.md  #   /performance-audit -- Profile & optimize
+│   │   ├── incident-response/SKILL.md  #   /incident-response -- Incident investigation
+│   │   ├── refactor/SKILL.md           #   /refactor -- Analyze & plan refactoring
+│   │   ├── migrate/SKILL.md            #   /migrate -- Plan database migrations
+│   │   └── dependency-audit/SKILL.md   #   /dependency-audit -- Audit dependencies
+│   ├── agents/                            # Native Claude Code agents
+│   │   ├── team-lead.md                  #   Orchestrator (opus, 500 turns, delegates)
+│   │   ├── implementer.md               #   Feature builder (opus, 150 turns)
+│   │   ├── reviewer.md                  #   Code reviewer (opus, 75 turns)
+│   │   ├── security.md                  #   Security auditor (opus, 75 turns)
+│   │   ├── debugger.md                  #   Bug fixer (opus, 100 turns)
+│   │   ├── tester.md                    #   Test specialist (opus, 100 turns)
+│   │   ├── frontend.md                  #   Frontend/UI specialist (opus, 150 turns)
+│   │   ├── api-designer.md              #   API contract designer (opus, 100 turns)
+│   │   ├── data-modeler.md              #   Database schema designer (opus, 100 turns)
+│   │   ├── architect.md                 #   System architect (opus, 100 turns)
+│   │   ├── benchmarker.md               #   Performance profiler (opus, 100 turns)
+│   │   ├── ux-researcher.md             #   UX research specialist (opus, 75 turns)
+│   │   ├── release-engineer.md          #   Release automation (opus, 75 turns)
+│   │   ├── devops.md                    #   Infrastructure specialist (opus, 100 turns)
+│   │   ├── requirements-analyst.md      #   Requirements gathering (opus, 100 turns)
+│   │   ├── refactorer.md               #   Technical debt elimination (opus, 100 turns)
+│   │   └── migration-specialist.md      #   Database schema evolution (opus, 150 turns)
+│   └── rules/                             # Auto-loaded context rules
+│       ├── agent-guide.md                #   Project tech stack & quality gates
+│       ├── spec-first.md                 #   Spec-first protocol
+│       ├── go-patterns.md                #   Go conventions (paths: **/*.go)
+│       ├── typescript-patterns.md        #   TypeScript patterns (paths: **/*.ts, **/*.tsx)
+│       ├── performance.md                #   Performance & code quality standards
+│       ├── testing.md                    #   Testing patterns (paths: **/*_test.*, **/*.test.*)
+│       ├── security.md                   #   Security standards (OWASP, input validation)
+│       ├── observability.md              #   Logging, tracing, metrics, alerting
+│       ├── multi-tenancy.md              #   Multi-tenant SaaS patterns
+│       ├── infrastructure.md             #   Docker, Kubernetes, deployment patterns
+│       ├── api-design.md                 #   REST/gRPC API design conventions
+│       ├── auth-patterns.md              #   Authentication & authorization patterns
+│       ├── data-patterns.md              #   Database design & data access patterns
+│       ├── frontend-architecture.md      #   Component architecture & state management
+│       ├── ux-standards.md               #   Accessibility, responsive design, UX patterns
+│       ├── error-handling.md             #   Error classification, retry strategies, circuit breakers
+│       ├── code-quality.md               #   Complexity limits, naming, coverage targets
+│       └── git-workflow.md               #   Branch naming, commits, PR conventions
 ├── cmd/{project-name}/                    # [--go] Application entry point
 │   ├── main.go                            #   Main with run() pattern
 │   └── main_test.go                       #   Entry point tests
-├── internal/greeter/                      # [--go] Example package — reference for new packages
+├── internal/greeter/                      # [--go] Example package -- reference for new packages
 │   ├── doc.go                             #   Package docs with usage example
 │   ├── model.go                           #   Domain model with validation
 │   ├── repository.go                      #   Repository interface + memory implementation
@@ -68,78 +112,48 @@ your-project/
 │   ├── ci.yml                             #   Build, test, lint on PR
 │   └── release.yml                        #   GoReleaser on tag push
 ├── renovate.json                          # [--go] Dependency update automation
-├── .mcp.json                              # 6 MCP servers (github, postgres, redis, sequential-thinking, context7, playwright)
+├── AGENTS.md                              # Codex CLI entry point (Codex reads this)
+├── .codex/
+│   └── config.toml                        # Codex CLI configuration with MCP servers
+├── .agents/
+│   └── skills/                            # Mirrored skills for Codex CLI compatibility
+│       └── (same 20 skills as .claude/skills/)
+├── .mcp.json                              # 9 MCP servers (github, postgres, redis, sequential-thinking, context7, playwright, terraform, eslint, aws-documentation)
 ├── .gitignore                             # Go, TypeScript, Docker, IDE, env, LLM workspace exclusions
 └── docs/spec/
-    ├── LLM.md                             # Master orchestration guide for LLMs
-    ├── LLM-STYLE-GUIDE.md                 # How to write LLM-friendly spec files
-    ├── SPEC-WRITING-GUIDE.md              # How to write specification documents
-    ├── README.md                           # Human-readable documentation index
-    ├── llms.txt                            # Quick navigation index
-    ├── framework/                          # Layer 1: Foundation patterns
-    │   ├── README.md                       # Framework spec index
-    │   ├── go-generation-guide.md          # Go code conventions
-    │   ├── typescript-ui-guide.md          # TypeScript/UI/UX patterns
-    │   ├── performance-guide.md            # Performance & code quality standards
-    │   ├── testing-guide.md                # Testing patterns, fixtures, mocking
-    │   └── llms.txt                        # Framework navigation index
     ├── biz/                                # Business specs
     │   └── README.md                       # Business features, PRDs, market research guide
     └── .llm/
-        ├── README.md                       # Coordination guide
-        ├── PROGRESS.md                     # Knowledge accumulation & iteration log
+        ├── PROGRESS.md                     # Knowledge accumulation: patterns, decisions, issues
         ├── STRATEGY.md                     # Project decomposition for parallel agents
-        ├── AGENT_GUIDE.md                  # Agent context (inlined into every prompt)
         ├── INFRASTRUCTURE.md               # Docker services documentation
-        ├── MCP-RECOMMENDATIONS.md          # MCP server recommendations
-        ├── SKILLS.md                       # Agent skills and capabilities catalog
         ├── docker-compose.yml              # PostgreSQL 16, Redis 7, NATS 2
         ├── nats.conf                       # NATS JetStream config
-        ├── plans/                          # Active work plans
-        ├── completed/                      # Archived completed plans
         ├── templates/                      # Plan + task templates
-        │   ├── idea.plan.llm              #   Idea → working project (0→100)
-        │   ├── fullstack.plan.llm         #   Full-stack feature (DB→API→UI→E2E)
+        │   ├── idea.plan.llm              #   Idea -> working project (0->100)
+        │   ├── fullstack.plan.llm         #   Full-stack feature (DB->API->UI->E2E)
         │   ├── feature.plan.llm           #   Backend feature
         │   ├── review.plan.llm            #   Review & iteration cycle
         │   ├── bugfix.plan.llm            #   Bug investigation & fix
         │   ├── self-review.plan.llm       #   System self-audit
-        │   ├── codegen.plan.llm          #   Spec-first code generation
-        │   ├── requirements.plan.llm    #   Multi-session requirement gathering
+        │   ├── codegen.plan.llm           #   Spec-first code generation
+        │   ├── requirements.plan.llm      #   Multi-session requirement gathering
         │   ├── plan.template.llm          #   Generic task
-        │   ├── task.template.md           #   Task template for parallel agent queue
-        │   ├── example-task.md           #   Filled-in example task (reference)
-        │   └── roles/                    #   Agent role templates (14 roles)
-        │       ├── implementer.md        #     Feature implementation
-        │       ├── reviewer.md           #     Code quality review
-        │       ├── optimizer.md          #     Performance optimization
-        │       ├── docs.md               #     Documentation maintenance
-        │       ├── tester.md             #     Test coverage & edge cases
-        │       ├── architect.md          #     System design & boundaries
-        │       ├── security.md           #     Vulnerability detection
-        │       ├── benchmarker.md        #     Performance measurement
-        │       ├── debugger.md           #     Root cause analysis
-        │       ├── spec-writer.md        #     Requirements & spec writing
-        │       ├── market-researcher.md  #     Competitive & market analysis
-        │       ├── frontend.md           #     UI implementation & accessibility
-        │       ├── ux-researcher.md      #     User experience research
-        │       └── devops.md             #     CI/CD, infrastructure, monitoring
-        ├── scripts/                        # Utility + agent harness scripts
-        │   ├── move_nav_to_top.py         #   Reformats docs for LLM navigation
-        │   ├── run-parallel.sh            #   Launch N parallel autonomous agents
-        │   ├── run-agent.sh               #   Single autonomous agent loop
-        │   ├── run-single-task.sh         #   Run one task autonomously
-        │   ├── run-interactive.sh         #   Interactive session with task context
+        │   ├── task.template.md           #   Task template for agent task queue
+        │   └── example-task.md            #   Filled-in example task (reference)
+        ├── scripts/                        # Utility scripts
+        │   ├── run-team.sh                #   Launch team lead agent for parallel execution
         │   ├── status.sh                  #   Task queue dashboard
         │   ├── reset.sh                   #   Reset tasks to backlog
-        │   ├── run-fresh-loop.sh          #   Fresh-context loop (new instance per task)
         │   └── archive.sh                 #   Archive completed tasks and logs
-        ├── archive/                         # Archived completed runs
-        ├── tasks/                          # Parallel agent task queue
+        ├── archive/                        # Archived completed runs
+        ├── tasks/                          # Agent task queue
         │   ├── backlog/                   #   Tasks ready to be claimed
         │   ├── in_progress/               #   Currently being worked on
         │   ├── completed/                 #   Successfully finished
         │   └── blocked/                   #   Failed or blocked tasks
+        ├── plans/                          # Active work plans
+        ├── completed/                      # Archived completed plans
         └── logs/                           # Agent execution logs
 ```
 
@@ -149,16 +163,13 @@ your-project/
 You prompt Claude ──> Claude reads CLAUDE.md (automatic)
                            │
                            ▼
-                      Reads PROGRESS.md (prior learnings)
-                           │
-                           ▼
-                      Reads docs/spec/LLM.md (orchestration)
-                           │
-                           ▼
-                      Reads framework specs (execution order)
-                      ├── go-generation-guide.md (for Go code)
-                      ├── typescript-ui-guide.md (for frontend)
-                      ├── performance-guide.md (for perf-sensitive work)
+                      Rules auto-load based on file paths
+                      ├── go-patterns.md (when editing .go files)
+                      ├── typescript-patterns.md (when editing .ts/.tsx)
+                      ├── testing.md (when editing test files)
+                      ├── performance.md (always available)
+                      ├── spec-first.md (always available)
+                      └── agent-guide.md (always available)
                            │
                            ▼
                       Creates plan file in .llm/plans/
@@ -177,49 +188,45 @@ You prompt Claude ──> Claude reads CLAUDE.md (automatic)
 ```
 
 **The key ideas**:
-- **Full software lifecycle.** Requirements gathering → design → implementation → review → release, with dedicated commands for each phase.
-- **Specs replace repeated prompt instructions.** Document your patterns once, Claude follows them every time.
+- **Full software lifecycle.** Requirements gathering -> design -> implementation -> review -> release, with dedicated skills for each phase.
+- **Agent Teams.** The team lead agent (opus, 500 turns) orchestrates parallel execution by spawning 16 specialist agents (implementer, reviewer, security, debugger, tester, frontend, api-designer, data-modeler, architect, benchmarker, ux-researcher, release-engineer, devops, requirements-analyst, refactorer, migration-specialist) across feature branches.
+- **Rules replace repeated prompt instructions.** Document your patterns once in `.claude/rules/`, Claude auto-loads them based on file paths.
 - **Knowledge accumulates across sessions.** Each session reads and writes to PROGRESS.md, building institutional knowledge.
-- **User approval at every major step.** Research → spec → plan → build, with human checkpoints at each transition.
+- **User approval at every major step.** Research -> spec -> plan -> build, with human checkpoints at each transition.
 - **Review loops ensure quality.** Every change passes quality gates (build, test, lint) before completion.
 - **Architecture decisions are documented.** ADRs capture context, options, and rationale so decisions aren't re-litigated.
-- **Concurrent execution is encouraged.** Independent tasks run in parallel via subagents and feature branches. The parallel agent harness automates this with task queues, git worktrees, and atomic claiming.
-- **Self-improvement is built in.** The agent can review and improve specs, templates, and its own orchestration system.
+- **Concurrent execution is encouraged.** Independent tasks run in parallel via agent teams with branch isolation.
 
 ## What's Included
 
 | Component | Purpose |
 |-----------|---------|
-| **CLAUDE.md** | Auto-read by Claude Code. Entry point to the spec system. |
-| **`.claude/settings.json`** | Pre-approved permissions for autonomous operation (Go, TS, Docker, Git, GitHub CLI, npm, linters, test runners, web search, subagents) |
-| **LLM.md** | Master orchestration: idea-to-project pipeline, task classification, execution order, review loop, concurrent coordination, self-improvement |
-| **Go Generation Guide** | 800+ lines: functional options, generics, registry pattern, interfaces, anti-patterns |
-| **TypeScript/UI Guide** | Component architecture, state management, accessibility, performance budgets, responsive design, testing |
-| **Performance Guide** | Memory allocation strategies, profiling discipline, latency budgets, code quality standards |
-| **Business Features Guide** | Feature specs, user stories, market research templates, competitive analysis, decision records |
+| **CLAUDE.md** | Auto-read by Claude Code. Entry point with execution modes, skill references, principles. |
+| **`.claude/settings.json`** | Pre-approved permissions for autonomous operation (Go, TS, Docker, Git, GitHub CLI, npm, linters, test runners, web search, agent teams) |
+| **20 Skills** | Slash commands: task management (`/prd`, `/decompose`, `/new-task`, `/status`, `/launch`, `/plan`, `/review`, `/shelve`) + lifecycle (`/requirements`, `/architecture-review`, `/adr`, `/security-review`, `/release`) + design (`/api-design`, `/data-model`, `/performance-audit`, `/incident-response`) + engineering (`/refactor`, `/migrate`, `/dependency-audit`) |
+| **17 Agents** | Native Claude Code agents: team-lead (opus orchestrator) + 16 specialists (implementer, reviewer, security, debugger, tester, frontend, api-designer, data-modeler, architect, benchmarker, ux-researcher, release-engineer, devops, requirements-analyst, refactorer, migration-specialist) -- all opus |
+| **18 Rules** | Auto-loaded context: agent-guide, spec-first, go-patterns, typescript-patterns, performance, testing, security, observability, multi-tenancy, infrastructure, api-design, auth-patterns, data-patterns, frontend-architecture, ux-standards, error-handling, code-quality, git-workflow |
 | **PROGRESS.md** | 5-section knowledge base: patterns, architecture decisions, known issues, failed approaches, environment quirks |
-| **Custom Commands** | 13 slash commands: task management (`/prd`, `/decompose`, `/new-task`, `/status`, `/launch`, `/plan`, `/review`, `/shelve`) + lifecycle (`/requirements`, `/architecture-review`, `/adr`, `/security-review`, `/release`) |
-| **Skills Reference** | SKILLS.md: consolidated catalog of commands, MCP servers, scripts, templates, workflows |
-| **Parallel Agent Harness** | Task queue, git worktree isolation, atomic claiming, autonomous batch execution with N parallel agents |
 | **Plan Templates** | 9 templates: idea-to-project, full-stack feature, backend feature, review cycle, bugfix, self-review, spec-first codegen, requirements gathering, generic |
 | **Docker Compose** | PostgreSQL 16, Redis 7, NATS 2 with health checks, resource limits, data persistence |
-| **MCP Config** | 6 pre-configured servers: GitHub, Postgres, Redis, sequential-thinking, Context7 (library docs), Playwright (browser) |
+| **MCP Config** | 9 pre-configured servers: GitHub, Postgres, Redis, sequential-thinking, Context7 (library docs), Playwright (browser), Terraform, ESLint, AWS Documentation |
+| **Codex CLI** | AGENTS.md entry point, .codex/config.toml, .agents/skills/ mirror -- works with both Claude Code and OpenAI Codex CLI |
 | **.gitignore** | Comprehensive template covering Go, TypeScript, Docker, IDE, env files, LLM workspace |
 
 ## Best For
 
 This template is optimized for projects using **Go backends** and **TypeScript/React frontends** with Docker-based infrastructure. The included code guides are specific to these stacks.
 
-**For other languages** (Python, Rust, Java, etc.): the orchestration system, plan templates, review loops, and knowledge accumulation work with any stack. Replace or add language-specific guides in `docs/spec/framework/` following the included `SPEC-WRITING-GUIDE.md`.
+**For other languages** (Python, Rust, Java, etc.): the orchestration system, plan templates, review loops, and knowledge accumulation work with any stack. Add language-specific rules in `.claude/rules/` with appropriate path scoping.
 
 ## After Setup
 
-1. **Start using Claude** — it works immediately with the included specs
-2. **Add framework specs** — API design, error handling, models, auth (see [User Guide: Writing Specs](./USER-GUIDE.md#writing-spec-files))
-3. **Add business specs** — feature requirements, user stories in `docs/spec/biz/`
-4. **Add platform specs** — your project's specific features and domain logic
-5. **Update navigation** — keep `LLM.md` and `llms.txt` current as you add specs
-6. **Let Claude improve** — the agent can update specs and orchestration as it discovers better patterns
+1. **Start using Claude** -- it works immediately with the included specs
+2. **Customize `.claude/rules/agent-guide.md`** -- set your project name, goal, and tech stack
+3. **Add business specs** -- feature requirements, user stories in `docs/spec/biz/`
+4. **Add language rules** -- add path-scoped rules in `.claude/rules/` for your stack
+5. **Start infrastructure** -- `docker compose -f docs/spec/.llm/docker-compose.yml up -d`
+6. **Let Claude improve** -- the agent updates PROGRESS.md and discovers better patterns as it works
 
 See the **[User Guide](./USER-GUIDE.md)** for detailed walkthroughs of each step.
 

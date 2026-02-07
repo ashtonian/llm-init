@@ -75,10 +75,14 @@ echo ""
 
 # Create directory structure
 echo "Creating directory structure..."
+mkdir -p "${PROJECT_ROOT}/.claude/skills"
+mkdir -p "${PROJECT_ROOT}/.claude/agents"
+mkdir -p "${PROJECT_ROOT}/.claude/rules"
+mkdir -p "${PROJECT_ROOT}/.codex"
+mkdir -p "${PROJECT_ROOT}/.agents/skills"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/plans"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/completed"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/templates"
-mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/templates/roles"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/scripts"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/archive"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/data/postgres"
@@ -90,9 +94,7 @@ mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/tasks/completed"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/tasks/blocked"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/tasks/.locks"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/logs"
-mkdir -p "${PROJECT_ROOT}/docs/spec/framework"
 mkdir -p "${PROJECT_ROOT}/docs/spec/biz"
-mkdir -p "${PROJECT_ROOT}/.claude/commands"
 
 # Function to copy and replace placeholders
 copy_template() {
@@ -124,6 +126,12 @@ echo ""
 echo "Copying root configuration files..."
 copy_template "${SCRIPT_DIR}/templates/.mcp.json" "${PROJECT_ROOT}/.mcp.json"
 copy_template "${SCRIPT_DIR}/templates/CLAUDE.md" "${PROJECT_ROOT}/CLAUDE.md"
+copy_template "${SCRIPT_DIR}/templates/AGENTS.md" "${PROJECT_ROOT}/AGENTS.md"
+
+# Copy Codex CLI configuration
+echo ""
+echo "Copying Codex CLI configuration..."
+copy_template "${SCRIPT_DIR}/templates/.codex/config.toml" "${PROJECT_ROOT}/.codex/config.toml"
 
 # Copy Claude Code settings
 echo ""
@@ -135,15 +143,54 @@ else
     echo "  SKIP (exists): .claude/settings.json"
 fi
 
-# Copy custom slash commands
+# Copy skills
 echo ""
-echo "Copying custom slash commands..."
-for cmd in decompose.md new-task.md status.md launch.md plan.md review.md shelve.md requirements.md architecture-review.md adr.md security-review.md release.md prd.md; do
-    if [ ! -f "${PROJECT_ROOT}/.claude/commands/${cmd}" ]; then
-        cp "${SCRIPT_DIR}/templates/.claude/commands/${cmd}" "${PROJECT_ROOT}/.claude/commands/${cmd}"
-        echo "  CREATED: .claude/commands/${cmd}"
+echo "Copying skills..."
+for skill in decompose new-task status launch plan review shelve requirements architecture-review adr security-review prd release api-design data-model performance-audit incident-response refactor migrate dependency-audit; do
+    mkdir -p "${PROJECT_ROOT}/.claude/skills/${skill}"
+    if [ ! -f "${PROJECT_ROOT}/.claude/skills/${skill}/SKILL.md" ]; then
+        cp "${SCRIPT_DIR}/templates/.claude/skills/${skill}/SKILL.md" "${PROJECT_ROOT}/.claude/skills/${skill}/SKILL.md"
+        echo "  CREATED: .claude/skills/${skill}/SKILL.md"
     else
-        echo "  SKIP (exists): .claude/commands/${cmd}"
+        echo "  SKIP (exists): .claude/skills/${skill}/SKILL.md"
+    fi
+done
+
+# Mirror skills to Codex CLI directory (.agents/skills/)
+echo ""
+echo "Mirroring skills for Codex CLI compatibility..."
+for skill in decompose new-task status launch plan review shelve requirements architecture-review adr security-review prd release api-design data-model performance-audit incident-response refactor migrate dependency-audit; do
+    mkdir -p "${PROJECT_ROOT}/.agents/skills/${skill}"
+    if [ ! -f "${PROJECT_ROOT}/.agents/skills/${skill}/SKILL.md" ]; then
+        cp "${SCRIPT_DIR}/templates/.claude/skills/${skill}/SKILL.md" "${PROJECT_ROOT}/.agents/skills/${skill}/SKILL.md"
+        echo "  CREATED: .agents/skills/${skill}/SKILL.md"
+    else
+        echo "  SKIP (exists): .agents/skills/${skill}/SKILL.md"
+    fi
+done
+
+# Copy agents
+echo ""
+echo "Copying agents..."
+for agent in team-lead.md implementer.md reviewer.md security.md debugger.md tester.md frontend.md api-designer.md data-modeler.md architect.md benchmarker.md ux-researcher.md release-engineer.md devops.md requirements-analyst.md refactorer.md migration-specialist.md; do
+    if [ ! -f "${PROJECT_ROOT}/.claude/agents/${agent}" ]; then
+        cp "${SCRIPT_DIR}/templates/.claude/agents/${agent}" "${PROJECT_ROOT}/.claude/agents/${agent}"
+        echo "  CREATED: .claude/agents/${agent}"
+    else
+        echo "  SKIP (exists): .claude/agents/${agent}"
+    fi
+done
+
+# Copy rules (these have placeholders)
+echo ""
+echo "Copying rules..."
+copy_template "${SCRIPT_DIR}/templates/.claude/rules/agent-guide.md" "${PROJECT_ROOT}/.claude/rules/agent-guide.md"
+for rule in spec-first.md go-patterns.md typescript-patterns.md performance.md testing.md security.md observability.md multi-tenancy.md infrastructure.md api-design.md auth-patterns.md data-patterns.md frontend-architecture.md ux-standards.md error-handling.md code-quality.md git-workflow.md; do
+    if [ ! -f "${PROJECT_ROOT}/.claude/rules/${rule}" ]; then
+        cp "${SCRIPT_DIR}/templates/.claude/rules/${rule}" "${PROJECT_ROOT}/.claude/rules/${rule}"
+        echo "  CREATED: .claude/rules/${rule}"
+    else
+        echo "  SKIP (exists): .claude/rules/${rule}"
     fi
 done
 
@@ -163,23 +210,11 @@ else
     echo "  CREATED: .gitignore"
 fi
 
-# Copy docs/spec files
-echo ""
-echo "Copying spec files..."
-copy_template "${SCRIPT_DIR}/templates/docs/spec/LLM.md" "${PROJECT_ROOT}/docs/spec/LLM.md"
-copy_template "${SCRIPT_DIR}/templates/docs/spec/LLM-STYLE-GUIDE.md" "${PROJECT_ROOT}/docs/spec/LLM-STYLE-GUIDE.md"
-copy_template "${SCRIPT_DIR}/templates/docs/spec/SPEC-WRITING-GUIDE.md" "${PROJECT_ROOT}/docs/spec/SPEC-WRITING-GUIDE.md"
-copy_template "${SCRIPT_DIR}/templates/docs/spec/llms.txt" "${PROJECT_ROOT}/docs/spec/llms.txt"
-copy_template "${SCRIPT_DIR}/templates/docs/spec/README.md" "${PROJECT_ROOT}/docs/spec/README.md"
-
-# Copy .llm files
+# Copy LLM coordination files
 echo ""
 echo "Copying LLM coordination files..."
-copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/README.md" "${PROJECT_ROOT}/docs/spec/.llm/README.md"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/PROGRESS.md" "${PROJECT_ROOT}/docs/spec/.llm/PROGRESS.md"
-copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/MCP-RECOMMENDATIONS.md" "${PROJECT_ROOT}/docs/spec/.llm/MCP-RECOMMENDATIONS.md"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/INFRASTRUCTURE.md" "${PROJECT_ROOT}/docs/spec/.llm/INFRASTRUCTURE.md"
-copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/SKILLS.md" "${PROJECT_ROOT}/docs/spec/.llm/SKILLS.md"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/docker-compose.yml" "${PROJECT_ROOT}/docs/spec/.llm/docker-compose.yml"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/nats.conf" "${PROJECT_ROOT}/docs/spec/.llm/nats.conf"
 
@@ -202,38 +237,15 @@ echo "Copying task template..."
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/task.template.md" "${PROJECT_ROOT}/docs/spec/.llm/templates/task.template.md"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/example-task.md" "${PROJECT_ROOT}/docs/spec/.llm/templates/example-task.md"
 
-# Copy role templates
-echo ""
-echo "Copying role templates..."
-for role in implementer.md reviewer.md optimizer.md docs.md tester.md architect.md security.md benchmarker.md debugger.md spec-writer.md market-researcher.md frontend.md ux-researcher.md devops.md; do
-    if [ ! -f "${PROJECT_ROOT}/docs/spec/.llm/templates/roles/${role}" ]; then
-        cp "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/roles/${role}" "${PROJECT_ROOT}/docs/spec/.llm/templates/roles/${role}"
-        echo "  CREATED: docs/spec/.llm/templates/roles/${role}"
-    else
-        echo "  SKIP (exists): docs/spec/.llm/templates/roles/${role}"
-    fi
-done
-
 # Copy parallel agent harness files
 echo ""
-echo "Copying parallel agent harness files..."
+echo "Copying strategy and agent guide..."
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/STRATEGY.md" "${PROJECT_ROOT}/docs/spec/.llm/STRATEGY.md"
-copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/AGENT_GUIDE.md" "${PROJECT_ROOT}/docs/spec/.llm/AGENT_GUIDE.md"
 
-# Copy scripts (no placeholders — use cp + chmod)
+# Copy scripts (no placeholders -- use cp + chmod)
 echo ""
 echo "Copying utility scripts..."
-if [ ! -f "${PROJECT_ROOT}/docs/spec/.llm/scripts/move_nav_to_top.py" ]; then
-    cp "${SCRIPT_DIR}/templates/docs/spec/.llm/scripts/move_nav_to_top.py" "${PROJECT_ROOT}/docs/spec/.llm/scripts/move_nav_to_top.py"
-    chmod +x "${PROJECT_ROOT}/docs/spec/.llm/scripts/move_nav_to_top.py"
-    echo "  CREATED: docs/spec/.llm/scripts/move_nav_to_top.py"
-else
-    echo "  SKIP (exists): docs/spec/.llm/scripts/move_nav_to_top.py"
-fi
-
-echo ""
-echo "Copying parallel agent scripts..."
-for script in run-agent.sh run-parallel.sh run-single-task.sh run-interactive.sh status.sh reset.sh run-fresh-loop.sh archive.sh; do
+for script in run-team.sh status.sh reset.sh archive.sh; do
     if [ ! -f "${PROJECT_ROOT}/docs/spec/.llm/scripts/${script}" ]; then
         cp "${SCRIPT_DIR}/templates/docs/spec/.llm/scripts/${script}" "${PROJECT_ROOT}/docs/spec/.llm/scripts/${script}"
         chmod +x "${PROJECT_ROOT}/docs/spec/.llm/scripts/${script}"
@@ -242,16 +254,6 @@ for script in run-agent.sh run-parallel.sh run-single-task.sh run-interactive.sh
         echo "  SKIP (exists): docs/spec/.llm/scripts/${script}"
     fi
 done
-
-# Copy framework files
-echo ""
-echo "Copying framework specs..."
-copy_template "${SCRIPT_DIR}/templates/docs/spec/framework/README.md" "${PROJECT_ROOT}/docs/spec/framework/README.md"
-copy_template "${SCRIPT_DIR}/templates/docs/spec/framework/go-generation-guide.md" "${PROJECT_ROOT}/docs/spec/framework/go-generation-guide.md"
-copy_template "${SCRIPT_DIR}/templates/docs/spec/framework/typescript-ui-guide.md" "${PROJECT_ROOT}/docs/spec/framework/typescript-ui-guide.md"
-copy_template "${SCRIPT_DIR}/templates/docs/spec/framework/performance-guide.md" "${PROJECT_ROOT}/docs/spec/framework/performance-guide.md"
-copy_template "${SCRIPT_DIR}/templates/docs/spec/framework/testing-guide.md" "${PROJECT_ROOT}/docs/spec/framework/testing-guide.md"
-copy_template "${SCRIPT_DIR}/templates/docs/spec/framework/llms.txt" "${PROJECT_ROOT}/docs/spec/framework/llms.txt"
 
 # Copy business spec files
 echo ""
@@ -293,7 +295,7 @@ if [ "$GO_SCAFFOLD" -eq 1 ]; then
     copy_template "${SCRIPT_DIR}/templates/go/.github/workflows/release.yml" "${PROJECT_ROOT}/.github/workflows/release.yml"
     copy_template "${SCRIPT_DIR}/templates/go/README.md" "${PROJECT_ROOT}/README.md"
 
-    # renovate.json has no placeholders — use cp
+    # renovate.json has no placeholders -- use cp
     if [ ! -f "${PROJECT_ROOT}/renovate.json" ]; then
         cp "${SCRIPT_DIR}/templates/go/renovate.json" "${PROJECT_ROOT}/renovate.json"
         echo "  CREATED: renovate.json"
@@ -328,46 +330,53 @@ echo "=========================================="
 echo ""
 echo "Next steps:"
 echo "  1. Review .claude/settings.json permissions and adjust as needed"
-echo "  2. Review and customize docs/spec/LLM.md for your project"
+echo "  2. Review and customize .claude/rules/agent-guide.md for your project"
 echo "  3. Review .mcp.json and adjust MCP servers as needed"
 echo "  4. Start infrastructure: docker compose -f docs/spec/.llm/docker-compose.yml up -d"
-echo "  5. Create spec files following docs/spec/SPEC-WRITING-GUIDE.md"
-echo "  6. Delete the llm-init/ folder: rm -rf llm-init/"
+echo "  5. Delete the llm-init/ folder: rm -rf llm-init/"
 echo ""
-echo "Included guides:"
-echo "  - Go code patterns:     docs/spec/framework/go-generation-guide.md"
-echo "  - TypeScript/UI guide:  docs/spec/framework/typescript-ui-guide.md"
-echo "  - Performance guide:    docs/spec/framework/performance-guide.md"
-echo "  - Business features:    docs/spec/biz/README.md"
-echo "  - Spec writing guide:   docs/spec/SPEC-WRITING-GUIDE.md"
+echo "Structure created:"
+echo "  .claude/skills/     20 skills (slash commands)"
+echo "  .claude/agents/     17 agents (team-lead + 16 specialists)"
+echo "  .claude/rules/      18 rules (agent-guide + 17 pattern guides)"
 echo ""
-echo "Custom commands (type in Claude Code):"
+echo "Skills (type in Claude Code):"
 echo "  Task management:"
-echo "  - /prd <desc>          Interactive PRD → sized task files"
-echo "  - /decompose <desc>   Break a request into parallel tasks"
-echo "  - /new-task <desc>    Create a single task file"
-echo "  - /status             Task queue dashboard"
-echo "  - /launch [N]         Pre-flight checks + launch agents"
-echo "  - /plan <desc>        Select and create a plan template"
-echo "  - /review             Run quality gates"
-echo "  - /shelve             Checkpoint current work"
+echo "  - /prd <desc>              Interactive PRD -> sized task files"
+echo "  - /decompose <desc>        Break a request into parallel tasks"
+echo "  - /new-task <desc>         Create a single task file"
+echo "  - /status                  Task queue dashboard"
+echo "  - /launch                  Pre-flight checks + launch team lead agent"
+echo "  - /plan <desc>             Select and create a plan template"
+echo "  - /review                  Run quality gates"
+echo "  - /shelve                  Checkpoint current work"
 echo ""
 echo "  Software lifecycle:"
-echo "  - /requirements       Iterative requirement gathering → spec"
-echo "  - /architecture-review  Assess decisions and tradeoffs"
-echo "  - /adr                Create Architecture Decision Record"
-echo "  - /security-review    Security assessment"
-echo "  - /release            Release checklist and changelog"
+echo "  - /requirements            Iterative requirement gathering -> spec"
+echo "  - /architecture-review     Assess decisions and tradeoffs"
+echo "  - /adr                     Create Architecture Decision Record"
+echo "  - /security-review         Security assessment"
+echo "  - /release                 Release checklist and changelog"
+echo "  - /api-design              Design API contracts with OpenAPI specs"
+echo "  - /data-model              Design database schemas and migrations"
+echo "  - /performance-audit       Profile and optimize performance"
+echo "  - /incident-response       Structured incident investigation"
+echo "  - /refactor                Analyze codebase and plan refactoring"
+echo "  - /migrate                 Plan and execute database migrations"
+echo "  - /dependency-audit        Audit dependencies for vulnerabilities"
 echo ""
-echo "  Full reference:       docs/spec/.llm/SKILLS.md"
+echo "Team execution:"
+echo "  - Edit STRATEGY.md:        docs/spec/.llm/STRATEGY.md"
+echo "  - Edit agent guide:        .claude/rules/agent-guide.md"
+echo "  - Create tasks:            docs/spec/.llm/tasks/backlog/"
+echo "  - Launch team:             bash docs/spec/.llm/scripts/run-team.sh"
+echo "  - Check status:            bash docs/spec/.llm/scripts/status.sh"
 echo ""
-echo "Parallel agent execution:"
-echo "  - Edit STRATEGY.md:     docs/spec/.llm/STRATEGY.md"
-echo "  - Edit AGENT_GUIDE.md:  docs/spec/.llm/AGENT_GUIDE.md"
-echo "  - Create tasks:         docs/spec/.llm/tasks/backlog/"
-echo "  - Task template:        docs/spec/.llm/templates/task.template.md"
-echo "  - Launch agents:        bash docs/spec/.llm/scripts/run-parallel.sh 3"
-echo "  - Check status:         bash docs/spec/.llm/scripts/status.sh"
+echo "Codex CLI compatibility:"
+echo "  - AGENTS.md:              Codex CLI entry point"
+echo "  - .codex/config.toml:     Codex CLI configuration"
+echo "  - .agents/skills/:        Mirrored skills (identical SKILL.md format)"
+echo "  Note: aws-documentation MCP server requires uvx (pip install uv)"
 echo ""
 echo "Claude Code is pre-configured to run autonomously within this project."
 echo "See .claude/settings.json for the permission rules."

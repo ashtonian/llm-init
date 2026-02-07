@@ -6,22 +6,27 @@ docs/spec/.llm/data/
 # LLM scratch workspace
 .llm-scratch/
 
-# === Parallel Agent Harness (runtime artifacts) ===
+# === Agent Teams (runtime artifacts) ===
 
 # Git worktrees created by agents at runtime
 docs/spec/.llm/worktrees/
 
-# Runtime PID tracking
-docs/spec/.llm/.agent-pids
-
 # Atomic lock directories (mkdir-based)
 docs/spec/.llm/tasks/.locks/*/
+
+# Claude Code native agent memory
+.claude/agent-memory/
 
 # === Claude Code ===
 
 # Personal overrides (not shared)
 .claude/settings.local.json
 .claude/CLAUDE.local.md
+
+# === Codex CLI ===
+
+# Personal overrides (not shared)
+.codex/config.local.toml
 
 # === OS ===
 

@@ -24,8 +24,8 @@ One-paragraph description of what this task accomplishes.
 - [ ] Tests cover spec scenarios
 
 ## Specs to Reference
-- `docs/spec/framework/go-generation-guide.md` — for Go conventions
-- `docs/spec/framework/typescript-ui-guide.md` — for frontend patterns
+- `.claude/rules/go-patterns.md` — for Go conventions
+- `.claude/rules/typescript-patterns.md` — for frontend patterns
 
 ## Steps
 1. Step one

@@ -1,7 +1,8 @@
 {
   "enabledMcpjsonServers": [
     "github", "postgres", "redis",
-    "sequential-thinking", "context7", "playwright"
+    "sequential-thinking", "context7", "playwright",
+    "terraform", "eslint", "aws-documentation"
   ],
   "permissions": {
     "allow": [
@@ -115,6 +116,8 @@
       "Bash(psql *)",
       "Bash(redis-cli *)",
       "Bash(nats *)",
+      "Bash(terraform *)",
+      "Bash(uvx *)",
       "Bash(docker stop *)",
       "Bash(docker rm *)",
       "Bash(docker system prune*)",
@@ -130,6 +133,10 @@
       "WebFetch",
       "WebSearch",
       "Task",
+      "TaskCreate",
+      "TaskUpdate",
+      "TaskList",
+      "TaskGet",
       "mcp__github__*",
       "mcp__postgres__execute_sql",
       "mcp__postgres__search_objects",
@@ -139,7 +146,10 @@
       "mcp__redis__list",
       "mcp__sequential-thinking__sequentialthinking",
       "mcp__context7__*",
-      "mcp__playwright__*"
+      "mcp__playwright__*",
+      "mcp__terraform__*",
+      "mcp__eslint__*",
+      "mcp__aws-documentation__*"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -155,7 +165,7 @@
       "Bash(rm -rf .claude/*)",
       "Bash(rm -rf node_modules)",
       "Bash(rm -rf docs/spec/.llm/PROGRESS.md)",
-      "Bash(rm -rf docs/spec/.llm/AGENT_GUIDE.md)",
+      "Bash(rm -rf .claude/rules/*)",
       "Bash(sudo rm -rf *)",
       "Bash(sudo *)",
       "Bash(curl * | bash)",

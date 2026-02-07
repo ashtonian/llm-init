@@ -29,8 +29,8 @@ All items must pass these checks before being marked complete:
 
 ### Quality Gate Commands
 ```bash
-# Run quality gates defined in docs/spec/.llm/AGENT_GUIDE.md
-# Customize the AGENT_GUIDE.md Quality Gates section for your project.
+# Run quality gates defined in .claude/rules/agent-guide.md
+# Customize the Quality Gates section in agent-guide.md for your project.
 ```
 
 ## Pre-Iteration Checklist
@@ -38,12 +38,12 @@ All items must pass these checks before being marked complete:
 Before starting each iteration:
 - [ ] Read `PROGRESS.md` for codebase patterns and prior learnings
 - [ ] Check `plans/` for in-progress or conflicting work
-- [ ] Read relevant specs per the task type (see LLM.md execution order)
+- [ ] Read relevant specs per the task type (see CLAUDE.md execution principles)
 - [ ] Identify the highest-priority incomplete item
 
 ## Implementation Steps
 
-Follow the 7-step review loop from LLM.md for each item:
+Follow the 7-step review loop for each item:
 
 ### Step 1: READ
 - [ ] Load PROGRESS.md and relevant specs for context

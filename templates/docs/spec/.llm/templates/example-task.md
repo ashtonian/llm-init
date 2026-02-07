@@ -19,7 +19,7 @@ Implement the user service package (`internal/user/`) with domain model, reposit
 - [ ] Tests cover spec scenarios (§4.1 test matrix)
 
 ## Specs to Reference
-- `docs/spec/framework/go-generation-guide.md` — for Go conventions
+- `.claude/rules/go-patterns.md` — for Go conventions
 - `docs/spec/biz/user-management-spec.md` — for domain requirements
 - `internal/greeter/` — for package structure reference
 

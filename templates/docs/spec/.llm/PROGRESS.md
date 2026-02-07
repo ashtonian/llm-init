@@ -1,13 +1,13 @@
 # Progress & Knowledge Accumulation
 
-> This file is the persistent memory for LLM agents working on this project. Each iteration appends learnings here. Read the **Codebase Patterns** section before starting any work.
+> This file is the persistent memory for LLM agents working on this project. Read the **Codebase Patterns** section before starting any work.
 
 ## Codebase Patterns
 
 <!-- Consolidated patterns discovered across all iterations.
      CURATE this section: deduplicate, organize by topic, remove stale entries.
-     After completing a task, promote reusable learnings from the Iteration Log here.
-     This section should be a distilled, high-signal reference — not a dump. -->
+     After completing a task, promote reusable learnings here.
+     This section should be a distilled, high-signal reference -- not a dump. -->
 
 _No patterns recorded yet. As you work, add discovered patterns, conventions, and important context here._
 
@@ -36,7 +36,7 @@ _No decisions recorded yet. When you make a non-obvious architectural choice, do
 _No known issues yet._
 
 <!-- Example:
-- **{Issue}**: {Description} — Severity: {low/medium/high} — Workaround: {if any}
+- **{Issue}**: {Description} -- Severity: {low/medium/high} -- Workaround: {if any}
 -->
 
 ---
@@ -66,38 +66,3 @@ _No quirks recorded yet._
 <!-- Example:
 - **{Tool/Platform}**: {Quirk description and workaround}
 -->
-
----
-
-## Iteration Log
-
-<!-- Append new entries at the bottom. Each entry documents what was done and what was learned. -->
-
-<!-- TEMPLATE — copy this block for each new iteration:
-
-### {ISO Timestamp} - {Agent ID}
-
-**Task**: {What was attempted}
-
-**Stories/Items Completed**:
-- {Item 1}
-- {Item 2}
-
-**Files Modified**:
-- {path/to/file} - {what changed}
-
-**Decisions Made**:
-- {Decision}: {rationale}
-
-**Learnings for Future Iterations**:
-- {Pattern or gotcha that would help the next agent}
-- {Convention discovered that should be followed}
-- {Approach that worked or didn't work}
-
-**Quality Checks**:
-- [ ] Tests pass
-- [ ] Lint clean
-- [ ] Build succeeds
-
----
-END TEMPLATE -->

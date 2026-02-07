@@ -27,7 +27,7 @@
 
 Read these specs in order before implementation:
 
-- [ ] `framework/api-design.md` - REST conventions
+- [ ] `.claude/rules/api-design.md` - REST conventions
 - [ ] {Add relevant specs based on your task}
 
 ### Understanding Confirmed

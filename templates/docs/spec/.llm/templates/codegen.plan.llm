@@ -20,7 +20,7 @@
 ## Phase 1: Analyze Requirements
 
 - [ ] Read the business spec (`biz/{feature-name}.md`) if it exists
-- [ ] Read relevant framework specs (`docs/spec/framework/`)
+- [ ] Read relevant rules in `.claude/rules/` for code conventions
 - [ ] Identify all requirements, constraints, and acceptance criteria
 - [ ] List unknowns or ambiguities that need resolution
 
@@ -123,7 +123,7 @@ _(Add more phases as needed)_
 
 ## Phase 6: Quality Gates
 
-- [ ] All quality gates pass (build, test, lint from AGENT_GUIDE.md)
+- [ ] All quality gates pass (build, test, lint from .claude/rules/agent-guide.md)
 - [ ] Test coverage meets project standards
 - [ ] No spec deviations remain
 - [ ] PROGRESS.md updated with learnings

@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} — Project Strategy & Task Decomposition
 
-> Use this document to decompose your project into phases and tasks for the parallel agent harness.
+> Use this document to decompose your project into phases and tasks for parallel agent execution.
 
 ## Project Goal
 <!-- One paragraph describing what you're building -->
@@ -71,7 +71,7 @@ For each row above, create a file in `docs/spec/.llm/tasks/backlog/`:
 cp docs/spec/.llm/templates/task.template.md docs/spec/.llm/tasks/backlog/01-project-scaffolding.md
 ```
 
-Fill in each task file using the template format. The parallel agent harness reads:
+Fill in each task file using the template format. The team lead agent reads:
 - `## Dependencies:` to determine execution order
 - `## Verification` for quality gate commands
 - `## Acceptance Criteria` checkboxes for completion tracking

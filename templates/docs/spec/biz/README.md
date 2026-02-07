@@ -25,14 +25,14 @@ Load this document when:
 | **Writing User Stories** | Acceptance criteria, priority, sizing |
 | **Market & Competitive Analysis** | Templates for research documents |
 | **Decision Records** | How to document business decisions |
-| **Linking Business to Technical** | Connecting biz specs to framework/platform specs |
+| **Linking Business to Technical** | Connecting biz specs to technical implementation |
 
 ### Context Loading
 
 1. For **business documentation**: This doc is sufficient
-2. For **technical specs from business requirements**: Load `../SPEC-WRITING-GUIDE.md`
-3. For **API design from feature specs**: Load `../framework/api-design.md`
-4. For **overall orchestration**: Load `../LLM.md`
+2. For **technical specs from business requirements**: Use `/requirements` skill or see `.claude/rules/spec-first.md`
+3. For **API design from feature specs**: Use `/api-design` skill or see `.claude/rules/api-design.md`
+4. For **overall orchestration**: See `CLAUDE.md` at the project root
 
 ---
 
@@ -301,8 +301,8 @@ Every business requirement should trace to technical implementation:
 
 | Business Requirement | Technical Spec | Status |
 |---------------------|---------------|--------|
-| Users can reset password | framework/authentication.md §Password Reset | Implemented |
-| Dashboard loads <2s | framework/performance-guide.md §Latency Targets | In progress |
+| Users can reset password | .claude/rules/auth-patterns.md §Password Reset | Implemented |
+| Dashboard loads <2s | .claude/rules/performance.md §Latency Targets | In progress |
 ```
 
 ### Spec creation workflow
@@ -310,12 +310,12 @@ Every business requirement should trace to technical implementation:
 ```
 Business Feature Spec (biz/)
     │
-    └─→ Framework Spec (framework/) — if new patterns needed
+    └─→ Technical Spec (biz/{feature}-spec.md) — via /requirements skill
 ```
 
 When a business feature spec is written:
-1. Identify which framework patterns apply
-2. Create or update framework specs as needed
+1. Identify which `.claude/rules/` patterns apply
+2. Create or update technical specs as needed
 3. Link in the traceability matrix
 
 ---
@@ -343,6 +343,6 @@ docs/spec/biz/
 
 ## Related Documentation
 
-- [Spec Writing Guide](../SPEC-WRITING-GUIDE.md) - Technical spec format and standards
-- [LLM Orchestration Guide](../LLM.md) - Overall workflow and navigation
-- [LLM Style Guide](../LLM-STYLE-GUIDE.md) - Document formatting standards
+- [Spec-First Protocol](../../../.claude/rules/spec-first.md) - When and how to create technical specs
+- [CLAUDE.md](../../../CLAUDE.md) - Entry point with execution modes and skill references
+- [API Design Patterns](../../../.claude/rules/api-design.md) - REST/API conventions

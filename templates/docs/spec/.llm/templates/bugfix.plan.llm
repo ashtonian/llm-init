@@ -107,7 +107,7 @@ Follow this methodology systematically:
 - [ ] **Step 2.3**: Add regression tests for edge cases discovered during investigation
   - Files: `{path}_test`
 
-- [ ] **Quality gate**: Run quality gates from AGENT_GUIDE.md
+- [ ] **Quality gate**: Run quality gates from `.claude/rules/agent-guide.md`
 
 ### Phase 3: Verification
 
