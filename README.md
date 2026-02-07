@@ -20,6 +20,9 @@ cd /path/to/your-project
 # Run setup (project-name is required, go-module-path is optional)
 bash llm-init/setup.sh my-app github.com/myorg/my-app
 
+# Or with Go project scaffolding (Makefile, Dockerfile, CI, GoReleaser, linter):
+bash llm-init/setup.sh --go my-app github.com/myorg/my-app
+
 # Clean up
 rm -rf llm-init/
 
@@ -41,7 +44,29 @@ your-project/
 │       ├── launch.md                      #   /launch — Pre-flight checks + launch agents
 │       ├── plan.md                        #   /plan — Select and create a plan template
 │       ├── review.md                      #   /review — Run quality gates
-│       └── shelve.md                      #   /shelve — Checkpoint with structured handoff
+│       ├── shelve.md                      #   /shelve — Checkpoint with structured handoff
+│       ├── requirements.md                #   /requirements — Iterative requirement gathering
+│       ├── architecture-review.md         #   /architecture-review — Assess decisions & tradeoffs
+│       ├── adr.md                         #   /adr — Create Architecture Decision Record
+│       ├── security-review.md             #   /security-review — Security assessment
+│       └── release.md                     #   /release — Release preparation & changelog
+├── cmd/{project-name}/                    # [--go] Application entry point
+│   ├── main.go                            #   Main with run() pattern
+│   └── main_test.go                       #   Entry point tests
+├── internal/greeter/                      # [--go] Example package — reference for new packages
+│   ├── doc.go                             #   Package docs with usage example
+│   ├── model.go                           #   Domain model with validation
+│   ├── repository.go                      #   Repository interface + memory implementation
+│   ├── service.go                         #   Business logic with functional options
+│   └── service_test.go                    #   Table-driven tests
+├── Makefile                               # [--go] Build, test, lint, fmt, vet, clean, snapshot
+├── Dockerfile                             # [--go] Multi-stage, multi-arch build
+├── .goreleaser.yml                        # [--go] Multi-arch release automation
+├── .golangci.yml                          # [--go] Linter configuration
+├── .github/workflows/                     # [--go] CI/CD pipelines
+│   ├── ci.yml                             #   Build, test, lint on PR
+│   └── release.yml                        #   GoReleaser on tag push
+├── renovate.json                          # [--go] Dependency update automation
 ├── .mcp.json                              # 6 MCP servers (github, postgres, redis, sequential-thinking, context7, playwright)
 ├── .gitignore                             # Go, TypeScript, Docker, IDE, env, LLM workspace exclusions
 └── docs/spec/
@@ -78,8 +103,11 @@ your-project/
         │   ├── review.plan.llm            #   Review & iteration cycle
         │   ├── bugfix.plan.llm            #   Bug investigation & fix
         │   ├── self-review.plan.llm       #   System self-audit
+        │   ├── codegen.plan.llm          #   Spec-first code generation
+        │   ├── requirements.plan.llm    #   Multi-session requirement gathering
         │   ├── plan.template.llm          #   Generic task
-        │   └── task.template.md           #   Task template for parallel agent queue
+        │   ├── task.template.md           #   Task template for parallel agent queue
+        │   └── example-task.md           #   Filled-in example task (reference)
         ├── scripts/                        # Utility + agent harness scripts
         │   ├── move_nav_to_top.py         #   Reformats docs for LLM navigation
         │   ├── run-parallel.sh            #   Launch N parallel autonomous agents
@@ -130,10 +158,12 @@ You prompt Claude ──> Claude reads CLAUDE.md (automatic)
 ```
 
 **The key ideas**:
+- **Full software lifecycle.** Requirements gathering → design → implementation → review → release, with dedicated commands for each phase.
 - **Specs replace repeated prompt instructions.** Document your patterns once, Claude follows them every time.
 - **Knowledge accumulates across sessions.** Each session reads and writes to PROGRESS.md, building institutional knowledge.
 - **User approval at every major step.** Research → spec → plan → build, with human checkpoints at each transition.
 - **Review loops ensure quality.** Every change passes quality gates (build, test, lint) before completion.
+- **Architecture decisions are documented.** ADRs capture context, options, and rationale so decisions aren't re-litigated.
 - **Concurrent execution is encouraged.** Independent tasks run in parallel via subagents and feature branches. The parallel agent harness automates this with task queues, git worktrees, and atomic claiming.
 - **Self-improvement is built in.** The agent can review and improve specs, templates, and its own orchestration system.
 
@@ -149,10 +179,10 @@ You prompt Claude ──> Claude reads CLAUDE.md (automatic)
 | **Performance Guide** | Memory allocation strategies, profiling discipline, latency budgets, code quality standards |
 | **Business Features Guide** | Feature specs, user stories, market research templates, competitive analysis, decision records |
 | **PROGRESS.md** | 5-section knowledge base: patterns, architecture decisions, known issues, failed approaches, environment quirks |
-| **Custom Commands** | 7 slash commands (`/decompose`, `/new-task`, `/status`, `/launch`, `/plan`, `/review`, `/shelve`) |
+| **Custom Commands** | 12 slash commands: task management (`/decompose`, `/new-task`, `/status`, `/launch`, `/plan`, `/review`, `/shelve`) + lifecycle (`/requirements`, `/architecture-review`, `/adr`, `/security-review`, `/release`) |
 | **Skills Reference** | SKILLS.md: consolidated catalog of commands, MCP servers, scripts, templates, workflows |
 | **Parallel Agent Harness** | Task queue, git worktree isolation, atomic claiming, autonomous batch execution with N parallel agents |
-| **Plan Templates** | 7 templates: idea-to-project, full-stack feature, backend feature, review cycle, bugfix, self-review, generic |
+| **Plan Templates** | 9 templates: idea-to-project, full-stack feature, backend feature, review cycle, bugfix, self-review, spec-first codegen, requirements gathering, generic |
 | **Docker Compose** | PostgreSQL 16, Redis 7, NATS 2 with health checks, resource limits, data persistence |
 | **MCP Config** | 6 pre-configured servers: GitHub, Postgres, Redis, sequential-thinking, Context7 (library docs), Playwright (browser) |
 | **.gitignore** | Comprehensive template covering Go, TypeScript, Docker, IDE, env files, LLM workspace |

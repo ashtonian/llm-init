@@ -17,6 +17,11 @@ Type these as slash commands in Claude Code (e.g., `/decompose Build user manage
 | `/plan` | Select a plan template and create a plan file | Feature or task description |
 | `/review` | Run quality gates, check conventions | _(none)_ |
 | `/shelve` | Checkpoint work with structured handoff | _(none)_ |
+| `/requirements` | Iterative requirement gathering → package spec | Feature or package description |
+| `/architecture-review` | Assess decisions, tradeoffs, edge cases | Optional: scope to review |
+| `/adr` | Create Architecture Decision Record | Decision topic |
+| `/security-review` | Security assessment of codebase/feature | Optional: scope to review |
+| `/release` | Release prep with checklist and changelog | Optional: version number |
 
 ### Command Selection
 
@@ -29,7 +34,12 @@ What do you need to do?
 ├── Ready to run agents? ──────────> /launch
 ├── Need a plan first? ───────────> /plan
 ├── Done working, check quality? ──> /review
-└── Need to pause? ────────────────> /shelve
+├── Need to pause? ────────────────> /shelve
+├── Gather requirements? ──────────> /requirements
+├── Review architecture? ──────────> /architecture-review
+├── Document a decision? ──────────> /adr
+├── Security check? ───────────────> /security-review
+└── Prepare a release? ────────────> /release
 ```
 
 ---
@@ -87,6 +97,8 @@ Templates are in `docs/spec/.llm/templates/`.
 | `review.plan.llm` | Review/iteration cycle | Read → Assess → Implement → Verify → Record |
 | `bugfix.plan.llm` | Bug investigation and fix | Reproduce → Root cause → Fix → Regression test |
 | `self-review.plan.llm` | Audit the LLM system itself | Cross-refs → Workflows → Completeness → Efficiency |
+| `codegen.plan.llm` | Spec-first code generation | Analyze → Spec → Plan → Implement → Verify |
+| `requirements.plan.llm` | Multi-session requirement gathering | Discovery → Use Cases → Data → NFRs → Decisions → Spec |
 | `plan.template.llm` | Generic — anything else | Customizable |
 | `task.template.md` | Task file for the parallel queue | Single task format (not a plan) |
 
@@ -153,6 +165,9 @@ Incoming request
 ├── Ambiguous / needs discussion?
 │   └── Interactive mode ─── /plan → create plan file → work step-by-step
 │
+├── Need to gather requirements first?
+│   └── /requirements → iterative Q&A → produce spec → /plan or /decompose
+│
 ├── Multi-step feature?
 │   ├── Can decompose into 2+ independent tasks?
 │   │   └── Parallel mode ─── /decompose → /launch
@@ -165,6 +180,15 @@ Incoming request
 │
 ├── Review / check quality?
 │   └── /review
+│
+├── Review architecture?
+│   └── /architecture-review → assess decisions → /adr for documentation
+│
+├── Security assessment?
+│   └── /security-review
+│
+├── Prepare a release?
+│   └── /release → checklist → changelog → tag
 │
 └── Need to pause?
     └── /shelve

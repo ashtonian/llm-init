@@ -18,21 +18,54 @@ Fix the bug where {describe the incorrect behavior} so that {describe the correc
 
 ---
 
+## User Approval Gate
+
+> **IMPORTANT**: Present your root cause analysis and proposed fix to the user before implementing.
+
+- [ ] Root cause analysis reviewed by user
+- [ ] Proposed fix approach approved
+- [ ] User feedback incorporated
+
+---
+
 ## Bug Analysis
 
 ### Symptoms
 
 - {What is observed}
 - {Error messages if any}
-- {When/how it occurs}
+- {When/how it occurs — deterministic or intermittent}
+- {Affected users/systems/endpoints}
+
+### Root Cause Investigation
+
+Follow this methodology systematically:
+
+1. **Reproduce**: Create a minimal reproduction case
+   - [ ] Bug reproduced locally
+   - [ ] Reproduction case documented (steps, input data, environment)
+
+2. **Isolate**: Narrow down the cause
+   - [ ] Identify the failing code path (use logging, debugger, or test)
+   - [ ] Check recent changes (git log) for relevant modifications
+   - [ ] Check if the bug exists in related code paths (similar patterns may have same issue)
+
+3. **Understand**: Determine WHY the bug exists
+   - [ ] Root cause identified and documented below
 
 ### Root Cause
 
-{Description of why this happens - fill in after investigation}
+{Description of why this happens — fill in after investigation}
 
 ### Affected Components
 
-- [ ] `path/to/component` - {how it's affected}
+- [ ] `path/to/component` — {how it's affected}
+
+### Impact Assessment
+
+- **Scope**: {how many users/requests affected}
+- **Severity**: {data loss / incorrect behavior / cosmetic}
+- **Workaround exists**: {yes/no — describe if yes}
 
 ---
 
@@ -40,7 +73,7 @@ Fix the bug where {describe the incorrect behavior} so that {describe the correc
 
 ### Specs to Reference
 
-- [ ] {Relevant spec for the affected component}
+- [ ] {Relevant spec for the affected component — verify the spec-defined behavior}
 
 ### Reproduction Steps
 
@@ -55,23 +88,33 @@ Fix the bug where {describe the incorrect behavior} so that {describe the correc
 
 ### Phase 1: Investigation
 
-- [ ] **Step 1.1**: Reproduce the issue locally
-- [ ] **Step 1.2**: Identify root cause
-- [ ] **Step 1.3**: Identify all affected code paths
+- [ ] **Step 1.1**: Reproduce the issue locally with a failing test
+- [ ] **Step 1.2**: Identify root cause using the methodology above
+- [ ] **Step 1.3**: Identify ALL affected code paths (grep for similar patterns)
+- [ ] **Step 1.4**: Check if a technical spec exists — verify expected behavior against it
 
 ### Phase 2: Fix
 
-- [ ] **Step 2.1**: Implement fix
-  - Files: `{path}`
-
-- [ ] **Step 2.2**: Add regression test
+- [ ] **Step 2.1**: Write a failing test that demonstrates the bug
   - Files: `{path}_test`
+  - The test must FAIL before the fix and PASS after
+
+- [ ] **Step 2.2**: Implement the fix
+  - Files: `{path}`
+  - Fix the root cause, not the symptom
+  - If multiple code paths are affected, fix all of them
+
+- [ ] **Step 2.3**: Add regression tests for edge cases discovered during investigation
+  - Files: `{path}_test`
+
+- [ ] **Quality gate**: Run quality gates from AGENT_GUIDE.md
 
 ### Phase 3: Verification
 
-- [ ] **Step 3.1**: Verify fix resolves the issue
-- [ ] **Step 3.2**: Run full test suite
-- [ ] **Step 3.3**: Check for side effects
+- [ ] **Step 3.1**: Verify the failing test now passes
+- [ ] **Step 3.2**: Run full test suite — no new failures
+- [ ] **Step 3.3**: Verify no side effects in related components
+- [ ] **Step 3.4**: Test edge cases identified during investigation
 
 ---
 
@@ -91,6 +134,16 @@ Fix the bug where {describe the incorrect behavior} so that {describe the correc
 
 ---
 
+## Decisions
+
+### Decision 1: Fix Approach
+
+- **Choice**: {what approach was chosen}
+- **Alternatives**: {other approaches considered}
+- **Rationale**: {why this approach — consider: simplicity, risk, scope of change}
+
+---
+
 ## Progress Log
 
 ### {timestamp}
@@ -102,7 +155,11 @@ Fix the bug where {describe the incorrect behavior} so that {describe the correc
 
 ## Verification
 
+- [ ] Root cause analysis presented to user
 - [ ] Bug no longer reproducible
-- [ ] Regression test added
+- [ ] Failing test written BEFORE fix (test-first discipline)
+- [ ] Regression test covers the specific bug scenario
 - [ ] All existing tests still pass
+- [ ] Related code paths checked for same issue
 - [ ] No new issues introduced
+- [ ] PROGRESS.md updated with the bug pattern (to prevent recurrence)

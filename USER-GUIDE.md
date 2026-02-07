@@ -18,6 +18,7 @@ This guide explains the system that `llm-init` sets up, how to use it day-to-day
 - [Concurrent Execution](#concurrent-execution)
 - [Parallel Agent Harness](#parallel-agent-harness)
 - [Custom Commands](#custom-commands)
+- [Software Lifecycle](#software-lifecycle)
 - [Self-Improvement](#self-improvement)
 - [Infrastructure](#infrastructure)
 - [MCP Servers](#mcp-servers)
@@ -370,6 +371,8 @@ Templates are provided for common workflows:
 | `idea.plan.llm` | Start here for new projects — idea to working project (research → spec → plan → build) |
 | `fullstack.plan.llm` | Full-stack feature (DB → Service → API → Frontend → E2E) with parallel execution |
 | `feature.plan.llm` | Backend-focused feature implementation (6 phases) |
+| `codegen.plan.llm` | Spec-first code generation (requires spec before code) |
+| `requirements.plan.llm` | Multi-session requirement gathering → spec |
 | `review.plan.llm` | Review/iteration cycle with quality gates and escape hatch |
 | `bugfix.plan.llm` | Bug investigation, fix, and regression test |
 | `self-review.plan.llm` | System self-review — audit and improve the LLM orchestration system |
@@ -559,9 +562,11 @@ SKIP_PERMISSIONS=1 bash docs/spec/.llm/scripts/run-parallel.sh 3
 
 ## Custom Commands
 
-Claude Code supports project-level custom commands as slash commands. llm-init includes 7 pre-built commands.
+Claude Code supports project-level custom commands as slash commands. llm-init includes 12 pre-built commands.
 
 ### Available Commands
+
+**Task Management:**
 
 | Command | Purpose |
 |---------|---------|
@@ -573,7 +578,31 @@ Claude Code supports project-level custom commands as slash commands. llm-init i
 | `/review` | Run quality gates on current work |
 | `/shelve` | Checkpoint with structured handoff |
 
+**Software Lifecycle:**
+
+| Command | Purpose |
+|---------|---------|
+| `/requirements <topic>` | Iterative requirement gathering → package spec |
+| `/architecture-review [scope]` | Assess decisions, tradeoffs, edge cases |
+| `/adr <decision topic>` | Create Architecture Decision Record |
+| `/security-review [scope]` | Security assessment of codebase or feature |
+| `/release [version]` | Release preparation with checklist and changelog |
+
 ### Example Workflows
+
+**Full lifecycle (requirements → build → release):**
+
+```
+/requirements User management system with roles and invite flow
+# Answer questions interactively, approve the spec
+/decompose Build user management from the approved spec
+# Review the decomposition, approve
+/launch 3
+/status
+/architecture-review
+/security-review
+/release 1.0.0
+```
 
 **Starting a new feature (parallel):**
 
@@ -590,6 +619,14 @@ Claude Code supports project-level custom commands as slash commands. llm-init i
 /plan Redesign the authentication system
 # Fill in the plan, get approval, implement
 /review
+```
+
+**Architecture review and ADR:**
+
+```
+/architecture-review Authentication and authorization system
+# Review findings, then document key decisions:
+/adr Switch from session tokens to JWT for stateless auth
 ```
 
 **Pausing and resuming:**
@@ -613,6 +650,68 @@ echo "Your prompt instructions here" > .claude/commands/my-command.md
 Commands are markdown files containing prompt instructions. When invoked, Claude Code expands the file content as the prompt. User input after the command name is available as `$ARGUMENTS`.
 
 See `docs/spec/.llm/SKILLS.md` for the full capabilities reference.
+
+---
+
+## Software Lifecycle
+
+llm-init supports a complete software development lifecycle. Each phase has dedicated commands.
+
+### The Lifecycle
+
+```
+Requirements → Design → Implement → Review → Release
+    │              │         │           │        │
+/requirements  /plan     /decompose  /review  /release
+               /adr      /launch     /architecture-review
+                                     /security-review
+```
+
+### Phase 1: Requirements Gathering
+
+Use `/requirements` to start an interactive Q&A session. Claude will:
+
+1. Ask broad discovery questions (purpose, users, use cases)
+2. Narrow scope and boundaries (in/out of scope, inputs/outputs)
+3. Present design decisions with tradeoffs (storage, API style, auth)
+4. Explore edge cases and failure modes
+5. Produce a formal specification document
+6. Iterate with you until the spec is approved
+
+The output is a spec document in `docs/spec/biz/` that drives all subsequent work.
+
+For multi-session requirement gathering, use `/plan` and select the `requirements.plan.llm` template.
+
+### Phase 2: Design & Architecture
+
+Use `/plan` with the `codegen.plan.llm` template to create a technical spec from the requirements. Use `/adr` to document major architecture decisions as Architecture Decision Records.
+
+ADRs capture:
+- **Context**: What forces are at play
+- **Decision**: What was chosen
+- **Options**: What else was considered
+- **Consequences**: What we gain and sacrifice
+
+ADRs live in `docs/spec/biz/adr-NNN-*.md` and prevent decisions from being re-litigated.
+
+### Phase 3: Implementation
+
+Use `/decompose` to break the approved spec into parallel tasks, then `/launch` to execute them autonomously. The spec-first protocol ensures every implementation references the approved spec.
+
+### Phase 4: Review
+
+Use three complementary review commands:
+- `/review` — Quality gates (build, test, lint) + code quality audit
+- `/architecture-review` — Assess decisions, tradeoffs, edge cases, consistency
+- `/security-review` — Systematic security assessment (input validation, auth, data protection, dependencies)
+
+### Phase 5: Release
+
+Use `/release` to generate a checklist, changelog, and validation steps. Claude will:
+1. Run all quality gates
+2. Generate a changelog from commits
+3. Walk through the pre-release checklist
+4. Create the tag after your approval
 
 ---
 

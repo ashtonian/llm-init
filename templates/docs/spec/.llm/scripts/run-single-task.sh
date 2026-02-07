@@ -32,7 +32,7 @@ AGENT_GUIDE="${HARNESS_DIR}/AGENT_GUIDE.md"
 MAX_TURNS="${MAX_TURNS:-75}"
 BRANCH_PREFIX="${BRANCH_PREFIX:-task/}"
 SKIP_API_KEY_UNSET="${SKIP_API_KEY_UNSET:-}"
-SKIP_PERMISSIONS="${SKIP_PERMISSIONS:-1}"
+SKIP_PERMISSIONS="${SKIP_PERMISSIONS:-0}"
 
 mkdir -p "${LOG_DIR}" "${LOCK_DIR}"
 
@@ -126,10 +126,25 @@ ${TASK_CONTENT}
 
 1. Read the task carefully and understand ALL steps and acceptance criteria.
 2. Read the progress log above to understand what previous iterations accomplished.
-3. Implement all steps in the task.
-4. Run the verification commands listed in the task.
-5. Verify ALL acceptance criteria are satisfied.
-6. Commit your changes with a descriptive message. Do NOT push.
+3. Read relevant framework guides (docs/spec/framework/) before writing code.
+4. **Spec-first**: Check the task's "Technical Spec Reference" section. If a spec exists, cross-reference your implementation against it.
+5. Implement all steps in the task.
+6. **Write production-quality code** — follow the Production Code Quality Checklist in AGENT_GUIDE.md:
+   - Error handling: all error paths tested, errors wrapped with context
+   - Input validation: at system boundaries
+   - Testing: table-driven, happy + error cases, memory backends for unit tests
+   - Documentation: doc.go for public packages, doc comments on exports
+7. Run the verification commands listed in the task.
+8. If no verification commands are listed, run the quality gates from docs/spec/.llm/AGENT_GUIDE.md.
+9. Verify ALL acceptance criteria are satisfied.
+10. Commit your changes with a descriptive message. Do NOT push.
+
+## Debugging Protocol
+
+If tests fail or code doesn't build:
+1. Read the FULL error message — don't guess.
+2. Reproduce in isolation, add targeted logging, fix the root cause.
+3. If stuck after 3 attempts, signal TASK_BLOCKED with the full error.
 
 ## Completion Protocol
 
@@ -160,13 +175,27 @@ PROMPT_END
 LOG_FILE="${LOG_DIR}/${AGENT_NAME}-${TASK_NAME}-$(date '+%Y%m%d-%H%M%S').log"
 log "Spawning Claude Code (max turns: $MAX_TURNS)..."
 
+# Check for existing session ID from a previous shelved run
+RESUME_ID=""
+if grep -q "^\*\*Session ID\*\*:" "$TASK_FILE" 2>/dev/null; then
+    RESUME_ID=$(grep "^\*\*Session ID\*\*:" "$TASK_FILE" | head -1 | sed 's/.*: //')
+fi
+
 EXIT_CODE=0
 CLAUDE_ARGS=(--print --output-format text --max-turns "$MAX_TURNS")
 if [[ "$SKIP_PERMISSIONS" == "1" ]]; then
     CLAUDE_ARGS+=(--dangerously-skip-permissions)
 fi
+if [[ -n "$RESUME_ID" ]] && [[ "$RESUME_ID" != "unknown" ]]; then
+    CLAUDE_ARGS+=(--resume "$RESUME_ID")
+    log "Resuming session: $RESUME_ID"
+fi
 echo "$PROMPT" | claude "${CLAUDE_ARGS[@]}" \
     > "$LOG_FILE" 2>&1 || EXIT_CODE=$?
+
+# Extract session ID from log for potential future --resume
+SESSION_ID=""
+SESSION_ID=$(grep -oE 'session_id=[a-f0-9-]+' "$LOG_FILE" | head -1 | sed 's/session_id=//' || true)
 
 cd "$PROJECT_ROOT"
 
@@ -216,6 +245,7 @@ elif grep -q "TASK_SHELVED" "$LOG_FILE"; then
 **Shelved by**: ${AGENT_NAME}
 **Shelved at**: $(date -Iseconds 2>/dev/null || date '+%Y-%m-%dT%H:%M:%S')
 **Branch**: ${BRANCH_NAME}
+**Session ID**: ${SESSION_ID:-unknown}
 
 ${SHELVED_STATE}
 EOF

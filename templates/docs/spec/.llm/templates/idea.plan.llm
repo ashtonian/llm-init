@@ -73,7 +73,20 @@
 - [ ] Define frontend structure (pages, components, state)
 - [ ] Document architecture in `docs/spec/biz/{idea-name}.md` or a dedicated spec
 
-### 2.3 Create Framework Specs (if needed)
+### 2.3 Technical Code Specification
+
+- [ ] Create technical code spec covering:
+  - Data models (entities, field types, constraints, relationships)
+  - API contracts (endpoints, request/response shapes, status codes, error codes)
+  - Error handling (error types, recovery strategies, user-facing messages)
+  - State management (transitions, invariants, side effects)
+  - Performance (latency budgets, memory constraints, concurrency model)
+  - Security (authN/authZ, input validation, data sanitization)
+  - Testing strategy (unit/integration/E2E plan, edge cases, fixtures)
+  - Dependencies (external packages, services, infrastructure)
+- [ ] Document spec in `docs/spec/biz/{idea-name}-spec.md` or a dedicated spec file
+
+### 2.4 Create Framework Specs (if needed)
 
 - [ ] Create any missing framework specs needed for this project
   - Use `docs/spec/SPEC-WRITING-GUIDE.md` as template guide
@@ -84,11 +97,13 @@
 > **Present specs to user for approval.** Ask:
 > - Does the business spec capture your requirements?
 > - Is the technical architecture appropriate?
+> - Does the technical code spec accurately define data models, API contracts, and error handling?
 > - Any features to add/remove/reprioritize?
 > - Ready to proceed to implementation planning?
 
 - [ ] User reviewed business spec
 - [ ] User reviewed technical architecture
+- [ ] User reviewed technical code spec
 - [ ] User approved specs
 - [ ] Feedback incorporated
 

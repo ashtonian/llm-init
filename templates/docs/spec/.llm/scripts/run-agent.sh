@@ -177,12 +177,39 @@ ${task_content}
 2. Read the progress log above to understand what previous iterations accomplished.
 3. Read CLAUDE.md and docs/spec/LLM.md if you need orchestration or convention context.
 4. Read relevant framework guides (docs/spec/framework/) before writing code.
-5. Implement all steps in the task.
-6. Run the verification commands listed in the task.
-7. If no verification commands are listed, run the quality gates from docs/spec/.llm/AGENT_GUIDE.md.
-8. Verify ALL acceptance criteria checkboxes are satisfied.
-9. Commit your changes with a descriptive message. Do NOT push.
-10. If you cannot complete the task, signal TASK_BLOCKED with a clear reason.
+5. **Spec-first**: Before writing any code, verify a technical spec exists for the feature. Check the task's "Technical Spec Reference" section.
+   - If a spec exists, read it and cross-reference your implementation against it at each step.
+   - If no spec exists and the task involves non-trivial code, create one first and signal TASK_BLOCKED for review.
+6. Implement all steps in the task.
+7. **Write production-quality code** — follow the Production Code Quality Checklist in AGENT_GUIDE.md:
+   - Error handling: all error paths tested, errors wrapped with context, no swallowed errors
+   - Input validation: at all system boundaries (handlers, CLI, config)
+   - Testing: table-driven tests, both happy path and error cases, memory backends for unit tests
+   - Documentation: doc.go for public packages, doc comments on exports, WHY comments on complex logic
+   - Code structure: functions < 60 lines, domain types have Validate(), services accept interfaces
+8. Run the verification commands listed in the task.
+9. If no verification commands are listed, run the quality gates from docs/spec/.llm/AGENT_GUIDE.md.
+10. Verify ALL acceptance criteria checkboxes are satisfied.
+11. Commit your changes with a descriptive message. Do NOT push.
+12. If you cannot complete the task, signal TASK_BLOCKED with a clear reason.
+
+## Turn Budget
+
+You have a maximum of ${MAX_TURNS} turns. Plan your work accordingly:
+- At ~80% of turns used, start wrapping up or preparing to shelve at a clean checkpoint.
+- Prefer shelving at a point where all tests pass rather than mid-implementation.
+- Signal TASK_SHELVED proactively if you realize the remaining work exceeds your budget.
+
+## Debugging Protocol
+
+If tests fail or code doesn't build:
+1. Read the FULL error message — don't guess at the cause.
+2. Reproduce in isolation (single test, minimal case).
+3. Add targeted logging, re-run, observe.
+4. Fix the root cause, not the symptom.
+5. Verify the fix doesn't break other tests.
+6. Remove debug logging before committing.
+7. If stuck after 3 attempts on the same error, signal TASK_BLOCKED with the full error output.
 
 ## Completion Protocol
 

@@ -15,6 +15,11 @@
 | **Writing any Go code** | Read `framework/go-generation-guide.md` first (mandatory) |
 | **Writing any frontend/UI code** | Read `framework/typescript-ui-guide.md` first (mandatory) |
 | **Performance-sensitive work** | Read `framework/performance-guide.md` first (mandatory) |
+| **Code generation task** | Spec-first: verify/create technical spec before writing code. See [Spec-First Protocol](#spec-first-protocol) |
+| **Gathering requirements** | Use `/requirements` command for interactive Q&A → spec. See [Software Lifecycle](#software-lifecycle) |
+| **Architecture review** | Use `/architecture-review` to assess decisions, tradeoffs, edge cases |
+| **Security assessment** | Use `/security-review` for systematic security audit |
+| **Preparing a release** | Use `/release` for checklist, changelog, validation |
 | **Complex decisions / guided session** | Use Interactive mode — create a plan.llm file, work step-by-step with user |
 | **Bug fix / small change** | Quick mode — read relevant spec, make the fix, no plan needed |
 | **Creating a new spec** | Read `SPEC-WRITING-GUIDE.md` for templates and depth expectations |
@@ -282,9 +287,11 @@ Inspired by iterative agent patterns, the review loop ensures quality through re
 ├─────────────────────────────────────────┤
 │ 3. IMPLEMENT: Make the change           │
 │    (one focused item per iteration)      │
+│    Reference spec for contracts/models   │
 ├─────────────────────────────────────────┤
 │ 4. VERIFY: Run quality gates            │
 │    (build, test, lint, type-check)       │
+│    Check against spec contracts          │
 ├─────────────────────────────────────────┤
 │ 5. RECORD: Update PROGRESS.md with      │
 │    learnings and iteration log           │
@@ -365,6 +372,92 @@ The agent is encouraged to improve the LLM orchestration system itself.
 
 ---
 
+## Spec-First Protocol
+
+Before writing non-trivial code, verify a technical specification exists. This ensures implementations match requirements and prevents spec drift.
+
+### When to Create a Spec
+
+| Situation | Action |
+|-----------|--------|
+| New feature with data models or API endpoints | Create spec (use `codegen.plan.llm` template) |
+| Bug fix or small change | No spec needed |
+| Refactoring with no behavior change | No spec needed |
+| New integration or external dependency | Create spec |
+
+### Spec Contents
+
+A technical code spec should define:
+- **Data models**: Entities, field types, constraints, relationships
+- **API contracts**: Endpoints, request/response shapes, status codes, error codes
+- **Error handling**: Error types, recovery strategies, user-facing messages
+- **State management**: Transitions, invariants, side effects
+- **Testing strategy**: Unit/integration/E2E plan, edge cases, fixtures
+
+### Spec Location
+
+- Feature specs: `docs/spec/biz/{feature-name}-spec.md`
+- Framework specs: `docs/spec/framework/{topic}.md`
+
+### Compliance Verification
+
+After implementation, verify:
+1. Every data model matches the spec (fields, types, constraints)
+2. Every API endpoint matches the spec (paths, methods, shapes)
+3. Every error code matches the spec
+4. All edge cases from the spec are handled
+5. All test scenarios from the testing strategy are implemented
+
+---
+
+## Software Lifecycle
+
+The system supports a full software development lifecycle. Use these commands at each phase:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 1. REQUIREMENTS: Gather & document requirements             │
+│    /requirements → iterative Q&A → produce spec             │
+│    /plan (requirements.plan.llm) for multi-session          │
+│                                                             │
+│    >>> USER CHECKPOINT: Approve requirements spec            │
+├─────────────────────────────────────────────────────────────┤
+│ 2. DESIGN: Architecture & design decisions                  │
+│    /plan (codegen.plan.llm) → technical spec                │
+│    /adr → document major decisions                          │
+│                                                             │
+│    >>> USER CHECKPOINT: Approve design & spec                │
+├─────────────────────────────────────────────────────────────┤
+│ 3. IMPLEMENT: Build the code                                │
+│    /decompose → parallel tasks → /launch                    │
+│    Follow spec-first protocol                               │
+│                                                             │
+│    >>> USER CHECKPOINT: Review at milestones                 │
+├─────────────────────────────────────────────────────────────┤
+│ 4. REVIEW: Quality & security                               │
+│    /review → quality gates, code audit                      │
+│    /architecture-review → tradeoffs, edge cases             │
+│    /security-review → vulnerability assessment              │
+│                                                             │
+│    >>> USER CHECKPOINT: Approve for release                  │
+├─────────────────────────────────────────────────────────────┤
+│ 5. RELEASE: Ship it                                         │
+│    /release → checklist, changelog, tag, publish            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Lifecycle Command Map
+
+| Phase | Commands | Output |
+|-------|----------|--------|
+| Requirements | `/requirements`, `/plan` (requirements template) | Business spec in `docs/spec/biz/` |
+| Design | `/plan` (codegen template), `/adr` | Technical spec, ADRs |
+| Implement | `/decompose`, `/launch`, `/new-task` | Working code with tests |
+| Review | `/review`, `/architecture-review`, `/security-review` | Review reports |
+| Release | `/release` | Changelog, tag, artifacts |
+
+---
+
 ## Navigation Index
 
 ### By Task
@@ -381,6 +474,13 @@ The agent is encouraged to improve the LLM orchestration system itself.
 | Create a new spec | `SPEC-WRITING-GUIDE.md` |
 | Write a business feature spec | `biz/README.md` |
 | Understand spec patterns | `framework/README.md` -> `SPEC-WRITING-GUIDE.md` |
+| Generate code (spec-first) | `.llm/templates/codegen.plan.llm` -> [Spec-First Protocol](#spec-first-protocol) |
+| Gather requirements | `/requirements` command or `.llm/templates/requirements.plan.llm` |
+| Review architecture | `/architecture-review` command -> `/adr` for documentation |
+| Document a decision | `/adr` command -> `docs/spec/biz/adr-NNN-*.md` |
+| Run security assessment | `/security-review` command |
+| Prepare a release | `/release` command |
+| Follow full lifecycle | [Software Lifecycle](#software-lifecycle) |
 | Start a review/iteration cycle | `.llm/templates/review.plan.llm` -> `.llm/PROGRESS.md` |
 | Improve the LLM orchestration system | `.llm/templates/self-review.plan.llm` |
 | Check infrastructure status | `.llm/INFRASTRUCTURE.md` |

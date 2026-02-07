@@ -38,6 +38,18 @@ Implement the {feature name} feature including database layer, service logic, AP
 
 ---
 
+## Phase 0: Technical Specification
+
+> Before implementation, verify a technical spec exists. If not, create one using `codegen.plan.llm`.
+
+- [ ] Technical spec exists at: `docs/spec/{spec-path}`
+  - Data models, API contracts, error codes, state transitions defined
+  - Testing strategy and edge cases documented
+- [ ] If no spec exists: create one before proceeding (use `codegen.plan.llm` template)
+- [ ] Spec reviewed and approved by user
+
+---
+
 ## Prerequisites
 
 ### Specs to Read (Execution Order)
@@ -204,5 +216,7 @@ Read these specs in order before implementation. Only read specs that exist — 
 - [ ] All quality gates pass at each phase
 - [ ] Full test suite passes (quality gates from AGENT_GUIDE.md)
 - [ ] Lint clean
+- [ ] Implementation matches technical spec (data models, API contracts, error codes)
+- [ ] All edge cases from spec are handled
 - [ ] PROGRESS.md updated with learnings
 - [ ] User has reviewed the completed feature

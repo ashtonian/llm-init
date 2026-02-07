@@ -7,9 +7,47 @@ set -euo pipefail
 # Copies the llm-init template into your project, replacing {{PROJECT_NAME}}
 # with the provided project name.
 
+GO_SCAFFOLD=0
+
+# Parse flags
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --go)
+            GO_SCAFFOLD=1
+            shift
+            ;;
+        --help|-h)
+            echo "Usage: bash llm-init/setup.sh [--go] <project-name> [go-module-path]"
+            echo ""
+            echo "Flags:"
+            echo "  --go             Scaffold Go project (Makefile, Dockerfile, CI, GoReleaser, linter)"
+            echo ""
+            echo "Arguments:"
+            echo "  project-name     Used for database names, container names, etc."
+            echo "  go-module-path   Go module import path (default: github.com/yourorg/project-name)"
+            echo ""
+            echo "Examples:"
+            echo "  bash llm-init/setup.sh my-app github.com/myorg/my-app"
+            echo "  bash llm-init/setup.sh --go my-app github.com/myorg/my-app"
+            exit 0
+            ;;
+        -*)
+            echo "ERROR: Unknown flag: $1"
+            echo "Run with --help for usage."
+            exit 1
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
 if [ $# -lt 1 ]; then
-    echo "Usage: bash llm-init/setup.sh <project-name> [go-module-path]"
-    echo "Example: bash llm-init/setup.sh my-awesome-app github.com/myorg/my-awesome-app"
+    echo "Usage: bash llm-init/setup.sh [--go] <project-name> [go-module-path]"
+    echo "Example: bash llm-init/setup.sh --go my-awesome-app github.com/myorg/my-awesome-app"
+    echo ""
+    echo "Flags:"
+    echo "  --go             Scaffold Go project (Makefile, Dockerfile, CI, GoReleaser, linter)"
     echo ""
     echo "Arguments:"
     echo "  project-name     Used for database names, container names, etc."
@@ -65,9 +103,17 @@ copy_template() {
     # Escape forward slashes in MODULE for sed
     local escaped_module
     escaped_module=$(echo "${PROJECT_MODULE}" | sed 's/\//\\\//g')
-    sed -e "s/{{PROJECT_NAME}}/${PROJECT_NAME}/g" \
+    if ! sed -e "s/{{PROJECT_NAME}}/${PROJECT_NAME}/g" \
         -e "s/{{PROJECT_MODULE}}/${escaped_module}/g" \
-        "${src}" > "${dest}"
+        "${src}" > "${dest}"; then
+        echo "  ERROR: Failed to process template: ${src}"
+        rm -f "${dest}"
+        return 1
+    fi
+    # Verify no unreplaced placeholders remain
+    if grep -q '{{PROJECT_NAME}}' "${dest}" 2>/dev/null; then
+        echo "  WARNING: Unreplaced {{PROJECT_NAME}} in ${dest}"
+    fi
     echo "  CREATED: ${dest}"
 }
 
@@ -90,7 +136,7 @@ fi
 # Copy custom slash commands
 echo ""
 echo "Copying custom slash commands..."
-for cmd in decompose.md new-task.md status.md launch.md plan.md review.md shelve.md; do
+for cmd in decompose.md new-task.md status.md launch.md plan.md review.md shelve.md requirements.md architecture-review.md adr.md security-review.md release.md; do
     if [ ! -f "${PROJECT_ROOT}/.claude/commands/${cmd}" ]; then
         cp "${SCRIPT_DIR}/templates/.claude/commands/${cmd}" "${PROJECT_ROOT}/.claude/commands/${cmd}"
         echo "  CREATED: .claude/commands/${cmd}"
@@ -145,11 +191,14 @@ copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/feature.plan.llm
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/bugfix.plan.llm" "${PROJECT_ROOT}/docs/spec/.llm/templates/bugfix.plan.llm"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/review.plan.llm" "${PROJECT_ROOT}/docs/spec/.llm/templates/review.plan.llm"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/self-review.plan.llm" "${PROJECT_ROOT}/docs/spec/.llm/templates/self-review.plan.llm"
+copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/codegen.plan.llm" "${PROJECT_ROOT}/docs/spec/.llm/templates/codegen.plan.llm"
+copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/requirements.plan.llm" "${PROJECT_ROOT}/docs/spec/.llm/templates/requirements.plan.llm"
 
-# Copy task template
+# Copy task template and example
 echo ""
 echo "Copying task template..."
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/task.template.md" "${PROJECT_ROOT}/docs/spec/.llm/templates/task.template.md"
+copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/example-task.md" "${PROJECT_ROOT}/docs/spec/.llm/templates/example-task.md"
 
 # Copy parallel agent harness files
 echo ""
@@ -205,6 +254,58 @@ touch "${PROJECT_ROOT}/docs/spec/.llm/tasks/blocked/.gitkeep"
 touch "${PROJECT_ROOT}/docs/spec/.llm/tasks/.locks/.gitkeep"
 touch "${PROJECT_ROOT}/docs/spec/.llm/logs/.gitkeep"
 
+# Go project scaffolding (optional)
+if [ "$GO_SCAFFOLD" -eq 1 ]; then
+    echo ""
+    echo "Scaffolding Go project..."
+    mkdir -p "${PROJECT_ROOT}/cmd/${PROJECT_NAME}"
+    mkdir -p "${PROJECT_ROOT}/.github/workflows"
+
+    mkdir -p "${PROJECT_ROOT}/internal/greeter"
+
+    copy_template "${SCRIPT_DIR}/templates/go/cmd/PROJECT_NAME/main.go" "${PROJECT_ROOT}/cmd/${PROJECT_NAME}/main.go"
+    copy_template "${SCRIPT_DIR}/templates/go/cmd/PROJECT_NAME/main_test.go" "${PROJECT_ROOT}/cmd/${PROJECT_NAME}/main_test.go"
+    copy_template "${SCRIPT_DIR}/templates/go/internal/greeter/doc.go" "${PROJECT_ROOT}/internal/greeter/doc.go"
+    copy_template "${SCRIPT_DIR}/templates/go/internal/greeter/model.go" "${PROJECT_ROOT}/internal/greeter/model.go"
+    copy_template "${SCRIPT_DIR}/templates/go/internal/greeter/repository.go" "${PROJECT_ROOT}/internal/greeter/repository.go"
+    copy_template "${SCRIPT_DIR}/templates/go/internal/greeter/service.go" "${PROJECT_ROOT}/internal/greeter/service.go"
+    copy_template "${SCRIPT_DIR}/templates/go/internal/greeter/service_test.go" "${PROJECT_ROOT}/internal/greeter/service_test.go"
+    copy_template "${SCRIPT_DIR}/templates/go/Makefile" "${PROJECT_ROOT}/Makefile"
+    copy_template "${SCRIPT_DIR}/templates/go/Dockerfile" "${PROJECT_ROOT}/Dockerfile"
+    copy_template "${SCRIPT_DIR}/templates/go/.goreleaser.yml" "${PROJECT_ROOT}/.goreleaser.yml"
+    copy_template "${SCRIPT_DIR}/templates/go/.golangci.yml" "${PROJECT_ROOT}/.golangci.yml"
+    copy_template "${SCRIPT_DIR}/templates/go/.github/workflows/ci.yml" "${PROJECT_ROOT}/.github/workflows/ci.yml"
+    copy_template "${SCRIPT_DIR}/templates/go/.github/workflows/release.yml" "${PROJECT_ROOT}/.github/workflows/release.yml"
+    copy_template "${SCRIPT_DIR}/templates/go/README.md" "${PROJECT_ROOT}/README.md"
+
+    # renovate.json has no placeholders — use cp
+    if [ ! -f "${PROJECT_ROOT}/renovate.json" ]; then
+        cp "${SCRIPT_DIR}/templates/go/renovate.json" "${PROJECT_ROOT}/renovate.json"
+        echo "  CREATED: renovate.json"
+    else
+        echo "  SKIP (exists): renovate.json"
+    fi
+
+    # Initialize go.mod and go.sum
+    if [ ! -f "${PROJECT_ROOT}/go.mod" ]; then
+        echo ""
+        echo "Initializing Go module..."
+        if (cd "${PROJECT_ROOT}" && go mod init "${PROJECT_MODULE}" 2>/dev/null); then
+            echo "  CREATED: go.mod (${PROJECT_MODULE})"
+            # Create go.sum so Dockerfile COPY doesn't fail
+            (cd "${PROJECT_ROOT}" && go mod tidy 2>/dev/null) || true
+            if [ -f "${PROJECT_ROOT}/go.sum" ]; then
+                echo "  CREATED: go.sum"
+            fi
+        else
+            echo "  WARNING: 'go mod init' failed (Go not installed?). Run manually:"
+            echo "    cd ${PROJECT_ROOT} && go mod init ${PROJECT_MODULE} && go mod tidy"
+        fi
+    else
+        echo "  SKIP (exists): go.mod"
+    fi
+fi
+
 echo ""
 echo "=========================================="
 echo "LLM infrastructure setup complete!"
@@ -226,6 +327,7 @@ echo "  - Business features:    docs/spec/biz/README.md"
 echo "  - Spec writing guide:   docs/spec/SPEC-WRITING-GUIDE.md"
 echo ""
 echo "Custom commands (type in Claude Code):"
+echo "  Task management:"
 echo "  - /decompose <desc>   Break a request into parallel tasks"
 echo "  - /new-task <desc>    Create a single task file"
 echo "  - /status             Task queue dashboard"
@@ -233,7 +335,15 @@ echo "  - /launch [N]         Pre-flight checks + launch agents"
 echo "  - /plan <desc>        Select and create a plan template"
 echo "  - /review             Run quality gates"
 echo "  - /shelve             Checkpoint current work"
-echo "  - Full reference:     docs/spec/.llm/SKILLS.md"
+echo ""
+echo "  Software lifecycle:"
+echo "  - /requirements       Iterative requirement gathering → spec"
+echo "  - /architecture-review  Assess decisions and tradeoffs"
+echo "  - /adr                Create Architecture Decision Record"
+echo "  - /security-review    Security assessment"
+echo "  - /release            Release checklist and changelog"
+echo ""
+echo "  Full reference:       docs/spec/.llm/SKILLS.md"
 echo ""
 echo "Parallel agent execution:"
 echo "  - Edit STRATEGY.md:     docs/spec/.llm/STRATEGY.md"

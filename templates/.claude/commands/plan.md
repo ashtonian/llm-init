@@ -12,6 +12,8 @@ Help select the right plan template and create a plan file.
    | `review.plan.llm` | Review/iteration cycle with quality gates |
    | `bugfix.plan.llm` | Bug investigation and fix |
    | `self-review.plan.llm` | Audit the LLM orchestration system |
+   | `codegen.plan.llm` | Spec-first code generation (requires spec before code) |
+   | `requirements.plan.llm` | Multi-session requirement gathering to produce a spec |
    | `plan.template.llm` | Generic — anything else |
 
 2. Based on the user's description, recommend the best template.

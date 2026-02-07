@@ -7,6 +7,17 @@
 ## Objective
 One-paragraph description of what this task accomplishes.
 
+## Technical Spec Reference
+- **Spec Path**: `docs/spec/{spec-path}` (or "N/A" if no spec needed)
+- **Relevant Sections**: {list sections of the spec this task implements}
+
+## Spec Compliance Checklist
+- [ ] Data models match spec definitions
+- [ ] API contracts match spec (endpoints, request/response shapes, status codes)
+- [ ] Error handling matches spec (error codes, recovery strategies)
+- [ ] Edge cases from spec are handled
+- [ ] Tests cover spec scenarios
+
 ## Specs to Reference
 - `docs/spec/framework/go-generation-guide.md` — for Go conventions
 - `docs/spec/framework/typescript-ui-guide.md` — for frontend patterns

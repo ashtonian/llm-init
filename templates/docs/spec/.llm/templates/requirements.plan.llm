@@ -1,0 +1,166 @@
+# Plan: Requirements Gathering — {Feature Name}
+
+> Use this template for multi-session requirement gathering. For single-session interactive gathering, use the `/requirements` command instead.
+
+## Metadata
+
+| Field | Value |
+|-------|-------|
+| **Created** | {timestamp} |
+| **Agent ID** | {agent-id} |
+| **Status** | gathering |
+| **Priority** | high |
+| **Stakeholders** | {who needs to approve} |
+| **Output** | docs/spec/biz/{feature-name}-spec.md |
+
+---
+
+## Phase 1: Stakeholder Discovery
+
+- [ ] Identify all stakeholders and their roles
+- [ ] Understand business context and motivation
+- [ ] Document high-level goals and success criteria
+- [ ] Identify constraints (timeline, budget, technology, regulatory)
+
+### Questions Asked
+| # | Question | Answer | Source |
+|---|----------|--------|--------|
+| 1 | {question} | {answer} | {who answered} |
+
+### USER CHECKPOINT 1
+
+> Present discovery summary. Ask:
+> - Are all stakeholders identified?
+> - Is the business context correct?
+> - Any constraints missing?
+
+- [ ] User reviewed discovery
+- [ ] Feedback incorporated
+
+---
+
+## Phase 2: Use Case Elicitation
+
+For each use case, document:
+- [ ] Primary use cases (happy paths)
+- [ ] Alternative flows (variations)
+- [ ] Exception flows (error scenarios)
+- [ ] User personas and their specific needs
+
+### Use Cases
+| # | Use Case | Actor | Priority | Status |
+|---|----------|-------|----------|--------|
+| UC-1 | {name} | {who} | {must/should/could} | {draft/reviewed/approved} |
+
+### USER CHECKPOINT 2
+
+> Present use cases. Ask:
+> - Are all critical use cases covered?
+> - Are the priorities correct?
+> - Any scenarios missing?
+
+- [ ] User reviewed use cases
+- [ ] Feedback incorporated
+
+---
+
+## Phase 3: Data & Integration Requirements
+
+- [ ] Identify all data entities and their relationships
+- [ ] Document data lifecycle (create, read, update, archive, delete)
+- [ ] Map external system integrations
+- [ ] Define data validation rules
+- [ ] Document data migration needs (if any)
+
+### Entity Map
+| Entity | Key Fields | Relationships | Lifecycle |
+|--------|-----------|---------------|-----------|
+| {name} | {fields} | {relations} | {CRUD rules} |
+
+---
+
+## Phase 4: Non-Functional Requirements
+
+- [ ] Performance targets (latency p50/p99, throughput, concurrency)
+- [ ] Availability and reliability targets (SLA, RTO, RPO)
+- [ ] Scalability requirements (data growth, traffic growth, team growth)
+- [ ] Security requirements (auth, encryption, compliance)
+- [ ] Observability requirements (logging, metrics, tracing, alerting)
+- [ ] Operational requirements (deployment, rollback, maintenance windows)
+
+---
+
+## Phase 5: Design Decisions
+
+For each key design choice, document options and rationale.
+
+### Decision 1: {Topic}
+
+| Option | Pros | Cons | Effort |
+|--------|------|------|--------|
+| {A} | {pros} | {cons} | {low/med/high} |
+| {B} | {pros} | {cons} | {low/med/high} |
+
+- **Decision**: {chosen option}
+- **Rationale**: {why}
+
+### USER CHECKPOINT 3
+
+> Present all design decisions. Ask:
+> - Do you agree with these choices?
+> - Any decisions you want to reconsider?
+> - Ready to produce the specification?
+
+- [ ] User reviewed decisions
+- [ ] Feedback incorporated
+
+---
+
+## Phase 6: Specification Draft
+
+- [ ] Compile all gathered information into a formal spec document
+- [ ] Place at `docs/spec/biz/{feature-name}-spec.md`
+- [ ] Cross-reference with framework specs for consistency
+- [ ] Include all use cases, data models, API contracts, error handling
+- [ ] Include testing strategy based on gathered requirements
+
+### USER CHECKPOINT 4
+
+> Present the complete specification. Ask:
+> - Does this capture everything we discussed?
+> - Anything to add, change, or remove?
+> - Is this ready for implementation planning?
+
+- [ ] User reviewed specification
+- [ ] User approved specification
+- [ ] Specification saved to docs/spec/biz/
+
+---
+
+## Phase 7: Next Steps
+
+- [ ] Update `docs/spec/.llm/PROGRESS.md` with spec summary
+- [ ] Create ADR for major decisions (use `/adr`)
+- [ ] Suggest implementation approach:
+  - `/plan` with `codegen.plan.llm` for spec-first implementation
+  - `/decompose` for parallel task execution
+
+---
+
+## Progress Log
+
+### {timestamp}
+
+- Started: Stakeholder discovery
+- Next: Use case elicitation
+
+---
+
+## Completion
+
+| Field | Value |
+|-------|-------|
+| **Gathering Complete** | {timestamp} |
+| **Spec Approved** | {timestamp} |
+| **Spec Location** | docs/spec/biz/{feature-name}-spec.md |
+| **Open Questions** | {any remaining questions} |

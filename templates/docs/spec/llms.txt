@@ -55,9 +55,16 @@ docs/spec/
 | **Infrastructure** | `.llm/INFRASTRUCTURE.md` (Docker services, ports, health checks) |
 | **MCP servers** | `.llm/MCP-RECOMMENDATIONS.md` (available servers and setup) |
 | **System self-review** | `.llm/templates/self-review.plan.llm` (audit the LLM system itself) |
+| **Spec-first code generation** | `.llm/templates/codegen.plan.llm` (spec before code, compliance verification) |
 | **Parallel agent harness** | `.llm/README.md` (task queue, autonomous agents, scripts) |
 | **Task decomposition** | `.llm/STRATEGY.md` (phases, dependencies, task sizing) |
 | **Agent context** | `.llm/AGENT_GUIDE.md` (project description, tech stack, quality gates) |
+| **Requirements gathering** | `.claude/commands/requirements.md` (iterative Q&A → package spec) |
+| **Architecture review** | `.claude/commands/architecture-review.md` (decisions, tradeoffs, edge cases) |
+| **ADR creation** | `.claude/commands/adr.md` (Architecture Decision Records) |
+| **Security review** | `.claude/commands/security-review.md` (security assessment) |
+| **Release preparation** | `.claude/commands/release.md` (checklist, changelog, validation) |
+| **Requirements plan** | `.llm/templates/requirements.plan.llm` (multi-session requirement gathering) |
 | **Custom commands** | `.claude/commands/` (type `/command-name` in Claude Code) |
 | **Skills catalog** | `.llm/SKILLS.md` (commands, MCP servers, scripts, workflow decision tree) |
 | **Task template** | `.llm/templates/task.template.md` (task file format for queue) |

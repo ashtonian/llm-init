@@ -41,6 +41,11 @@ Switch from Parallel to Interactive automatically when:
 | `/plan` | Select and create the right plan template |
 | `/review` | Run quality gates and review current work |
 | `/shelve` | Checkpoint work with structured handoff |
+| `/requirements` | Iterative requirement gathering → package spec |
+| `/architecture-review` | Assess decisions, tradeoffs, edge cases |
+| `/adr` | Create an Architecture Decision Record |
+| `/security-review` | Security assessment of codebase or feature |
+| `/release` | Release preparation with checklist and changelog |
 
 ---
 
@@ -58,6 +63,7 @@ Switch from Parallel to Interactive automatically when:
 
 ## Execution Principles
 
+- **Spec-First**: Before writing non-trivial code, verify a technical spec exists. If not, create one first. Cross-reference implementation against spec at each step.
 - **Concurrency**: Execute tasks concurrently where possible — parallel tool calls, subagents, errgroup patterns.
 - **User Approval**: Always get user approval before implementing significant changes. Present your plan first.
 - **Quality Gates**: Run quality gates defined in `docs/spec/.llm/AGENT_GUIDE.md` after every significant change. Never skip tests.
