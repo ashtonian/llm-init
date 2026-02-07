@@ -9,6 +9,7 @@ This file provides a quick navigation guide for LLMs working with the {{PROJECT_
 ```
 docs/spec/
 ├── LLM.md                    # Master LLM orchestration guide (START HERE for complex tasks)
+├── LLM-STYLE-GUIDE.md        # How to format LLM navigation sections
 ├── SPEC-WRITING-GUIDE.md     # How to write specification documents
 ├── README.md                 # Human-readable index
 ├── llms.txt                  # This file - quick navigation
@@ -20,7 +21,9 @@ docs/spec/
 │   ├── plans/                # Active plan.llm files
 │   ├── completed/            # Archived completed plans
 │   ├── templates/            # Plan + task templates
+│   │   └── roles/            # Agent role templates (14 roles)
 │   ├── scripts/              # Utility + agent harness scripts
+│   ├── archive/              # Archived completed runs
 │   ├── tasks/                # Parallel agent task queue (backlog, in_progress, completed, blocked)
 │   └── logs/                 # Agent execution logs
 ├── framework/                # Generic patterns (read first)

@@ -15,6 +15,7 @@
 | **Writing any Go code** | Read `framework/go-generation-guide.md` first (mandatory) |
 | **Writing any frontend/UI code** | Read `framework/typescript-ui-guide.md` first (mandatory) |
 | **Performance-sensitive work** | Read `framework/performance-guide.md` first (mandatory) |
+| **PRD-driven task pipeline** | Use `/prd` for interactive PRD → auto-sized task files |
 | **Code generation task** | Spec-first: verify/create technical spec before writing code. See [Spec-First Protocol](#spec-first-protocol) |
 | **Gathering requirements** | Use `/requirements` command for interactive Q&A → spec. See [Software Lifecycle](#software-lifecycle) |
 | **Architecture review** | Use `/architecture-review` to assess decisions, tradeoffs, edge cases |
@@ -70,7 +71,9 @@ docs/spec/
 │   ├── plans/                # Active plan.llm files
 │   ├── completed/            # Completed plan files (archive)
 │   ├── templates/            # Plan + task templates
+│   │   └── roles/            # Agent role templates (14 roles)
 │   ├── scripts/              # Utility + agent harness scripts
+│   ├── archive/              # Archived completed runs
 │   ├── tasks/                # Parallel agent task queue
 │   │   ├── backlog/          # Tasks ready to be claimed
 │   │   ├── in_progress/      # Currently being worked on
@@ -348,6 +351,7 @@ The agent is encouraged to improve the LLM orchestration system itself.
 | **CLAUDE.md** | Add project-specific instructions as they're discovered |
 | **Custom Commands** | Add or improve custom commands in `.claude/commands/` |
 | **SKILLS.md** | Update capabilities catalog when adding features |
+| **Subdirectory CLAUDE.md** | Create context hints in directories you modify heavily |
 | **Settings** | Suggest permission additions for new tools |
 
 ### How to Improve
@@ -450,7 +454,7 @@ The system supports a full software development lifecycle. Use these commands at
 
 | Phase | Commands | Output |
 |-------|----------|--------|
-| Requirements | `/requirements`, `/plan` (requirements template) | Business spec in `docs/spec/biz/` |
+| Requirements | `/requirements`, `/prd`, `/plan` (requirements template) | Business spec or sized tasks |
 | Design | `/plan` (codegen template), `/adr` | Technical spec, ADRs |
 | Implement | `/decompose`, `/launch`, `/new-task` | Working code with tests |
 | Review | `/review`, `/architecture-review`, `/security-review` | Review reports |
@@ -475,6 +479,7 @@ The system supports a full software development lifecycle. Use these commands at
 | Write a business feature spec | `biz/README.md` |
 | Understand spec patterns | `framework/README.md` -> `SPEC-WRITING-GUIDE.md` |
 | Generate code (spec-first) | `.llm/templates/codegen.plan.llm` -> [Spec-First Protocol](#spec-first-protocol) |
+| Create PRD and generate tasks | `/prd` command |
 | Gather requirements | `/requirements` command or `.llm/templates/requirements.plan.llm` |
 | Review architecture | `/architecture-review` command -> `/adr` for documentation |
 | Document a decision | `/adr` command -> `docs/spec/biz/adr-NNN-*.md` |

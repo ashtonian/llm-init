@@ -1,0 +1,131 @@
+# Plan: {Feature Name}
+
+> Replace all `{placeholders}` with actual values. Delete this instruction line.
+
+## Metadata
+
+| Field | Value |
+|-------|-------|
+| **Created** | {YYYY-MM-DDTHH:MM:SSZ} |
+| **Agent ID** | {your-agent-id} |
+| **Status** | planning |
+| **Priority** | {high / medium / low} |
+| **Depends On** | {none or list of plan files} |
+| **Blocks** | {none or list of plan files} |
+
+---
+
+## Objective
+
+{One clear sentence describing what this plan accomplishes. Be specific.}
+
+---
+
+## Prerequisites
+
+### Specs to Read (Execution Order)
+
+Read these specs in order before implementation:
+
+- [ ] `framework/api-design.md` - REST conventions
+- [ ] {Add relevant specs based on your task}
+
+### Understanding Confirmed
+
+- [ ] I understand the relevant domain models
+- [ ] I understand the API conventions
+- [ ] I understand the error handling patterns
+- [ ] I have identified all affected components
+
+---
+
+## Implementation Steps
+
+### Phase 1: {Phase Name}
+
+- [ ] **Step 1.1**: {Description}
+  - Files: `path/to/file`
+  - Notes: {Any specific notes}
+
+- [ ] **Step 1.2**: {Description}
+  - Files: `path/to/file`
+  - Notes: {Any specific notes}
+
+### Phase 2: {Phase Name}
+
+- [ ] **Step 2.1**: {Description}
+
+---
+
+## Files
+
+### Files to Modify
+
+| File | Change Type | Status |
+|------|-------------|--------|
+| `path/to/file` | Modify | CLAIMED |
+
+### Files to Create
+
+| File | Purpose | Status |
+|------|---------|--------|
+| `path/to/new-file` | {Purpose} | Pending |
+
+### Files to Delete
+
+| File | Reason | Status |
+|------|--------|--------|
+| {none or list} | | |
+
+---
+
+## Decisions
+
+Document architectural and implementation decisions here.
+
+### Decision 1: {Topic}
+
+- **Choice**: {What was decided}
+- **Alternatives**: {What else was considered}
+- **Rationale**: {Why this choice}
+
+---
+
+## Blockers
+
+| Blocker | Impact | Resolution |
+|---------|--------|------------|
+| {None or description} | | |
+
+---
+
+## Progress Log
+
+### {YYYY-MM-DD HH:MM}
+
+- Started: {What was started}
+- Completed: {What was finished}
+- Next: {What's next}
+- Status: {Current status}
+
+---
+
+## Verification
+
+Before marking complete:
+
+- [ ] All implementation steps checked off
+- [ ] All files modified/created as listed
+- [ ] Tests pass (if applicable)
+- [ ] Documentation updated (if applicable)
+- [ ] No uncommitted changes
+
+---
+
+## Completion
+
+| Field | Value |
+|-------|-------|
+| **Completed** | {YYYY-MM-DDTHH:MM:SSZ} |
+| **Total Time** | {estimate} |
+| **Notes** | {Any final notes} |

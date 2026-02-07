@@ -21,6 +21,7 @@ Type these as slash commands in Claude Code (e.g., `/decompose Build user manage
 | `/architecture-review` | Assess decisions, tradeoffs, edge cases | Optional: scope to review |
 | `/adr` | Create Architecture Decision Record | Decision topic |
 | `/security-review` | Security assessment of codebase/feature | Optional: scope to review |
+| `/prd` | Interactive PRD → sized tasks | Feature description |
 | `/release` | Release prep with checklist and changelog | Optional: version number |
 
 ### Command Selection
@@ -28,6 +29,7 @@ Type these as slash commands in Claude Code (e.g., `/decompose Build user manage
 ```
 What do you need to do?
 │
+├── Quick PRD → task pipeline? ──────> /prd
 ├── Start a big feature? ──────────> /decompose
 ├── Add one task to the queue? ────> /new-task
 ├── Check progress? ───────────────> /status
@@ -81,7 +83,57 @@ All scripts are in `docs/spec/.llm/scripts/`.
 | `run-interactive.sh <file>` | Interactive session with task context | `bash docs/spec/.llm/scripts/run-interactive.sh 01-setup.md` |
 | `status.sh` | Task queue dashboard | `bash docs/spec/.llm/scripts/status.sh` |
 | `reset.sh` | Move all tasks to backlog, clear locks | `bash docs/spec/.llm/scripts/reset.sh` |
+| `run-fresh-loop.sh [N]` | Fresh-context loop (new instance per task) | `bash docs/spec/.llm/scripts/run-fresh-loop.sh` |
+| `archive.sh [desc]` | Archive completed tasks and logs | `bash docs/spec/.llm/scripts/archive.sh "phase-1"` |
 | `move_nav_to_top.py` | Reformat docs (move LLM nav to top) | `python3 docs/spec/.llm/scripts/move_nav_to_top.py` |
+
+---
+
+## Agent Roles
+
+Roles provide specialized focus for agents. Templates are in `templates/roles/`.
+
+| Role | Focus | Use When |
+|------|-------|----------|
+| `implementer` | Feature implementation, spec compliance, production code | Building new features |
+| `reviewer` | Code quality, pattern consistency, spec drift detection | Quality passes, post-implementation |
+| `optimizer` | Performance, deduplication, dead code removal | Performance tuning, cleanup |
+| `docs` | Documentation accuracy, spec updates, PROGRESS.md curation | Doc maintenance, cross-reference audits |
+| `tester` | Test coverage, edge cases, failure modes | Hardening test suite |
+| `benchmarker` | Profiling, benchmarks, regression detection | Performance measurement |
+| `architect` | System design, boundaries, tradeoff analysis | Design decisions |
+| `security` | Vulnerability detection, input validation, auth | Security audits |
+| `debugger` | Root cause analysis, failure investigation | Blocked tasks, regressions |
+| `spec-writer` | Requirements gathering, spec writing, use cases | Defining what to build |
+| `market-researcher` | Competitive analysis, target clients, market sizing | Business research |
+| `frontend` | UI implementation, components, accessibility | Building user interfaces |
+| `ux-researcher` | User journeys, usability, interaction design | UX research & design |
+| `devops` | CI/CD, infrastructure, deployment, monitoring | Infrastructure & operations |
+
+### Usage
+
+```bash
+# Single agent with role
+AGENT_ROLE=reviewer bash docs/spec/.llm/scripts/run-agent.sh reviewer-01
+
+# Parallel agents with roles
+bash docs/spec/.llm/scripts/run-parallel.sh --roles implementer,implementer,reviewer,docs 4
+```
+
+### Role Composition Examples
+
+```bash
+# Standard build:     implementer,implementer,tester,reviewer
+# Performance build:  implementer,benchmarker,optimizer,reviewer
+# Design phase:       architect,security,implementer
+# Hardening:          tester,security,reviewer,docs
+# Investigation:      debugger,implementer
+# Full-stack:         frontend,implementer,tester,reviewer
+# Discovery:          spec-writer,market-researcher,ux-researcher
+# Infrastructure:     devops,security,implementer
+```
+
+When no role is assigned, agents operate as general-purpose (default behavior, unchanged).
 
 ---
 

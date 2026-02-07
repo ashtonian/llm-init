@@ -15,8 +15,10 @@ This folder coordinates work between multiple LLM agents working on the {{PROJEC
 ├── completed/          # Archived completed plans
 ├── templates/          # Plan + task templates
 │   ├── *.plan.llm      # Plan templates (idea, fullstack, feature, bugfix, review)
-│   └── task.template.md # Task file template for the parallel agent queue
+│   ├── task.template.md # Task file template for the parallel agent queue
+│   └── roles/          # Agent role templates (14 roles)
 ├── scripts/            # Utility and agent harness scripts
+├── archive/            # Archived completed runs (created by archive.sh)
 ├── tasks/              # Parallel agent task queue
 │   ├── backlog/        # Tasks ready to be claimed
 │   ├── in_progress/    # Currently being worked on
@@ -141,8 +143,10 @@ The parallel agent harness provides autonomous batch execution of tasks using a 
 | `scripts/run-agent.sh [name]` | Single autonomous agent loop |
 | `scripts/run-single-task.sh <file>` | Run one specific task autonomously |
 | `scripts/run-interactive.sh <file>` | Interactive Claude Code session with task context |
+| `scripts/run-fresh-loop.sh [N]` | Fresh-context loop (new instance per task) |
 | `scripts/status.sh` | Task queue dashboard (counts, PIDs, per-task details) |
 | `scripts/reset.sh` | Move all tasks back to backlog, clear locks |
+| `scripts/archive.sh [desc]` | Archive completed tasks and logs, reset iteration log |
 
 ### Task File Format
 
@@ -188,6 +192,60 @@ Agents can shelve their work for another agent to continue:
 - **Branch preservation**: The shelved branch retains all commits; the next agent checks out the same branch
 
 This is useful when agents run out of turns, hit context limits, or when the user wants to pause and resume later.
+
+### Fresh-Context Loop vs run-agent.sh
+
+| | `run-agent.sh` | `run-fresh-loop.sh` |
+|---|---|---|
+| **Context** | Single session, accumulates context | Fresh context per task |
+| **Best for** | Short runs (< 10 tasks) | Long autonomous runs (10+ tasks) |
+| **Session continuity** | Yes (shelve/resume) | No (each task is independent) |
+| **Context pollution** | Risk over many tasks | Prevented by design |
+
+Use `run-fresh-loop.sh` when context freshness matters more than session continuity (e.g., overnight batch runs).
+
+### Agent Roles
+
+Agents can be assigned specialized roles via the `AGENT_ROLE` env var. Role templates are in `templates/roles/`:
+
+- **implementer** — Feature implementation, spec compliance, production code
+- **reviewer** — Code quality, pattern consistency, spec drift detection
+- **optimizer** — Performance, deduplication, dead code removal
+- **docs** — Documentation accuracy, spec updates, PROGRESS.md curation
+- **tester** — Test coverage, edge cases, failure modes
+- **architect** — System design, boundaries, tradeoff analysis
+- **security** — Vulnerability detection, input validation, auth
+- **benchmarker** — Profiling, benchmarks, regression detection
+- **debugger** — Root cause analysis, failure investigation
+- **spec-writer** — Requirements gathering, spec writing, use cases
+- **market-researcher** — Competitive analysis, target clients, market sizing
+- **frontend** — UI implementation, components, accessibility
+- **ux-researcher** — User journeys, usability, interaction design
+- **devops** — CI/CD, infrastructure, deployment, monitoring
+
+```bash
+# Assign roles when launching parallel agents
+bash docs/spec/.llm/scripts/run-parallel.sh --roles implementer,implementer,reviewer,docs 4
+```
+
+When no role is assigned, agents operate as general-purpose (default behavior, unchanged).
+
+### Archiving
+
+After completing a set of tasks, archive the run to keep the workspace clean:
+
+```bash
+bash docs/spec/.llm/scripts/archive.sh "phase-1-foundation"
+```
+
+This moves completed tasks and logs to `archive/YYYY-MM-DD-<description>/`, preserves the Codebase Patterns section of PROGRESS.md, and resets the Iteration Log.
+
+## Inspirations
+
+This coordination system was inspired by:
+
+- **[Building a C Compiler with Claude](https://www.anthropic.com/engineering/building-c-compiler)** (Anthropic Engineering) — Agent role specialization, grep-friendly output formats, context pollution prevention, and parallel agent orchestration patterns.
+- **[Ralph](https://github.com/snarktank/ralph)** (snarktank) — Fresh-context-per-iteration loops, curated codebase patterns, story sizing discipline, completion sentinels, automatic run archiving, and distributed CLAUDE.md files.
 
 ## Related Documentation
 

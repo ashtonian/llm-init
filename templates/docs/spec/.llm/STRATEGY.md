@@ -45,9 +45,21 @@
 ## Task Sizing Guidelines
 
 - **Target 75-150 Claude turns per task.** Larger tasks should be split.
+- **Context window rule**: Each task must be completable in one fresh context window.
+- **2-3 sentence test**: If you can't describe the change in 2-3 sentences, it's too big — split it.
 - Each task should be independently verifiable (its own build/test commands).
 - Tasks within a phase can run in parallel if they have no shared file dependencies.
 - Cross-phase dependencies should be explicit (e.g., "Task 05 depends on Tasks 03, 04").
+
+### Sizing Examples
+
+| Good (right-sized) | Bad (too big) |
+|---------------------|---------------|
+| Add user model and migration | Build the user management system |
+| Create GET /users endpoint with tests | Implement the REST API |
+| Add login form component | Build authentication |
+| Add database column and migration | Create the dashboard |
+| Write unit tests for greeter service | Add all tests |
 
 ## Creating Task Files
 

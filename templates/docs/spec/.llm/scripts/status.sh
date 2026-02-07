@@ -41,10 +41,14 @@ printf "  Total:        %3d\n" "$TOTAL"
 echo ""
 
 if [[ $TOTAL -gt 0 ]]; then
-    echo "  Progress: $COMPLETED/$TOTAL completed ($((COMPLETED * 100 / TOTAL))%)"
+    PROGRESS_PCT=$((COMPLETED * 100 / TOTAL))
+    echo "  Progress: $COMPLETED/$TOTAL completed (${PROGRESS_PCT}%)"
 else
+    PROGRESS_PCT=0
     echo "  No tasks found. Create tasks in: docs/spec/.llm/tasks/backlog/"
 fi
+echo ""
+echo "STAT: tasks_total=${TOTAL} backlog=${BACKLOG} in_progress=${IN_PROGRESS} completed=${COMPLETED} blocked=${BLOCKED} progress_pct=${PROGRESS_PCT}"
 echo ""
 
 # Show active agents

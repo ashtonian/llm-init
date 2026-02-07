@@ -99,3 +99,42 @@ Every piece of non-trivial code must meet these standards:
 - Do not skip tests or ignore failures
 - Commit your changes before signaling completion — do NOT push
 - If blocked, signal TASK_BLOCKED with a clear reason rather than guessing
+
+## Pattern Curation
+
+After completing a task, curate PROGRESS.md:
+1. Review the Iteration Log for reusable patterns
+2. Promote stable patterns to the **Codebase Patterns** section at the top
+3. Deduplicate — refine existing patterns instead of adding near-duplicates
+4. Remove patterns that turned out to be wrong
+
+## Output Standards
+
+Use structured output for key events (scripts and agents can grep these):
+- `ERROR: <reason>` — on a single line, for any error condition
+- `WARN: <reason>` — for non-fatal issues
+- `DONE: <task-id> <summary>` — for task completion
+- Redirect verbose build/test output to `docs/spec/.llm/logs/` files
+- Provide 3-5 line summaries instead of full command output
+
+## Context Hygiene
+
+Prevent context window pollution in long sessions:
+- **Log to files, not stdout**: Redirect verbose build/test output to `docs/spec/.llm/logs/`
+- **Summarize, don't dump**: Report 3-5 line summaries of results, not full output
+- **Pre-compute stats**: Use `status.sh` for summaries instead of manually counting files
+- **Limit file reads**: Read only the sections you need; use line ranges for large files
+- **One task focus**: Read only specs and files relevant to your current task
+- **Clean up**: Remove debug logging and temporary files before committing
+
+## Distributed CLAUDE.md Files
+
+When working in a subdirectory with its own patterns or conventions, create or update
+a `CLAUDE.md` file in that directory. Claude Code auto-reads these files, providing
+directory-specific context to future sessions.
+
+Guidelines:
+- Keep under 30 lines — concise context hints, not full documentation
+- Document directory-specific patterns, conventions, and gotchas
+- Include non-obvious dependency relationships
+- Example: `internal/auth/CLAUDE.md` with auth-specific conventions

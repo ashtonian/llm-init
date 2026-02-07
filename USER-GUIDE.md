@@ -562,7 +562,7 @@ SKIP_PERMISSIONS=1 bash docs/spec/.llm/scripts/run-parallel.sh 3
 
 ## Custom Commands
 
-Claude Code supports project-level custom commands as slash commands. llm-init includes 12 pre-built commands.
+Claude Code supports project-level custom commands as slash commands. llm-init includes 13 pre-built commands.
 
 ### Available Commands
 

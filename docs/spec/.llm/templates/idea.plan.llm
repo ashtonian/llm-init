@@ -1,0 +1,209 @@
+# Plan: From Idea to Spec — {Idea Name}
+
+> Use this template when starting from scratch with just an idea. This guides the agent through
+> research, spec creation, user feedback, and planning before any code is written.
+
+## Metadata
+
+| Field | Value |
+|-------|-------|
+| **Created** | {timestamp} |
+| **Agent ID** | {agent-id} |
+| **Status** | planning |
+| **Priority** | high |
+| **Depends On** | none |
+
+---
+
+## The Idea
+
+{Describe the idea in 1-3 sentences as provided by the user}
+
+---
+
+## Phase 1: Research & Discovery
+
+### 1.1 Understand the Domain
+
+- [ ] Research the problem space (web search, existing solutions)
+- [ ] Identify target users and their needs
+- [ ] List key competitors or similar solutions
+- [ ] Identify technical constraints and requirements
+
+### 1.2 Technology Assessment
+
+- [ ] Evaluate language/framework options
+- [ ] Identify required infrastructure (DB, cache, messaging, etc.)
+- [ ] Assess third-party services/APIs needed
+- [ ] Consider deployment requirements
+
+### 1.3 Summarize Findings
+
+- [ ] Write research summary in `.llm-scratch/research-{idea-name}.md`
+
+### USER CHECKPOINT 1
+
+> **Present research findings to user.** Ask:
+> - Does this match your vision?
+> - Any constraints or preferences I should know?
+> - Which technology stack do you prefer?
+
+- [ ] User reviewed research
+- [ ] User provided feedback
+- [ ] Feedback incorporated
+
+---
+
+## Phase 2: Spec Creation
+
+### 2.1 Business Spec
+
+- [ ] Create `docs/spec/biz/{idea-name}.md` following `biz/README.md` template
+  - Problem statement
+  - Target users
+  - Success metrics
+  - Requirements (P0/P1/P2)
+  - User stories
+
+### 2.2 Technical Architecture
+
+- [ ] Define system architecture (monolith vs services, data flow)
+- [ ] Define data model (entities, relationships)
+- [ ] Define API surface (endpoints, contracts)
+- [ ] Define frontend structure (pages, components, state)
+- [ ] Document architecture in `docs/spec/biz/{idea-name}.md` or a dedicated spec
+
+### 2.3 Technical Code Specification
+
+- [ ] Create technical code spec covering:
+  - Data models (entities, field types, constraints, relationships)
+  - API contracts (endpoints, request/response shapes, status codes, error codes)
+  - Error handling (error types, recovery strategies, user-facing messages)
+  - State management (transitions, invariants, side effects)
+  - Performance (latency budgets, memory constraints, concurrency model)
+  - Security (authN/authZ, input validation, data sanitization)
+  - Testing strategy (unit/integration/E2E plan, edge cases, fixtures)
+  - Dependencies (external packages, services, infrastructure)
+- [ ] Document spec in `docs/spec/biz/{idea-name}-spec.md` or a dedicated spec file
+
+### 2.4 Create Framework Specs (if needed)
+
+- [ ] Create any missing framework specs needed for this project
+  - Use `docs/spec/SPEC-WRITING-GUIDE.md` as template guide
+  - Common: api-design.md, error-handling.md, data-access.md, models.md
+
+### USER CHECKPOINT 2
+
+> **Present specs to user for approval.** Ask:
+> - Does the business spec capture your requirements?
+> - Is the technical architecture appropriate?
+> - Does the technical code spec accurately define data models, API contracts, and error handling?
+> - Any features to add/remove/reprioritize?
+> - Ready to proceed to implementation planning?
+
+- [ ] User reviewed business spec
+- [ ] User reviewed technical architecture
+- [ ] User reviewed technical code spec
+- [ ] User approved specs
+- [ ] Feedback incorporated
+
+---
+
+## Phase 3: Implementation Planning
+
+### 3.1 Break Into Milestones
+
+- [ ] Define milestones (MVP, v1, v2, etc.)
+- [ ] Each milestone should be independently deployable/testable
+- [ ] Assign P0 requirements to MVP
+
+### 3.2 Create Feature Plans
+
+For each milestone, create plan files:
+
+- [ ] `docs/spec/.llm/plans/milestone-1-{name}.plan.llm`
+- [ ] `docs/spec/.llm/plans/milestone-2-{name}.plan.llm` (if applicable)
+
+### 3.3 Define Execution Order
+
+- [ ] Order features by dependency (what must be built first?)
+- [ ] Identify which features can be built in parallel
+- [ ] Update `docs/spec/LLM.md` with project-specific execution orders
+
+### USER CHECKPOINT 3
+
+> **Present implementation plan to user.** Ask:
+> - Does the milestone breakdown make sense?
+> - Is the priority order correct?
+> - Ready to start building?
+
+- [ ] User reviewed milestones
+- [ ] User approved implementation plan
+- [ ] Ready to execute
+
+---
+
+## Phase 4: Project Scaffolding
+
+### 4.1 Initialize Project
+
+- [ ] Create project directory structure
+- [ ] Initialize version control (git init, .gitignore)
+- [ ] Set up package management (go.mod, package.json, etc.)
+- [ ] Configure linters and formatters
+- [ ] Set up test framework
+
+### 4.2 Infrastructure Setup
+
+- [ ] Configure Docker services if needed (update docker-compose.yml)
+- [ ] Set up CI/CD configuration (if applicable)
+- [ ] Create initial database migrations
+
+### 4.3 Quality Gate Verification
+
+- [ ] Project builds from clean checkout
+- [ ] Test framework runs (even with zero tests)
+- [ ] Linter passes on empty project
+- [ ] Git initial commit created
+
+---
+
+## Phase 5: Begin Implementation
+
+Hand off to feature plan files created in Phase 3:
+
+- [ ] Start with Milestone 1 plan
+- [ ] Follow the review loop protocol (READ → ASSESS → IMPLEMENT → VERIFY → RECORD → COMMIT → NEXT)
+- [ ] Update PROGRESS.md after each iteration
+
+---
+
+## Decisions Made
+
+### Decision 1: {Topic}
+
+- **Choice**: {decision}
+- **Alternatives**: {considered}
+- **Rationale**: {why}
+
+---
+
+## Progress Log
+
+### {timestamp}
+
+- Started: Idea intake
+- Next: Phase 1 research
+
+---
+
+## Completion
+
+| Field | Value |
+|-------|-------|
+| **Phase 1 Complete** | {timestamp} |
+| **Phase 2 Complete** | {timestamp} |
+| **Phase 3 Complete** | {timestamp} |
+| **Phase 4 Complete** | {timestamp} |
+| **Implementation Started** | {timestamp} |
+| **Notes** | {Any final notes} |

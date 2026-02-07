@@ -78,7 +78,9 @@ echo "Creating directory structure..."
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/plans"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/completed"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/templates"
+mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/templates/roles"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/scripts"
+mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/archive"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/data/postgres"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/data/redis"
 mkdir -p "${PROJECT_ROOT}/docs/spec/.llm/data/nats"
@@ -136,7 +138,7 @@ fi
 # Copy custom slash commands
 echo ""
 echo "Copying custom slash commands..."
-for cmd in decompose.md new-task.md status.md launch.md plan.md review.md shelve.md requirements.md architecture-review.md adr.md security-review.md release.md; do
+for cmd in decompose.md new-task.md status.md launch.md plan.md review.md shelve.md requirements.md architecture-review.md adr.md security-review.md release.md prd.md; do
     if [ ! -f "${PROJECT_ROOT}/.claude/commands/${cmd}" ]; then
         cp "${SCRIPT_DIR}/templates/.claude/commands/${cmd}" "${PROJECT_ROOT}/.claude/commands/${cmd}"
         echo "  CREATED: .claude/commands/${cmd}"
@@ -200,6 +202,18 @@ echo "Copying task template..."
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/task.template.md" "${PROJECT_ROOT}/docs/spec/.llm/templates/task.template.md"
 copy_template "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/example-task.md" "${PROJECT_ROOT}/docs/spec/.llm/templates/example-task.md"
 
+# Copy role templates
+echo ""
+echo "Copying role templates..."
+for role in implementer.md reviewer.md optimizer.md docs.md tester.md architect.md security.md benchmarker.md debugger.md spec-writer.md market-researcher.md frontend.md ux-researcher.md devops.md; do
+    if [ ! -f "${PROJECT_ROOT}/docs/spec/.llm/templates/roles/${role}" ]; then
+        cp "${SCRIPT_DIR}/templates/docs/spec/.llm/templates/roles/${role}" "${PROJECT_ROOT}/docs/spec/.llm/templates/roles/${role}"
+        echo "  CREATED: docs/spec/.llm/templates/roles/${role}"
+    else
+        echo "  SKIP (exists): docs/spec/.llm/templates/roles/${role}"
+    fi
+done
+
 # Copy parallel agent harness files
 echo ""
 echo "Copying parallel agent harness files..."
@@ -219,7 +233,7 @@ fi
 
 echo ""
 echo "Copying parallel agent scripts..."
-for script in run-agent.sh run-parallel.sh run-single-task.sh run-interactive.sh status.sh reset.sh; do
+for script in run-agent.sh run-parallel.sh run-single-task.sh run-interactive.sh status.sh reset.sh run-fresh-loop.sh archive.sh; do
     if [ ! -f "${PROJECT_ROOT}/docs/spec/.llm/scripts/${script}" ]; then
         cp "${SCRIPT_DIR}/templates/docs/spec/.llm/scripts/${script}" "${PROJECT_ROOT}/docs/spec/.llm/scripts/${script}"
         chmod +x "${PROJECT_ROOT}/docs/spec/.llm/scripts/${script}"
@@ -253,6 +267,7 @@ touch "${PROJECT_ROOT}/docs/spec/.llm/tasks/completed/.gitkeep"
 touch "${PROJECT_ROOT}/docs/spec/.llm/tasks/blocked/.gitkeep"
 touch "${PROJECT_ROOT}/docs/spec/.llm/tasks/.locks/.gitkeep"
 touch "${PROJECT_ROOT}/docs/spec/.llm/logs/.gitkeep"
+touch "${PROJECT_ROOT}/docs/spec/.llm/archive/.gitkeep"
 
 # Go project scaffolding (optional)
 if [ "$GO_SCAFFOLD" -eq 1 ]; then
@@ -328,6 +343,7 @@ echo "  - Spec writing guide:   docs/spec/SPEC-WRITING-GUIDE.md"
 echo ""
 echo "Custom commands (type in Claude Code):"
 echo "  Task management:"
+echo "  - /prd <desc>          Interactive PRD → sized task files"
 echo "  - /decompose <desc>   Break a request into parallel tasks"
 echo "  - /new-task <desc>    Create a single task file"
 echo "  - /status             Task queue dashboard"

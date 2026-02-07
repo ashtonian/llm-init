@@ -1,0 +1,222 @@
+# Plan: Add {Feature Name} Feature
+
+## Metadata
+
+| Field | Value |
+|-------|-------|
+| **Created** | {timestamp} |
+| **Agent ID** | {agent-id} |
+| **Status** | planning |
+| **Priority** | medium |
+| **Depends On** | none |
+| **Branch** | feature/{feature-name} |
+
+---
+
+## Objective
+
+Implement the {feature name} feature including database layer, service logic, API endpoints, frontend UI, and tests.
+
+---
+
+## User Approval Gate
+
+> **IMPORTANT**: Before starting Phase 1, present this plan to the user for review.
+> Do not begin implementation until the user approves the approach.
+
+- [ ] Plan reviewed by user
+- [ ] User approved approach
+- [ ] Any user feedback incorporated
+
+---
+
+## Business Context
+
+- **Business Spec**: `biz/{feature-name}.md` (create if it doesn't exist)
+- **User Stories**: {list key user stories this implements}
+- **Acceptance Criteria**: {list acceptance criteria from business spec}
+
+---
+
+## Phase 0: Technical Specification
+
+> Before implementation, verify a technical spec exists. If not, create one using `codegen.plan.llm`.
+
+- [ ] Technical spec exists at: `docs/spec/{spec-path}`
+  - Data models, API contracts, error codes, state transitions defined
+  - Testing strategy and edge cases documented
+- [ ] If no spec exists: create one before proceeding (use `codegen.plan.llm` template)
+- [ ] Spec reviewed and approved by user
+
+---
+
+## Prerequisites
+
+### Specs to Read (Execution Order)
+
+Read these specs in order before implementation. Only read specs that exist — skip any that haven't been created yet:
+
+- [ ] `framework/go-generation-guide.md` - Go code patterns (if writing Go)
+- [ ] `framework/typescript-ui-guide.md` - UI patterns (if writing frontend)
+- [ ] `framework/performance-guide.md` - Performance standards
+- [ ] Other framework specs as available (api-design, error-handling, models, data-access)
+- [ ] {Add project-specific specs relevant to this feature}
+
+### Understanding Confirmed
+
+- [ ] I understand the domain model for this feature
+- [ ] I understand the API conventions (naming, responses, errors)
+- [ ] I understand the data access patterns
+- [ ] I have identified all related entities/features
+
+---
+
+## Implementation Steps
+
+### Phase 1: Database Layer
+
+- [ ] **Step 1.1**: Create migration for {entity} table
+  - Files: `migrations/YYYYMMDD_add_{entity}.sql`
+
+- [ ] **Step 1.2**: Add database queries
+  - Files: `queries/{entity}.sql`
+
+- [ ] **Step 1.3**: Generate database code
+  - Command: {your code generation command, e.g., sqlc generate}
+
+- [ ] **Quality gate**: Run quality gates from AGENT_GUIDE.md
+
+### Phase 2: Service Layer
+
+- [ ] **Step 2.1**: Create {entity} service interface
+  - Files: `internal/service/{entity}.go`
+
+- [ ] **Step 2.2**: Implement service methods
+  - Files: `internal/service/{entity}_impl.go`
+
+- [ ] **Step 2.3**: Add service unit tests
+  - Files: `internal/service/{entity}_test.go`
+
+- [ ] **Quality gate**: Run quality gates from AGENT_GUIDE.md
+
+### Phase 3: API Layer
+
+- [ ] **Step 3.1**: Create {entity} handlers
+  - Files: `internal/api/handlers/{entity}.go`
+
+- [ ] **Step 3.2**: Register routes
+  - Files: `internal/api/routes.go`
+
+- [ ] **Step 3.3**: Add request/response types
+  - Files: `internal/api/types/{entity}.go`
+
+- [ ] **Step 3.4**: Add API integration tests
+  - Files: `internal/api/handlers/{entity}_test.go`
+
+- [ ] **Quality gate**: Run quality gates from AGENT_GUIDE.md
+
+### Phase 4: Frontend (if applicable)
+
+- [ ] **Step 4.1**: Create page/route component
+  - Files: `src/pages/{feature}/index.tsx`
+
+- [ ] **Step 4.2**: Create feature components
+  - Files: `src/components/{feature}/*.tsx`
+
+- [ ] **Step 4.3**: Add API client hooks
+  - Files: `src/hooks/use{Feature}.ts`
+
+- [ ] **Step 4.4**: Add component tests
+  - Files: `src/components/{feature}/__tests__/*.test.tsx`
+
+- [ ] **Quality gate**: Run quality gates from AGENT_GUIDE.md
+
+### Phase 5: End-to-End Testing
+
+- [ ] **Step 5.1**: Add E2E tests covering the full feature flow
+  - Files: `e2e/{feature}.spec.ts` or `tests/integration/{feature}_test.go`
+
+- [ ] **Quality gate**: All tests pass, lint clean
+
+### Phase 6: Documentation
+
+- [ ] **Step 6.1**: Update API documentation
+- [ ] **Step 6.2**: Update relevant spec files if needed
+- [ ] **Step 6.3**: Update PROGRESS.md with learnings
+
+---
+
+## Files
+
+### Files to Modify
+
+| File | Change Type | Status |
+|------|-------------|--------|
+| `internal/api/routes.go` | Add routes | Pending |
+
+### Files to Create
+
+| File | Purpose | Status |
+|------|---------|--------|
+| `migrations/YYYYMMDD_add_{entity}.sql` | Database schema | Pending |
+| `queries/{entity}.sql` | Database queries | Pending |
+| `internal/service/{entity}.go` | Service interface | Pending |
+| `internal/api/handlers/{entity}.go` | HTTP handlers | Pending |
+| `src/pages/{feature}/index.tsx` | Frontend page | Pending |
+
+---
+
+## API Design
+
+### Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/v1/{entities}` | Create {entity} |
+| GET | `/api/v1/{entities}` | List {entities} |
+| GET | `/api/v1/{entities}/:id` | Get {entity} |
+| PATCH | `/api/v1/{entities}/:id` | Update {entity} |
+| DELETE | `/api/v1/{entities}/:id` | Delete {entity} |
+
+### Model (Response)
+
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "created_at": "timestamp",
+  "updated_at": "timestamp"
+}
+```
+
+---
+
+## Decisions
+
+### Decision 1: {First key decision}
+
+- **Choice**: {decision}
+- **Alternatives**: {what else was considered}
+- **Rationale**: {why}
+
+---
+
+## Progress Log
+
+### {timestamp}
+
+- Started: Planning phase
+- Next: Get user approval, then read prerequisite specs
+
+---
+
+## Verification
+
+- [ ] All phases completed
+- [ ] All quality gates pass at each phase
+- [ ] Full test suite passes (quality gates from AGENT_GUIDE.md)
+- [ ] Lint clean
+- [ ] Implementation matches technical spec (data models, API contracts, error codes)
+- [ ] All edge cases from spec are handled
+- [ ] PROGRESS.md updated with learnings
+- [ ] User has reviewed the completed feature

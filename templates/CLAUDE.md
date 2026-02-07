@@ -45,6 +45,7 @@ Switch from Parallel to Interactive automatically when:
 | `/architecture-review` | Assess decisions, tradeoffs, edge cases |
 | `/adr` | Create an Architecture Decision Record |
 | `/security-review` | Security assessment of codebase or feature |
+| `/prd` | Interactive PRD → sized task files in backlog |
 | `/release` | Release preparation with checklist and changelog |
 
 ---

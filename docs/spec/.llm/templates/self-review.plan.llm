@@ -1,0 +1,146 @@
+# Plan: LLM System Self-Review
+
+> Use this template to review and improve the LLM orchestration system itself —
+> the specs, templates, coordination docs, and tooling that guide agent behavior.
+> This is how the system gets better over time.
+
+## Metadata
+
+| Field | Value |
+|-------|-------|
+| **Created** | {timestamp} |
+| **Agent ID** | {agent-id} |
+| **Status** | planning |
+| **Priority** | {P1 — run periodically or when issues are noticed} |
+| **Trigger** | {What prompted this review: routine, error discovered, new capability needed} |
+
+---
+
+## Objective
+
+Review the LLM orchestration system for coherence, accuracy, completeness, and effectiveness. Fix issues and improve the system so future agents work more efficiently.
+
+---
+
+## Review Checklist
+
+### 1. Cross-Reference Integrity
+
+Verify all internal links and file references are valid:
+
+- [ ] All file paths in `LLM.md` point to files that exist
+- [ ] All file paths in `CLAUDE.md` point to files that exist
+- [ ] All file paths in `llms.txt` point to files that exist
+- [ ] All file paths in `framework/README.md` point to files that exist
+- [ ] All file paths in `.llm/README.md` point to files that exist
+- [ ] All plan templates reference only specs that exist (or clearly mark optional ones)
+- [ ] `setup.sh` copies every file that exists in `templates/`
+- [ ] All custom commands in `.claude/commands/` reference files that exist
+- [ ] `SKILLS.md` lists all custom commands, MCP servers, scripts, and plan templates
+- [ ] `SKILLS.md` is referenced from CLAUDE.md, LLM.md, llms.txt, and README.md
+
+### 2. Workflow Consistency
+
+Verify the same process is described the same way everywhere:
+
+- [ ] Review loop steps (READ→ASSESS→IMPLEMENT→VERIFY→RECORD→COMMIT→NEXT) match across LLM.md, review.plan.llm, and CLAUDE.md
+- [ ] Quality gate definitions are consistent (same commands, same criteria)
+- [ ] Terminology is consistent ("quality gates" not "quality checks", "plan file" not "plan.llm file" inconsistently)
+- [ ] User feedback checkpoints are present in all plan templates that need them
+
+### 3. Placeholder Consistency
+
+- [ ] All templates use `test-project` and `github.com/yourorg/test-project` format
+- [ ] No hardcoded project names, paths, or credentials
+- [ ] `setup.sh` `copy_template` function handles all placeholder replacement
+
+### 4. Documentation Completeness
+
+- [ ] README.md directory tree matches actual template structure
+- [ ] All new files added since last review are reflected in README.md, llms.txt, and setup.sh
+- [ ] Navigation indexes in LLM.md and llms.txt include all documents
+- [ ] Every document has "Related Documentation" or equivalent backlinks
+
+### 5. Context Efficiency
+
+- [ ] CLAUDE.md is concise (<80 lines) — it loads every session
+- [ ] LLM.md is manageable (<500 lines) — it's read every task
+- [ ] No significant content duplication between files
+- [ ] Templates don't include unnecessary boilerplate
+
+### 6. Permission & Security Review
+
+- [ ] `.claude/settings.json` allow list covers all needed operations
+- [ ] `.claude/settings.json` deny list blocks all dangerous patterns
+- [ ] No credentials or secrets in any template file
+- [ ] MCP server configuration is secure
+
+### 7. Effectiveness Assessment
+
+Based on PROGRESS.md learnings:
+
+- [ ] Are agents successfully following the review loop?
+- [ ] Are agents finding the right specs for their tasks?
+- [ ] Are there repeated failures or confusion patterns?
+- [ ] Is PROGRESS.md accumulating useful knowledge?
+- [ ] Are plan templates being used effectively?
+
+---
+
+## Implementation Steps
+
+### Phase 1: Audit
+- [ ] Run through the full review checklist above
+- [ ] Document all issues found in the Issues section below
+
+### Phase 2: Fix
+- [ ] Fix cross-reference issues
+- [ ] Fix workflow inconsistencies
+- [ ] Update navigation indexes
+- [ ] Fix any other issues found
+
+### Phase 3: Improve
+- [ ] Add missing backlinks or navigation
+- [ ] Simplify any overly complex sections
+- [ ] Update templates based on effectiveness assessment
+- [ ] Record improvements in PROGRESS.md
+
+---
+
+## Issues Found
+
+| Issue | File | Severity | Status |
+|-------|------|----------|--------|
+| {description} | {file path} | {low/medium/high} | {found/fixed} |
+
+---
+
+## Improvements Made
+
+- {What was changed and why}
+
+---
+
+## Decisions Made
+
+### Decision 1: {Topic}
+- **Choice**: {decision}
+- **Rationale**: {why}
+
+---
+
+## Progress Log
+
+### {timestamp}
+- Started: System self-review
+- Trigger: {what prompted this}
+
+---
+
+## Completion
+
+- [ ] All checklist items reviewed
+- [ ] All high/medium issues fixed
+- [ ] Navigation indexes updated
+- [ ] PROGRESS.md updated with learnings
+- [ ] README.md structure verified

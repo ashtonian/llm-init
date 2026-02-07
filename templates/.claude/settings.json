@@ -165,8 +165,7 @@
       "Bash(chmod 777 *)",
       "Bash(> /dev/sd*)",
       "Bash(dd if=*)",
-      "Bash(mkfs.*)",
-      "Bash(:(){ :|:& };:)"
+      "Bash(mkfs.*)"
     ]
   }
 }

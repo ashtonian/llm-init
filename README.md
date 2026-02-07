@@ -49,7 +49,8 @@ your-project/
 │       ├── architecture-review.md         #   /architecture-review — Assess decisions & tradeoffs
 │       ├── adr.md                         #   /adr — Create Architecture Decision Record
 │       ├── security-review.md             #   /security-review — Security assessment
-│       └── release.md                     #   /release — Release preparation & changelog
+│       ├── release.md                     #   /release — Release preparation & changelog
+│       └── prd.md                         #   /prd — Interactive PRD → sized task files
 ├── cmd/{project-name}/                    # [--go] Application entry point
 │   ├── main.go                            #   Main with run() pattern
 │   └── main_test.go                       #   Entry point tests
@@ -107,7 +108,22 @@ your-project/
         │   ├── requirements.plan.llm    #   Multi-session requirement gathering
         │   ├── plan.template.llm          #   Generic task
         │   ├── task.template.md           #   Task template for parallel agent queue
-        │   └── example-task.md           #   Filled-in example task (reference)
+        │   ├── example-task.md           #   Filled-in example task (reference)
+        │   └── roles/                    #   Agent role templates (14 roles)
+        │       ├── implementer.md        #     Feature implementation
+        │       ├── reviewer.md           #     Code quality review
+        │       ├── optimizer.md          #     Performance optimization
+        │       ├── docs.md               #     Documentation maintenance
+        │       ├── tester.md             #     Test coverage & edge cases
+        │       ├── architect.md          #     System design & boundaries
+        │       ├── security.md           #     Vulnerability detection
+        │       ├── benchmarker.md        #     Performance measurement
+        │       ├── debugger.md           #     Root cause analysis
+        │       ├── spec-writer.md        #     Requirements & spec writing
+        │       ├── market-researcher.md  #     Competitive & market analysis
+        │       ├── frontend.md           #     UI implementation & accessibility
+        │       ├── ux-researcher.md      #     User experience research
+        │       └── devops.md             #     CI/CD, infrastructure, monitoring
         ├── scripts/                        # Utility + agent harness scripts
         │   ├── move_nav_to_top.py         #   Reformats docs for LLM navigation
         │   ├── run-parallel.sh            #   Launch N parallel autonomous agents
@@ -115,7 +131,10 @@ your-project/
         │   ├── run-single-task.sh         #   Run one task autonomously
         │   ├── run-interactive.sh         #   Interactive session with task context
         │   ├── status.sh                  #   Task queue dashboard
-        │   └── reset.sh                   #   Reset tasks to backlog
+        │   ├── reset.sh                   #   Reset tasks to backlog
+        │   ├── run-fresh-loop.sh          #   Fresh-context loop (new instance per task)
+        │   └── archive.sh                 #   Archive completed tasks and logs
+        ├── archive/                         # Archived completed runs
         ├── tasks/                          # Parallel agent task queue
         │   ├── backlog/                   #   Tasks ready to be claimed
         │   ├── in_progress/               #   Currently being worked on
@@ -179,7 +198,7 @@ You prompt Claude ──> Claude reads CLAUDE.md (automatic)
 | **Performance Guide** | Memory allocation strategies, profiling discipline, latency budgets, code quality standards |
 | **Business Features Guide** | Feature specs, user stories, market research templates, competitive analysis, decision records |
 | **PROGRESS.md** | 5-section knowledge base: patterns, architecture decisions, known issues, failed approaches, environment quirks |
-| **Custom Commands** | 12 slash commands: task management (`/decompose`, `/new-task`, `/status`, `/launch`, `/plan`, `/review`, `/shelve`) + lifecycle (`/requirements`, `/architecture-review`, `/adr`, `/security-review`, `/release`) |
+| **Custom Commands** | 13 slash commands: task management (`/prd`, `/decompose`, `/new-task`, `/status`, `/launch`, `/plan`, `/review`, `/shelve`) + lifecycle (`/requirements`, `/architecture-review`, `/adr`, `/security-review`, `/release`) |
 | **Skills Reference** | SKILLS.md: consolidated catalog of commands, MCP servers, scripts, templates, workflows |
 | **Parallel Agent Harness** | Task queue, git worktree isolation, atomic claiming, autonomous batch execution with N parallel agents |
 | **Plan Templates** | 9 templates: idea-to-project, full-stack feature, backend feature, review cycle, bugfix, self-review, spec-first codegen, requirements gathering, generic |
