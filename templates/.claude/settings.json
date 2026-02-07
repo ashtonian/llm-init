@@ -1,7 +1,7 @@
 {
   "enabledMcpjsonServers": [
     "github", "postgres", "redis",
-    "sequential-thinking", "context7", "playwright",
+    "context7", "playwright", "memory",
     "terraform", "eslint", "aws-documentation"
   ],
   "permissions": {
@@ -144,7 +144,7 @@
       "mcp__redis__get",
       "mcp__redis__delete",
       "mcp__redis__list",
-      "mcp__sequential-thinking__sequentialthinking",
+      "mcp__memory__*",
       "mcp__context7__*",
       "mcp__playwright__*",
       "mcp__terraform__*",

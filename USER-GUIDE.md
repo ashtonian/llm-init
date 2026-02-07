@@ -166,7 +166,7 @@ The settings file allows Claude to run these without prompting:
 | **Utilities** | `jq`, `yq`, `sed`, `awk`, `xargs`, `env`, `export`, `brew install/list/info` |
 | **Subagents** | `claude` CLI for spawning sub-sessions and agent teams |
 | **All file tools** | Read, Edit, Write, Glob, Grep, WebFetch, WebSearch, Task |
-| **MCP server tools** | github, postgres, redis, sequential-thinking, context7, playwright, terraform, eslint, aws-documentation |
+| **MCP server tools** | github, postgres, redis, context7, playwright, memory, terraform, eslint, aws-documentation |
 
 ### What's blocked
 
@@ -872,10 +872,10 @@ MCP (Model Context Protocol) servers give Claude direct tool access to external 
 |--------|--------------------|
 | **github** | Create issues, PRs, read reviews, manage repositories |
 | **postgres** | Query the database, inspect schemas |
-| **redis** | Read/write cache entries |
-| **sequential-thinking** | Break down complex problems step-by-step |
+| **redis** | Read/write cache entries (official `@redis/mcp`) |
 | **context7** | Look up current library/framework documentation |
 | **playwright** | Browser automation, E2E testing, visual verification |
+| **memory** | Local knowledge graph for cross-session entity tracking (`@modelcontextprotocol/server-memory`) |
 | **terraform** | Query Terraform Registry for provider docs, resource schemas, module metadata |
 | **eslint** | Run ESLint analysis, get lint rule documentation and fix suggestions |
 | **aws-documentation** | Access latest AWS documentation, API references, and getting started guides |
@@ -897,7 +897,7 @@ Edit `.mcp.json` to add or remove MCP servers. Each server entry specifies the c
 
 ### Servers that don't need infrastructure
 
-`github`, `sequential-thinking`, `context7`, `playwright`, `terraform`, `eslint`, and `aws-documentation` work without Docker. Only `postgres` and `redis` require the Docker infrastructure to be running.
+`github`, `context7`, `playwright`, `memory`, `terraform`, `eslint`, and `aws-documentation` work without Docker. Only `postgres` and `redis` require the Docker infrastructure to be running.
 
 **Note:** The `aws-documentation` server requires `uvx` (install via `pip install uv`). All other servers use `npx`.
 

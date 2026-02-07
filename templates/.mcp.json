@@ -10,11 +10,14 @@
     },
     "redis": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-redis", "redis://localhost:6379"]
+      "args": ["-y", "@redis/mcp@latest", "--transport", "stdio", "--url", "redis://localhost:6379"]
     },
-    "sequential-thinking": {
+    "memory": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "env": {
+        "MEMORY_FILE_PATH": "docs/spec/.llm/memory.json"
+      }
     },
     "context7": {
       "command": "npx",

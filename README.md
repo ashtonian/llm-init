@@ -75,7 +75,8 @@ your-project/
 │   │   ├── devops.md                    #   Infrastructure specialist (opus, 100 turns)
 │   │   ├── requirements-analyst.md      #   Requirements gathering (opus, 100 turns)
 │   │   ├── refactorer.md               #   Technical debt elimination (opus, 100 turns)
-│   │   └── migration-specialist.md      #   Database schema evolution (opus, 150 turns)
+│   │   ├── migration-specialist.md      #   Database schema evolution (opus, 150 turns)
+│   │   └── spec-writer.md              #   Technical specification author (opus, 100 turns)
 │   └── rules/                             # Auto-loaded context rules
 │       ├── agent-guide.md                #   Project tech stack & quality gates
 │       ├── spec-first.md                 #   Spec-first protocol
@@ -118,7 +119,7 @@ your-project/
 ├── .agents/
 │   └── skills/                            # Mirrored skills for Codex CLI compatibility
 │       └── (same 20 skills as .claude/skills/)
-├── .mcp.json                              # 9 MCP servers (github, postgres, redis, sequential-thinking, context7, playwright, terraform, eslint, aws-documentation)
+├── .mcp.json                              # 9 MCP servers (github, postgres, redis, context7, playwright, memory, terraform, eslint, aws-documentation)
 ├── .gitignore                             # Go, TypeScript, Docker, IDE, env, LLM workspace exclusions
 └── docs/spec/
     ├── biz/                                # Business specs
@@ -189,7 +190,7 @@ You prompt Claude ──> Claude reads CLAUDE.md (automatic)
 
 **The key ideas**:
 - **Full software lifecycle.** Requirements gathering -> design -> implementation -> review -> release, with dedicated skills for each phase.
-- **Agent Teams.** The team lead agent (opus, 500 turns) orchestrates parallel execution by spawning 16 specialist agents (implementer, reviewer, security, debugger, tester, frontend, api-designer, data-modeler, architect, benchmarker, ux-researcher, release-engineer, devops, requirements-analyst, refactorer, migration-specialist) across feature branches.
+- **Agent Teams.** The team lead agent (opus, 500 turns) orchestrates parallel execution by spawning 17 specialist agents (implementer, reviewer, security, debugger, tester, frontend, api-designer, data-modeler, architect, benchmarker, ux-researcher, release-engineer, devops, requirements-analyst, refactorer, migration-specialist, spec-writer) across feature branches.
 - **Rules replace repeated prompt instructions.** Document your patterns once in `.claude/rules/`, Claude auto-loads them based on file paths.
 - **Knowledge accumulates across sessions.** Each session reads and writes to PROGRESS.md, building institutional knowledge.
 - **User approval at every major step.** Research -> spec -> plan -> build, with human checkpoints at each transition.
@@ -204,12 +205,12 @@ You prompt Claude ──> Claude reads CLAUDE.md (automatic)
 | **CLAUDE.md** | Auto-read by Claude Code. Entry point with execution modes, skill references, principles. |
 | **`.claude/settings.json`** | Pre-approved permissions for autonomous operation (Go, TS, Docker, Git, GitHub CLI, npm, linters, test runners, web search, agent teams) |
 | **20 Skills** | Slash commands: task management (`/prd`, `/decompose`, `/new-task`, `/status`, `/launch`, `/plan`, `/review`, `/shelve`) + lifecycle (`/requirements`, `/architecture-review`, `/adr`, `/security-review`, `/release`) + design (`/api-design`, `/data-model`, `/performance-audit`, `/incident-response`) + engineering (`/refactor`, `/migrate`, `/dependency-audit`) |
-| **17 Agents** | Native Claude Code agents: team-lead (opus orchestrator) + 16 specialists (implementer, reviewer, security, debugger, tester, frontend, api-designer, data-modeler, architect, benchmarker, ux-researcher, release-engineer, devops, requirements-analyst, refactorer, migration-specialist) -- all opus |
+| **18 Agents** | Native Claude Code agents: team-lead (opus orchestrator) + 17 specialists (implementer, reviewer, security, debugger, tester, frontend, api-designer, data-modeler, architect, benchmarker, ux-researcher, release-engineer, devops, requirements-analyst, refactorer, migration-specialist, spec-writer) -- all opus |
 | **18 Rules** | Auto-loaded context: agent-guide, spec-first, go-patterns, typescript-patterns, performance, testing, security, observability, multi-tenancy, infrastructure, api-design, auth-patterns, data-patterns, frontend-architecture, ux-standards, error-handling, code-quality, git-workflow |
 | **PROGRESS.md** | 5-section knowledge base: patterns, architecture decisions, known issues, failed approaches, environment quirks |
 | **Plan Templates** | 9 templates: idea-to-project, full-stack feature, backend feature, review cycle, bugfix, self-review, spec-first codegen, requirements gathering, generic |
 | **Docker Compose** | PostgreSQL 16, Redis 7, NATS 2 with health checks, resource limits, data persistence |
-| **MCP Config** | 9 pre-configured servers: GitHub, Postgres, Redis, sequential-thinking, Context7 (library docs), Playwright (browser), Terraform, ESLint, AWS Documentation |
+| **MCP Config** | 9 pre-configured servers: GitHub, Postgres, Redis (official), Context7 (library docs), Playwright (browser), Memory (knowledge graph), Terraform, ESLint, AWS Documentation |
 | **Codex CLI** | AGENTS.md entry point, .codex/config.toml, .agents/skills/ mirror -- works with both Claude Code and OpenAI Codex CLI |
 | **.gitignore** | Comprehensive template covering Go, TypeScript, Docker, IDE, env files, LLM workspace |
 

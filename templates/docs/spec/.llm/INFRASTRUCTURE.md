@@ -66,12 +66,15 @@ docker compose -f docs/spec/.llm/docker-compose.yml up -d
 |----------------------|------------------------|----------------------------------|---------------------------------|
 | github               | No                     | `@modelcontextprotocol/server-github` (stdio)      | Requires `GITHUB_PERSONAL_ACCESS_TOKEN` env var |
 | postgres             | PostgreSQL             | `@bytebase/dbhub` (stdio)                         | Queries via DSN connection string |
-| redis                | Redis                  | `@modelcontextprotocol/server-redis` (stdio)       | Key-value operations            |
-| sequential-thinking  | No                     | `@modelcontextprotocol/server-sequential-thinking` (stdio) | In-process reasoning            |
+| redis                | Redis                  | `@redis/mcp` (stdio)                               | Key-value operations (official Redis MCP) |
 | context7             | No                     | `@upstash/context7-mcp` (stdio)                   | Up-to-date library documentation |
 | playwright           | No                     | `@playwright/mcp` (stdio)                          | Browser automation & E2E testing |
+| memory               | No                     | `@modelcontextprotocol/server-memory` (stdio)      | Local knowledge graph for cross-session entity tracking |
+| terraform            | No                     | `terraform-mcp-server` (stdio)                     | Terraform Registry provider docs & resource schemas |
+| eslint               | No                     | `@eslint/mcp` (stdio)                              | ESLint analysis, rule docs, fix suggestions |
+| aws-documentation    | No                     | `awslabs.aws-documentation-mcp-server` (uvx)       | AWS documentation & API references |
 
-**Note**: The `git`, `filesystem`, and `memory` MCP servers are omitted because Claude Code has built-in equivalents. The `github` MCP server uses a Personal Access Token for authentication.
+**Note**: The `git` and `filesystem` MCP servers are omitted because Claude Code has built-in equivalents. The `github` MCP server uses a Personal Access Token for authentication. The `memory` server stores its knowledge graph at `docs/spec/.llm/memory.json` (gitignored).
 
 ## Data Persistence
 

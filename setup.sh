@@ -172,7 +172,7 @@ done
 # Copy agents
 echo ""
 echo "Copying agents..."
-for agent in team-lead.md implementer.md reviewer.md security.md debugger.md tester.md frontend.md api-designer.md data-modeler.md architect.md benchmarker.md ux-researcher.md release-engineer.md devops.md requirements-analyst.md refactorer.md migration-specialist.md; do
+for agent in team-lead.md implementer.md reviewer.md security.md debugger.md tester.md frontend.md api-designer.md data-modeler.md architect.md benchmarker.md ux-researcher.md release-engineer.md devops.md requirements-analyst.md refactorer.md migration-specialist.md spec-writer.md; do
     if [ ! -f "${PROJECT_ROOT}/.claude/agents/${agent}" ]; then
         cp "${SCRIPT_DIR}/templates/.claude/agents/${agent}" "${PROJECT_ROOT}/.claude/agents/${agent}"
         echo "  CREATED: .claude/agents/${agent}"
@@ -337,7 +337,7 @@ echo "  5. Delete the llm-init/ folder: rm -rf llm-init/"
 echo ""
 echo "Structure created:"
 echo "  .claude/skills/     20 skills (slash commands)"
-echo "  .claude/agents/     17 agents (team-lead + 16 specialists)"
+echo "  .claude/agents/     18 agents (team-lead + 17 specialists)"
 echo "  .claude/rules/      18 rules (agent-guide + 17 pattern guides)"
 echo ""
 echo "Skills (type in Claude Code):"

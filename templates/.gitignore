@@ -3,6 +3,9 @@
 # Docker persistent data volumes
 docs/spec/.llm/data/
 
+# Knowledge graph memory (MCP server-memory)
+docs/spec/.llm/memory.json
+
 # LLM scratch workspace
 .llm-scratch/
 
