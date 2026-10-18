@@ -16,11 +16,10 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup-go-cache
+      - uses: ashtonian/go-ci-actions@853832a13eec9e84695a009516a948fca3ce0e9d # v1.0.0
         with:
           go-version: stable
       - name: Shell syntax
         run: bash -n setup.sh tests/go-scaffold.sh
       - name: Generate and test a Go project
         run: bash tests/go-scaffold.sh
-      - uses: ./.github/actions/trim-go-cache

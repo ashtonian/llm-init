@@ -277,8 +277,6 @@ if [ "$GO_SCAFFOLD" -eq 1 ]; then
     echo "Scaffolding Go project..."
     mkdir -p "${PROJECT_ROOT}/cmd/${PROJECT_NAME}"
     mkdir -p "${PROJECT_ROOT}/.github/workflows"
-    mkdir -p "${PROJECT_ROOT}/.github/actions/setup-go-cache"
-    mkdir -p "${PROJECT_ROOT}/.github/actions/trim-go-cache"
 
     mkdir -p "${PROJECT_ROOT}/internal/greeter"
 
@@ -295,8 +293,6 @@ if [ "$GO_SCAFFOLD" -eq 1 ]; then
     copy_template "${SCRIPT_DIR}/templates/go/.golangci.yml" "${PROJECT_ROOT}/.golangci.yml"
     copy_template "${SCRIPT_DIR}/templates/go/.github/workflows/ci.yml" "${PROJECT_ROOT}/.github/workflows/ci.yml"
     copy_template "${SCRIPT_DIR}/templates/go/.github/workflows/release.yml" "${PROJECT_ROOT}/.github/workflows/release.yml"
-    copy_template "${SCRIPT_DIR}/templates/go/.github/actions/setup-go-cache/action.yml" "${PROJECT_ROOT}/.github/actions/setup-go-cache/action.yml"
-    copy_template "${SCRIPT_DIR}/templates/go/.github/actions/trim-go-cache/action.yml" "${PROJECT_ROOT}/.github/actions/trim-go-cache/action.yml"
     copy_template "${SCRIPT_DIR}/templates/go/README.md" "${PROJECT_ROOT}/README.md"
 
     # renovate.json has no placeholders -- use cp

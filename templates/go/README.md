@@ -39,6 +39,10 @@ make snapshot      # Local snapshot build
 git tag v0.1.0 && git push --tags   # Trigger release via CI
 ```
 
+## CI Toolchain and Caches
+
+CI and release workflows pin [ashtonian/go-ci-actions](https://github.com/ashtonian/go-ci-actions) to a reviewed commit. The action installs Go from `go.mod`, restores workload-specific module and build caches, and trims old build objects before saving a successful job's cache. Build, vet, test, lint, and release commands remain in this project's workflows. Renovate can propose shared action upgrades alongside other GitHub Actions dependencies.
+
 ## Project Structure
 
 ```
