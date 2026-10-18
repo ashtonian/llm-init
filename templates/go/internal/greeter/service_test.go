@@ -25,11 +25,11 @@ func TestService_Create(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name      string
-		input     greeter.CreateInput
-		opts      []greeter.Option
-		wantMsg   string
-		wantErr   bool
+		name    string
+		input   greeter.CreateInput
+		wantMsg string
+		opts    []greeter.Option
+		wantErr bool
 	}{
 		{
 			name:    "valid greeting defaults to english",
@@ -140,10 +140,10 @@ func TestService_List(t *testing.T) {
 	}
 
 	// After creating two
-	if _, err := svc.Create(ctx, greeter.CreateInput{Name: "A"}); err != nil {
+	if _, err = svc.Create(ctx, greeter.CreateInput{Name: "A"}); err != nil {
 		t.Fatalf("Create: %v", err)
 	}
-	if _, err := svc.Create(ctx, greeter.CreateInput{Name: "B"}); err != nil {
+	if _, err = svc.Create(ctx, greeter.CreateInput{Name: "B"}); err != nil {
 		t.Fatalf("Create: %v", err)
 	}
 

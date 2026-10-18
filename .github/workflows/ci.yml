@@ -1,0 +1,26 @@
+name: CI
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  scaffold:
+    if: github.actor_id == '4212452' && (github.event_name != 'pull_request' || (github.event.pull_request.user.id == 4212452 && github.event.pull_request.head.repo.full_name == github.repository))
+    runs-on: arc-llm-init
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-go-cache
+        with:
+          go-version: stable
+      - name: Shell syntax
+        run: bash -n setup.sh tests/go-scaffold.sh
+      - name: Generate and test a Go project
+        run: bash tests/go-scaffold.sh
+      - uses: ./.github/actions/trim-go-cache

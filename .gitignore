@@ -35,7 +35,6 @@ desktop.ini
 /Dockerfile
 /.goreleaser.yml
 /.golangci.yml
-/.github/
 /renovate.json
 /go.mod
 /go.sum

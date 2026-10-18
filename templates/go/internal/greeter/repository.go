@@ -18,8 +18,8 @@ type Repository interface {
 // MemoryRepository is an in-memory Repository suitable for tests and
 // local development. It requires no infrastructure.
 type MemoryRepository struct {
-	mu    sync.RWMutex
 	items map[string]Greeting
+	mu    sync.RWMutex
 }
 
 // NewMemoryRepository returns a ready-to-use in-memory repository.
@@ -27,6 +27,8 @@ func NewMemoryRepository() *MemoryRepository {
 	return &MemoryRepository{items: make(map[string]Greeting)}
 }
 
+// Store adds or replaces a greeting.
+//nolint:gocritic // Copy values so callers cannot mutate persisted greetings.
 func (r *MemoryRepository) Store(_ context.Context, g Greeting) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -34,6 +36,7 @@ func (r *MemoryRepository) Store(_ context.Context, g Greeting) error {
 	return nil
 }
 
+// FindByID returns the greeting with the given ID.
 func (r *MemoryRepository) FindByID(_ context.Context, id string) (Greeting, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
@@ -44,6 +47,7 @@ func (r *MemoryRepository) FindByID(_ context.Context, id string) (Greeting, err
 	return g, nil
 }
 
+// List returns a snapshot of all greetings.
 func (r *MemoryRepository) List(_ context.Context) ([]Greeting, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()

@@ -7,11 +7,11 @@ import (
 
 // Greeting is the core domain model.
 type Greeting struct {
+	CreatedAt time.Time `json:"created_at"`
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	Language  string    `json:"language"`
 	Message   string    `json:"message"`
-	CreatedAt time.Time `json:"created_at"`
 }
 
 // CreateInput holds validated input for creating a greeting.

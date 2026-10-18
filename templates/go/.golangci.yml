@@ -1,43 +1,46 @@
-linters:
-  enable:
-    - errcheck
-    - govet
-    - staticcheck
-    - gocritic
-    - revive
-    - errorlint
-    - gosimple
-    - ineffassign
-    - unused
-    - typecheck
-    - bodyclose
-    - noctx
-    - prealloc
-    - unconvert
-    - misspell
-
-linters-settings:
-  govet:
-    enable-all: true
-  gocritic:
-    enabled-tags:
-      - diagnostic
-      - style
-      - performance
-  revive:
-    rules:
-      - name: exported
-        arguments:
-          - disableStutteringCheck
-  errorlint:
-    errorf: true
-    asserts: true
-    comparison: true
-
-issues:
-  exclude-use-default: false
-  max-issues-per-linter: 0
-  max-same-issues: 0
-
+version: "2"
 run:
   timeout: 5m
+linters:
+  enable:
+    - bodyclose
+    - errorlint
+    - gocritic
+    - misspell
+    - noctx
+    - prealloc
+    - revive
+    - unconvert
+  settings:
+    errorlint:
+      errorf: true
+      asserts: true
+      comparison: true
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - style
+        - performance
+    govet:
+      enable-all: true
+    revive:
+      rules:
+        - name: exported
+          arguments:
+            - disableStutteringCheck
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+formatters:
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
