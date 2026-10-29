@@ -15,7 +15,9 @@ jobs:
     runs-on: arc-llm-init
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: ashtonian/go-ci-actions@470279e1ff775269324ca13b0aaaf7211951215e # v1.0.1
         with:
           go-version: stable
