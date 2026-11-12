@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ashtonian/go-ci-actions@78710c0215622d4dd362f4c565de788934051488 # v1.1.0
+      - uses: ashtonian/go-ci-actions@e67c11ad4670155954e6318cc5d5cc093ae700da # v1.2.0
         with:
           go-version: stable
       - name: Shell syntax
