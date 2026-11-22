@@ -1,14 +1,30 @@
 name: CI
+# The scaffold test runs only when what it exercises changes: setup.sh, its
+# templates, the test and this workflow. It is one ~40 s job, so the push
+# that merges a pull request runs it again rather than paying for the scope
+# and receipt jobs that would let it skip. Push runs are never cancelled:
+# GitHub filters a push by its own before..after range, so a cancelled run
+# would drop its changes from the check.
 on:
   push:
     branches: [master]
+    paths:
+      - setup.sh
+      - templates/**
+      - tests/**
+      - .github/workflows/ci.yml
   pull_request:
+    paths:
+      - setup.sh
+      - templates/**
+      - tests/**
+      - .github/workflows/ci.yml
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   scaffold:
     if: github.actor_id == '4212452' && (github.event_name != 'pull_request' || (github.event.pull_request.user.id == 4212452 && github.event.pull_request.head.repo.full_name == github.repository))
